@@ -6,13 +6,9 @@ SRC		:= src
 INCLUDE	:= include
 LIB		:= lib
 
-LIBRARIES	:=
+LIBRARIES	:= -lboost_system
 
-ifeq ($(OS),Windows_NT)
-EXECUTABLE	:= main.exe
-else
-EXECUTABLE	:= main
-endif
+EXECUTABLE	:= proto_stripper.exe
 
 all: $(BIN)/$(EXECUTABLE)
 
@@ -23,4 +19,4 @@ run: all
 	./$(BIN)/$(EXECUTABLE)
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
-	$(CC) $(C_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
+	$(CC) $(C_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)
