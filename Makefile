@@ -1,12 +1,11 @@
-CC		:= g++
-C_FLAGS := -std=c++17 -Wall -Wextra
+CC		:= gcc
+C_FLAGS := -pedantic -ansi -Wall  -Wextra #-Werror
 
 BIN		:= bin
 SRC		:= src
 INCLUDE	:= include
-LIB		:= lib
 
-LIBRARIES	:= -lboost_system
+LIBRARIES	:= -lboost_system -lpthread -lboost_thread
 
 EXECUTABLE	:= proto_stripper.exe
 
@@ -19,4 +18,4 @@ run: all
 	./$(BIN)/$(EXECUTABLE)
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
-	$(CC) $(C_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)
+	$(CC) $(C_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
