@@ -7,15 +7,12 @@
 server::server(
     const std::string& address, 
     const std::string& port,
-    const connection_handler& connection_handler,
     const std::string& configuration_file, 
     std::size_t thread_pool_size)
       : thread_pool_size_(thread_pool_size),
-        signals_(io_context_),
-        acceptor_(io_context_),
-        new_connection_(),
-        connection_handler_(configuration_file)
-    
+        signals_(io_service_),
+        acceptor_(io_service_, boost::asio::ip::tcp::endpoint(address,port)),
+        new_connection_ptr_()    
 {
     // Register exit signals
     signals_.add(SIGINT);
@@ -24,9 +21,9 @@ server::server(
         server::handle_stop
     );
 
-    boost::asio::ip::tcp::resolver resolver(io_context_);
-    boost::asio::ip::tcp::endpoint endpoint =
-    *resolver.resolve(address, port).begin();
+    boost::asio::ip::tcp::resolver resolver(io_service_);
+    boost::asio::ip::tcp::resolver::iterator iterator = resolver.resolve( query );
+    boost::asio::ip::tcp::endpoint endpoint = *iterator;
     acceptor_.open(endpoint.protocol());
     acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     acceptor_.bind(endpoint);
@@ -38,13 +35,13 @@ server::server(
 void 
 server::run()
 {
-  // Create a pool of threads to run all of the io_contexts.
+  // Create a pool of threads to run all of the io_services.
   for (std::size_t i = 0; i < thread_pool_size_; ++i)
   {
     thread_pool_.create_thread(
-      [ &io_context_ = io_context_ ]()
+      [ &io_service_ = io_service_ ]()
       {
-         io_context_.run(); 
+         io_service_.run(); 
       }
     );
   }
@@ -58,7 +55,7 @@ server::start_accept()
 {
 
   new_connection_ptr_.reset(
-    new connection(io_context_, connection_handler_)
+    new connection(io_service_)
   );
 
   acceptor_.async_accept(
@@ -71,9 +68,9 @@ server::start_accept()
 }
 
 void 
-server::handle_accept(const boost::system::error_code& e)
+server::handle_accept(const boost::system::error_code& error)
 {
-  if (!e)
+  if (!error)
   {
     new_connection_ptr_->start();
   }
@@ -84,5 +81,5 @@ server::handle_accept(const boost::system::error_code& e)
 void 
 server::handle_stop()
 {
-  io_context_.stop();
+  io_service_.stop();
 }

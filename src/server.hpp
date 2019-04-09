@@ -1,7 +1,7 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
-#include <boost/asio/io_context.hpp>
+#include <boost/asio/io_service.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/asio/signal_set.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -20,7 +20,6 @@ public:
     explicit server(
         const std::string& address, 
         const std::string& port,
-        const connection_handler& connection_handler,
         const std::string& configuration_file, 
         std::size_t thread_pool_size
     );
@@ -45,8 +44,8 @@ private:
     // The number of completion handlers threads
     boost::thread_group thread_pool_;
 
-    // The io_context used to perform asynchronous operations
-    boost::asio::io_context io_context_;
+    // The io_service used to perform asynchronous operations
+    boost::asio::io_service io_service_;
 
     // The signal_set is used to register for process termination notifications
     boost::asio::signal_set signals_;
@@ -57,8 +56,6 @@ private:
     // The next connection to be accepted
     connection_ptr new_connection_ptr_;
 
-    // Connection handler for all new incoming connections
-    connection_handler connection_handler_;
 };
 
 #endif // SERVER_HPP_
