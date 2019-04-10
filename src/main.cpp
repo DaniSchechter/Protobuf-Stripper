@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
   try
   {
     // Check command line arguments.
-    if (argc != 5)
+    if (argc != 4)
     {
       std::cerr << "Usage: http_server <address> <port> <threads> <doc_root>\n";
       std::cerr << "  For IPv4, try:\n";
@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
     // Initialise the server.
     // TODO changr to normal cast from std
+    std::cout << "initialize the server" << std::endl;
     server s(argv[1], argv[2], argv[3]);
 
     // Run the server until stopped.
