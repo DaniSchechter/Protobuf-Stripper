@@ -5,9 +5,9 @@ BIN		:= bin
 SRC		:= src
 INCLUDE	:= include
 
-LIBRARIES	:= -lboost_system -lpthread -lboost_thread
+LIBRARIES	:= -lboost_system -lpthread -lboost_thread -lz
 
-EXECUTABLE	:= proto_stripper.exe
+EXECUTABLE	:= protobuf_stripper.exe
 
 all: $(BIN)/$(EXECUTABLE)
 

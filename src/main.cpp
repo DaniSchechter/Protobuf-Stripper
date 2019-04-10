@@ -2,7 +2,6 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/lexical_cast.hpp>
 #include "server.hpp"
 
 int main(int argc, char* argv[])
@@ -21,8 +20,8 @@ int main(int argc, char* argv[])
     }
 
     // Initialise the server.
-    std::size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
-    server s(argv[1], argv[2], argv[4], num_threads);
+    // TODO changr to normal cast from std
+    server s(argv[1], argv[2], argv[3]);
 
     // Run the server until stopped.
     s.run();
