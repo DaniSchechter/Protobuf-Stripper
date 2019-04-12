@@ -1,8 +1,5 @@
 #include "bridge.hpp"
 #include "request_parser.hpp"
-#include <vector>
-#include <boost/bind.hpp>
-#include <iostream>
 
 bridge::bridge(boost::shared_ptr<boost::asio::io_context> io_context)
   : strand_(*io_context),

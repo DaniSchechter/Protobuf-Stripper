@@ -1,13 +1,13 @@
-CC		:= gcc
-C_FLAGS := -pedantic -ansi -Wall  -Wextra #-Werror
+CC		:= g++
+C_FLAGS := -std=c++11 -pedantic -ansi -Wall  -Wextra #-Werror
 
 BIN		:= bin
 SRC		:= src
-INCLUDE	:= include
+INCLUDE	:= /usr/lib -L /usr/lib
 
-LIBRARIES	:= -lboost_system -lpthread -lboost_thread -lz
+LIBRARIES	:= -lboost_system -lpthread -lboost_thread -lboost_regex 
 
-EXECUTABLE	:= protobuf_stripper.exe
+EXECUTABLE	:= protobuf_stripper
 
 all: $(BIN)/$(EXECUTABLE)
 

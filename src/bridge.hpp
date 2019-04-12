@@ -5,7 +5,9 @@
 #include <boost/array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/bind.hpp>
 
+#include <iostream>
 typedef boost::asio::ip::tcp::socket socket_type;
 
 // Represents a single connection from a client to a server

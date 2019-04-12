@@ -2,15 +2,11 @@
 
 #include "server.hpp"
 
-#include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
-#include <iostream>
-
 server::server(
     const std::string& address, 
     const std::string& port,
     const std::string& thread_pool_size)
-      : io_context_(),
+      : io_context_( new boost::asio::io_context() ),
         localhost_address_(boost::asio::ip::address_v4::from_string(address)),
         localhost_port_(boost::lexical_cast<std::size_t>(port)),
         thread_pool_size_(boost::lexical_cast<std::size_t>(thread_pool_size)) ,
@@ -35,6 +31,8 @@ server::server(
 
 void server::run()
 {
+  // TODO log
+  std::cout << "Server running" << std::endl;
   boost::thread_group worker_threads;
   // Create a pool of threads to run all of the io_contexts.
   for (std::size_t i = 0; i < thread_pool_size_; ++i)

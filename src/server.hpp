@@ -7,9 +7,12 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 
 #include "bridge.hpp"
 
+#include <iostream>
 #include <string>
 
 class server 
