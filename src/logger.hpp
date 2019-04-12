@@ -1,31 +1,39 @@
-// #ifndef LOGGER_H_
-// #define LOGGER_H_
+#ifndef LOGGER_H_
+#define LOGGER_H_
 
-// #include <iostream>
-// #include <fstream>
-// #include <vector>
+#define WHITE  "\x1B[37m"
+#define RED    "\x1B[31m"
+#define YELLOW "\x1B[33m"
+#define ORANGE "\x1b[101m"
+#define RST    "\x1B[0m"
 
-// class Logger
-// {
-// public:
+#include <iostream>
+#include <ostream>
+#include <vector>
+#include <chrono>
 
-//     enum class LOG_LEVEL
-//     {
-//         INFO, WARNING, FATAL
-//     }
+class Logger
+{
+public:
+    // todo give different streams sfor errors, and info together with warn
+    enum class LOG_LEVEL
+    {
+        INFO, WARNING, FATAL
+    };
 
-//     Logger() = delete;
+    Logger() = delete;
 
-//     Logger(const Logger& logger) = delete;
+    Logger(const Logger& logger) = delete;
 
-//     static void log(const string& message, LOG_LEVEL level) const;
+    static void log(const std::string& message, LOG_LEVEL level);
 
-//     static void log(const std::vector<string>& message, LOG_LEVEL level) const;
+    // TODO maybe delete
+    static void log(const std::vector< const char* >& messages, LOG_LEVEL level);
 
-// private:
+private:
 
-//     ostream & log_stream_;
+    //ostream& log_stream_;
 
-// }
+};
 
-// #endif //LOGGER_H_
+#endif //LOGGER_H_

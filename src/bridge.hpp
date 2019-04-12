@@ -3,21 +3,22 @@
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp> // TODO create a common h file for common includes
 
 #include <iostream>
+#include "logger.hpp"
+
 typedef boost::asio::ip::tcp::socket socket_type;
 
 // Represents a single connection from a client to a server
 class bridge
-  : public boost::enable_shared_from_this<bridge>
+  : public std::enable_shared_from_this<bridge>
 {
 public:
 
   // Construct a connection with the given io_context.
-  explicit bridge(boost::shared_ptr<boost::asio::io_context> io_context);
+  explicit bridge(std::shared_ptr<boost::asio::io_context> io_context);
 
   // Get the socket associated with the client
   socket_type& client_socket();
@@ -60,7 +61,7 @@ private:
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_;
 
-  boost::shared_ptr<boost::asio::io_context> io_context_;
+  std::shared_ptr<boost::asio::io_context> io_context_;
 
   // Socket for the connection to the client
   socket_type client_socket_;
