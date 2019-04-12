@@ -97,4 +97,5 @@ void server::handle_stop()
 {
   std::cout << "exiting" << std::endl;
   io_context_->stop();
+  io_context_.reset();
 }
