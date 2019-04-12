@@ -6,5 +6,5 @@ std::string request_parser::resolve_host(const std::string& message)
     // boost::smatch match;
     // boost::regex_search(message, match, pattern);
     // return match[0].str();
-    return "google.com";
+    return "sport5.co.il";
 }
