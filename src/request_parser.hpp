@@ -4,6 +4,8 @@
 #include <boost/regex.hpp>
 
 #include <string>
+#include <iostream>
+#include <boost/regex.hpp>
 
 // Parser for incoming requests.
 struct request_parser

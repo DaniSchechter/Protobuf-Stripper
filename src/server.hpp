@@ -14,6 +14,9 @@
 
 #include <iostream>
 #include <string>
+#include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
+#include <iostream>
 
 class server 
 {
@@ -40,10 +43,13 @@ private:
     // Handle a request to stop the server
     void handle_stop();
 
-    void WorkerThread( boost::shared_ptr< boost::asio::io_context > io_context );
+    void WorkerThread( );
 
     // The io_context used to perform asynchronous operations
     boost::shared_ptr<boost::asio::io_context> io_context_;
+
+    // To prevent workers from running out of work
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
 
     //local host ipv4 address
     boost::asio::ip::address_v4 localhost_address_;
