@@ -1,5 +1,5 @@
 CC		:= g++
-C_FLAGS := -std=c++11 -pedantic -ansi -Wall  -Wextra #-Werror
+C_FLAGS := -std=c++17 -pedantic -Wall -Wextra #-Werror 
 
 BIN		:= bin
 SRC		:= src

@@ -1,21 +1,25 @@
 
 
 #include "server.hpp"
+#include "logger.hpp"
 
-server::server(
-    const std::string& address, 
-    const std::string& port,
-    const std::string& thread_pool_size)
+server::server(std::unique_ptr<Config> config)
       : io_context_(new boost::asio::io_context),
         work_guard_(boost::asio::make_work_guard(*io_context_)),
-        localhost_address_(boost::asio::ip::address_v4::from_string(address)),
-        localhost_port_(boost::lexical_cast<std::size_t>(port)),
-        thread_pool_size_(boost::lexical_cast<std::size_t>(thread_pool_size)) ,
+        localhost_address_(boost::asio::ip::address_v4::from_string(config->local_host_)),
+        localhost_port_(boost::lexical_cast<std::size_t>(config->local_port_)),
+        thread_pool_size_(boost::lexical_cast<std::size_t>(config->num_of_threads_)) ,
         signals_(*io_context_),
         acceptor_(*io_context_),
         connection_bridge_( )
 {
-  std::cout << "in server ctor" << std::endl;
+    Logger::log(
+      "Starting server: " + 
+      config->local_host_ + ":" + boost::lexical_cast<std::string>(config->local_port_) + 
+      " with " + boost::lexical_cast<std::string>(config->num_of_threads_) + " Threads"
+    ,Logger::LOG_LEVEL::WARNING); 
+    
+
     // Register exit signals
     signals_.add(SIGINT);
     signals_.add(SIGTERM); 
@@ -34,20 +38,18 @@ server::server(
 void server::run()
 {
   // TODO log
-  std::cout << "Server running" << std::endl;
   boost::thread_group worker_threads;
 
   // Create a pool of threads to run all of the io_contexts.
   for (std::size_t i = 0; i < thread_pool_size_; ++i)
   {
-    std::cout << thread_pool_size_ << std::endl;
     // Each created thread should wait for completion queue handlers
     thread_pool_.create_thread( boost::bind( &server::WorkerThread, this ));
   }
   // Wait for all threads to finish their work
   thread_pool_.join_all();
 
-  std::cout << "finished all threads" << std::endl;
+  Logger::log("Joined all threads" , Logger::LOG_LEVEL::WARNING);
 
 }
 
@@ -60,7 +62,7 @@ void server::WorkerThread( )
 	}
 	catch( std::exception & ex )
 	{
-		std::cout << ex.what() << std::endl;
+		Logger::log(ex.what() , Logger::LOG_LEVEL::FATAL);
 	}
 }
 
@@ -70,7 +72,6 @@ void server::start_accept()
   connection_bridge_.reset(
     new bridge( io_context_ )
   );
-  std::cout << "starting accept" << std::endl;
   
   // Start accepting from client's socket associated with the bridhe
   acceptor_.async_accept(
@@ -82,11 +83,10 @@ void server::start_accept()
     );
 }
 
-// // Handle curernt bridge's client connection 
+// Handle curernt bridge's client connection 
 void server::handle_accept(const boost::system::error_code& error)
 {
-
-  std::cout << "handeling accept" << std::endl;
+  Logger::log("New client connected - handling accept" , Logger::LOG_LEVEL::WARNING);
   if (!error)
   {
     connection_bridge_->start();
@@ -98,7 +98,7 @@ void server::handle_accept(const boost::system::error_code& error)
 
 void server::handle_stop()
 {
-  std::cout << "exiting" << std::endl;
+  Logger::log("Server exits" , Logger::LOG_LEVEL::WARNING);
   io_context_->stop();
   io_context_.reset();
 }

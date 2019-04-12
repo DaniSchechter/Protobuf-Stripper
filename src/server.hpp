@@ -8,14 +8,12 @@
 #include <boost/thread/thread.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 
 #include "bridge.hpp"
+#include "config.hpp"
 
 #include <iostream>
 #include <string>
-#include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 #include <iostream>
 
 class server 
@@ -23,11 +21,7 @@ class server
 
 public:
     // TODO add const for const methods that dont change class vars
-    explicit server(
-        const std::string& address, 
-        const std::string& port,
-        const std::string& thread_pool_size
-    );
+    explicit server(std::unique_ptr<Config> config);
 
     // Initialize thread pool and start first accept
     void run();
@@ -46,7 +40,7 @@ private:
     void WorkerThread( );
 
     // The io_context used to perform asynchronous operations
-    boost::shared_ptr<boost::asio::io_context> io_context_;
+    std::shared_ptr<boost::asio::io_context> io_context_;
 
     // To prevent workers from running out of work
     boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
@@ -70,7 +64,7 @@ private:
     boost::asio::ip::tcp::acceptor acceptor_;
 
     // The next connection to be accepted
-    boost::shared_ptr<bridge> connection_bridge_;
+    std::shared_ptr<bridge> connection_bridge_;
 
 };
 
