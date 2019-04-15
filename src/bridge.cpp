@@ -1,30 +1,31 @@
 #include "bridge.hpp"
-#include "request_parser.hpp"
 
-bridge::bridge(std::shared_ptr<boost::asio::io_context> io_context)
+
+Bridge::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : strand_(*io_context),
     io_context_(io_context),
     client_socket_(*io_context),
-    server_socket_(*io_context){}
+    server_socket_(*io_context){ 
+    }
 
-socket_type& bridge::client_socket()
+socket_type& Bridge::client_socket()
 {
   return client_socket_;
 }
 
-socket_type& bridge::server_socket()
+socket_type& Bridge::server_socket()
 {
   return server_socket_;
 }
 
-void bridge::start()
+void Bridge::start()
 {
 
     // Read the first packet from the client and resolve its destination
     client_socket_.async_read_some(
         boost::asio::buffer(client_buffer_, max_data_length),
         boost::bind(
-            &bridge::connect_after_read,
+            &Bridge::connect_after_read,
             shared_from_this(),
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred
@@ -33,25 +34,32 @@ void bridge::start()
 }
 
 // Hanadle first packet read from the client, resolve it's destination and continue in communication cycle
-void bridge::connect_after_read(const boost::system::error_code& error,
+void Bridge::connect_after_read(const boost::system::error_code& error,
                                 std::size_t bytes_transferred)
 {   
 
-    // TODO handle errors
-    if (error){}
-    std::string host = request_parser::resolve_host(client_buffer_);
-    boost::asio::ip::tcp::resolver resolver( *io_context_ );
-    boost::asio::ip::tcp::resolver::query query(host, "80");
-    boost::asio::ip::tcp::resolver::iterator iterator = resolver.resolve( query );
-    boost::asio::ip::tcp::endpoint endpoint = iterator->endpoint();
+    Logger::log("Client --> Proxy     Server", Logger::LOG_LEVEL::WARNING);
+    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
 
-    Logger::log("Attempting to connect to " + host + " on " +  boost::lexical_cast<std::string>(endpoint), Logger::LOG_LEVEL::WARNING);
+    // TODO handle errors
+    if (error)
+    {
+        return;
+    }
+
+    // Resolve the absolute-uri from the first buffer got from client
+    boost::asio::ip::tcp::endpoint endpoint = Request_parser::resolve_host(
+        boost::lexical_cast<std::string>(client_buffer_),
+        io_context_
+    );
+    
+    Logger::log("Attempting to connect to "+ boost::lexical_cast<std::string>(endpoint), Logger::LOG_LEVEL::WARNING);
 
     
     // Attempt connection to remote server (server side)
     server_socket_.async_connect(
         endpoint,
-        boost::bind(&bridge::handle_server_connect,
+        boost::bind(&Bridge::handle_server_connect,
             shared_from_this(),
             boost::asio::placeholders::error));
 
@@ -59,118 +67,140 @@ void bridge::connect_after_read(const boost::system::error_code& error,
         server_socket_,
         boost::asio::buffer(client_buffer_,bytes_transferred),
         boost::bind(
-            &bridge::handle_server_write,
+            &Bridge::handle_server_write,
             shared_from_this(),
             boost::asio::placeholders::error));
-
-    Logger::log("Got from client, and sending to server:", Logger::LOG_LEVEL::WARNING);
-    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::INFO);
 }
 
-void bridge::handle_server_connect(const boost::system::error_code& error)
+void Bridge::handle_server_connect(const boost::system::error_code& error)
 {
     if (!error)
     {
         // Setup async read from remote server (server)
         server_socket_.async_read_some(
                 boost::asio::buffer(server_buffer_,max_data_length),
-                boost::bind(&bridge::handle_server_read,
+                boost::bind(&Bridge::handle_server_read,
                     shared_from_this(),
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred));
     }
     else
-        close();
+        Bridge::close("From handle_server_connect");
     
     Logger::log("Connecting established", Logger::LOG_LEVEL::INFO);
 }
 
 // Read from client complete, now send data to remote server
-void bridge::handle_client_read(const boost::system::error_code& error,
+void Bridge::handle_client_read(const boost::system::error_code& error,
                                 std::size_t bytes_transferred)
 {
-    Logger::log("Got from client, and sending to server:", Logger::LOG_LEVEL::WARNING);
-    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::INFO);
+    Logger::log("Client --> Proxy     Server", Logger::LOG_LEVEL::WARNING);
+    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
+
     if (!error)
     {
         async_write(server_socket_,
                 boost::asio::buffer(client_buffer_,bytes_transferred),
-                boost::bind(&bridge::handle_server_write,
+                boost::bind(&Bridge::handle_server_write,
                     shared_from_this(),
                     boost::asio::placeholders::error));
     }
     else
-        bridge::close();
+    {
+        Bridge::close("From handle_client_read");
+    }
 }
 
 
 // Write to remote server complete, Async read from client
-void bridge::handle_server_write(const boost::system::error_code& error)
+void Bridge::handle_server_write(const boost::system::error_code& error)
 {
-    Logger::log("After writing to server", Logger::LOG_LEVEL::WARNING);
-    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::INFO);
+    Logger::log("Client     Proxy --> Server", Logger::LOG_LEVEL::WARNING);
+    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
+
     if (!error)
     {
+        Logger::log("waiting to read from client_socket_", Logger::LOG_LEVEL::INFO);
         client_socket_.async_read_some(
             boost::asio::buffer(client_buffer_,max_data_length),
-            boost::bind(&bridge::handle_client_read,
+            boost::bind(&Bridge::handle_client_read,
                 shared_from_this(),
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     }
     else {
-        bridge::close();
+        Bridge::close("From handle_server_write");
     }
 }
 
 // Read from client complete, now send data to remote server
-void bridge::handle_server_read(const boost::system::error_code& error,
+void Bridge::handle_server_read(const boost::system::error_code& error,
                             const size_t& bytes_transferred)
 {
-    Logger::log("After reading from server:", Logger::LOG_LEVEL::WARNING);
-    Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::INFO);
+    Logger::log("Client     Proxy <-- Server", Logger::LOG_LEVEL::WARNING);
+    Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
+
     if (!error)
     {
     async_write(client_socket_,
             boost::asio::buffer(server_buffer_,bytes_transferred),
-            boost::bind(&bridge::handle_client_write,
+            boost::bind(&Bridge::handle_client_write,
                 shared_from_this(),
                 boost::asio::placeholders::error));
     }
-    else
-    close();
+    else {
+        Bridge::close("From handle_server_read");
+    }   
     
 }
 
-void bridge::handle_client_write(const boost::system::error_code& error)
+void Bridge::handle_client_write(const boost::system::error_code& error)
 {
-    Logger::log("After sending to client:", Logger::LOG_LEVEL::WARNING);
-    Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::INFO);
+    Logger::log("Client <-- Proxy     Server", Logger::LOG_LEVEL::WARNING);
+    Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
+
     if (!error)
     {            
-
-    server_socket_.async_read_some(
+        Logger::log("waiting to read from server_socket_", Logger::LOG_LEVEL::INFO);
+        server_socket_.async_read_some(
             boost::asio::buffer(server_buffer_,max_data_length),
-            boost::bind(&bridge::handle_server_read,
+            boost::bind(&Bridge::handle_server_read,
                 shared_from_this(),
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
-
-
     }
-    else
-    bridge::close();
+    else {
+        Bridge::close("From handle_client_write"); 
+    }
+    
 }
 
-void bridge::close()
+void Bridge::close(const std::string & source)
 {
+    //TODO add mutex
+    Logger::log("error: " + source, Logger::LOG_LEVEL::DEBUG);
     // Initiate graceful connection closure.
     boost::system::error_code ignored_ec;
-    client_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+    if (client_socket_.is_open()){
+        client_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+        client_socket_.close();
 
+    }
+    if (server_socket_.is_open()){
+        server_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+        server_socket_.close();
+    }
+    return;
+            
+    // Logger::log("Current num of sockets - " + boost::lexical_cast<std::string>(Bridge::bridge_counter), Logger::LOG_LEVEL::DEBUG);
+    
 
   // No new asynchronous operations are started. This means that all shared_ptr
   // references to the connection object will disappear and the object will be
   // destroyed automatically after this handler returns. The connection class's
   // destructor closes the socket.
 }
+
+Bridge::~Bridge(){
+      Logger::log("d'tor of Bridge ", Logger::LOG_LEVEL::FATAL);
+  }

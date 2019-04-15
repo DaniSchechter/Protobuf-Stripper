@@ -16,23 +16,20 @@
 #include <string>
 #include <iostream>
 
-class server 
+class Server 
 {
 
 public:
     // TODO add const for const methods that dont change class vars
-    explicit server(std::unique_ptr<Config> config);
+    explicit Server(std::unique_ptr<Config> config);
 
     // Initialize thread pool and start first accept
     void run();
 
 private:
 
-    // Start first accept
-    void start_accept();
-
-    // Handle completion of an asynchronous accept operation
-    void handle_accept(const boost::system::error_code& e);
+    // Handle new connection frmo a client
+    void handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge);
 
     // Handle a request to stop the server
     void handle_stop();
@@ -45,12 +42,6 @@ private:
     // To prevent workers from running out of work
     boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard_;
 
-    //local host ipv4 address
-    boost::asio::ip::address_v4 localhost_address_;
-
-    //local host ipv4 port
-    unsigned short localhost_port_;
-
     // The number of completion handlers threads
     std::size_t thread_pool_size_;
 
@@ -62,9 +53,6 @@ private:
 
     // Acceptor used to listen for incoming connections
     boost::asio::ip::tcp::acceptor acceptor_;
-
-    // The next connection to be accepted
-    std::shared_ptr<bridge> connection_bridge_;
 
 };
 
