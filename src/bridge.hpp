@@ -1,24 +1,25 @@
 #ifndef BRIDGE_HPP_
 #define BRIDGE_HPP_
 
-#include <boost/asio.hpp>
-#include <boost/array.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp> // TODO create a common h file for common includes
+#include <boost/asio.hpp> //TODO not include all
 
 #include <iostream>
+
 #include "logger.hpp"
+#include "request_parser.hpp"
 
 typedef boost::asio::ip::tcp::socket socket_type;
 
 // Represents a single connection from a client to a server
-class bridge
-  : public std::enable_shared_from_this<bridge>
+class Bridge
+  : public std::enable_shared_from_this<Bridge>
 {
 public:
 
   // Construct a connection with the given io_context.
-  explicit bridge(std::shared_ptr<boost::asio::io_context> io_context);
+  explicit Bridge(std::shared_ptr<boost::asio::io_context> io_context);
 
   // Get the socket associated with the client
   socket_type& client_socket();
@@ -28,6 +29,8 @@ public:
 
   // Start the first asynchronous operation for the connection.
   void start();
+
+  ~Bridge();
 
 private:
 
@@ -56,10 +59,10 @@ private:
   void handle_server_connect(const boost::system::error_code& error);
 
   // Close the connection with both client and server
-  void close();
+  void close(const std::string & source);
 
   // Strand to ensure the connection's handlers are not called concurrently.
-  boost::asio::io_context::strand strand_;
+  boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
 
   std::shared_ptr<boost::asio::io_context> io_context_;
 
@@ -75,7 +78,6 @@ private:
   char client_buffer_ [max_data_length];
   char server_buffer_  [max_data_length];
   
-
 };
 
 #endif //BRIDGE_HPP_

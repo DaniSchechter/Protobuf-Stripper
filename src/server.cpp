@@ -3,39 +3,46 @@
 #include "server.hpp"
 #include "logger.hpp"
 
-server::server(std::unique_ptr<Config> config)
+Server::Server(std::unique_ptr<Config> config)
       : io_context_(new boost::asio::io_context),
         work_guard_(boost::asio::make_work_guard(*io_context_)),
-        localhost_address_(boost::asio::ip::address_v4::from_string(config->local_host_)),
-        localhost_port_(boost::lexical_cast<std::size_t>(config->local_port_)),
         thread_pool_size_(boost::lexical_cast<std::size_t>(config->num_of_threads_)) ,
         signals_(*io_context_),
-        acceptor_(*io_context_),
-        connection_bridge_( )
+        acceptor_(*io_context_)
 {
     Logger::log(
-      "Starting server: " + 
-      config->local_host_ + ":" + boost::lexical_cast<std::string>(config->local_port_) + 
+      "Starting server: " + config->local_host_ + ":" + boost::lexical_cast<std::string>(config->local_port_) + 
       " with " + boost::lexical_cast<std::string>(config->num_of_threads_) + " Threads"
-    ,Logger::LOG_LEVEL::WARNING); 
-    
+      ,Logger::LOG_LEVEL::WARNING
+    ); 
 
     // Register exit signals
     signals_.add(SIGINT);
     signals_.add(SIGTERM); 
-    signals_.async_wait(boost::bind(&server::handle_stop, this));
+    signals_.async_wait(boost::bind(&Server::handle_stop, this));
     
+    boost::asio::ip::address_v4 localhost_address_ = boost::asio::ip::address_v4::from_string(config->local_host_);
 
-    boost::asio::ip::tcp::endpoint endpoint(localhost_address_, localhost_port_);
+    // Bind and start listening
+    boost::asio::ip::tcp::endpoint endpoint(localhost_address_, config->local_port_);
     acceptor_.open(endpoint.protocol());
     acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     acceptor_.bind(endpoint);
     acceptor_.listen();
 
-    start_accept();
+    std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+  
+    // Start accepting from client's socket associated with the bridhe
+    acceptor_.async_accept(
+      next_connection_bridge->client_socket(),
+      [=](auto error)
+      {
+        handle_accept(error, next_connection_bridge);
+      }
+    );
 }
 
-void server::run()
+void Server::run()
 {
   // TODO log
   boost::thread_group worker_threads;
@@ -44,7 +51,7 @@ void server::run()
   for (std::size_t i = 0; i < thread_pool_size_; ++i)
   {
     // Each created thread should wait for completion queue handlers
-    thread_pool_.create_thread( boost::bind( &server::WorkerThread, this ));
+    thread_pool_.create_thread( boost::bind( &Server::WorkerThread, this ));
   }
   // Wait for all threads to finish their work
   thread_pool_.join_all();
@@ -53,11 +60,10 @@ void server::run()
 
 }
 
-void server::WorkerThread( )
+void Server::WorkerThread( )
 {
   try
 	{
-
 		io_context_->run();
 	}
 	catch( std::exception & ex )
@@ -66,39 +72,32 @@ void server::WorkerThread( )
 	}
 }
 
-void server::start_accept()
+void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge)
 {
-  // Create a new bridge to handle the next connetion from a client
-  connection_bridge_.reset(
-    new bridge( io_context_ )
-  );
-  
-  // Start accepting from client's socket associated with the bridhe
-  acceptor_.async_accept(
-    connection_bridge_->client_socket(),
-    boost::bind(
-      &server::handle_accept, 
-      this,
-      boost::asio::placeholders::error)
-    );
-}
-
-// Handle curernt bridge's client connection 
-void server::handle_accept(const boost::system::error_code& error)
-{
-  Logger::log("New client connected - handling accept" , Logger::LOG_LEVEL::WARNING);
-  if (!error)
+  if(error)
   {
-    connection_bridge_->start();
+    //TODO modify
+    return;
   }
 
-  start_accept();
+  connection_bridge->start();
+  
+  // std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+  
+  // // Start accepting from client's socket associated with the bridhe
+  // acceptor_.async_accept(
+  //   next_connection_bridge->client_socket(),
+  //   [=](auto error)
+  //   {
+  //     handle_accept(error, next_connection_bridge);
+  //   }
+  // );
 }
 
-
-void server::handle_stop()
+void Server::handle_stop()
 {
-  Logger::log("Server exits" , Logger::LOG_LEVEL::WARNING);
+  //todo add timeout for hard reset - check online what closes forcely
+  Logger::log("Server exits..." , Logger::LOG_LEVEL::WARNING);
   io_context_->stop();
   io_context_.reset();
 }

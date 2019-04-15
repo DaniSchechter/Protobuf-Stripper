@@ -1,5 +1,5 @@
 CC		:= g++
-C_FLAGS := -std=c++17 -pedantic -Wall -Wextra #-Werror 
+C_FLAGS := -std=c++17 -pedantic -Wall -Wextra# -DINFO= #-Werror 
 
 BIN		:= bin
 SRC		:= src
@@ -16,6 +16,9 @@ clean:
 
 run: all
 	./$(BIN)/$(EXECUTABLE)
+
+debug: $(SRC)/*
+	$(CC) $(C_FLAGS) -D DEBUG_MODE -I $(INCLUDE) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
 	$(CC) $(C_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)

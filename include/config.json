@@ -1,6 +1,6 @@
 {
     "httpProxy" : {
-        "localHost" : "192.168.1.12",
+        "localHost" : "192.168.1.19",
         "localPort" : 8080,
         "numOfThreads": 3
     }

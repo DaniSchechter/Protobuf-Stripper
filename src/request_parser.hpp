@@ -1,20 +1,22 @@
 #ifndef REQUEST_PARSER_HPP_
 #define REQUEST_PARSER_HPP_
 
-#include <boost/regex.hpp>
-
 #include <string>
 #include <iostream>
-#include <boost/regex.hpp>
+#include <utility>
+
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/io_context.hpp>
 
 // Parser for incoming requests.
-struct request_parser
-{
-    // request_parser() = delete;
+struct Request_parser
+{ 
+    
+    Request_parser() = delete;
 
     // Get the host from http message
     // TODO - create a generic http class representaition
-    static std::string resolve_host(std::string message);
+    static boost::asio::ip::tcp::endpoint resolve_host(const std::string& message, std::shared_ptr<boost::asio::io_context> io_context);
 
 };
 
