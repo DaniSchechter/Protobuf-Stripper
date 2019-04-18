@@ -57,7 +57,7 @@ void Bridge::connect_after_read(const boost::system::error_code& error,
         io_context_
     );
     
-    Logger::log("Attempting to connect to "+ boost::lexical_cast<std::string>(endpoint), Logger::LOG_LEVEL::WARNING);
+    Logger::log("Attempting to connect to "+ boost::lexical_cast<std::string>(endpoint), Logger::LOG_LEVEL::INFO);
 
     
     // Attempt connection to remote server (server side)

@@ -1,7 +1,7 @@
 #include "request_parser.hpp"
 
 #include <regex>
-
+#include <iostream>
 
 boost::asio::ip::tcp::endpoint Request_parser::resolve_host(const std::string& message, std::shared_ptr<boost::asio::io_context> io_context)
 {
@@ -10,10 +10,10 @@ boost::asio::ip::tcp::endpoint Request_parser::resolve_host(const std::string& m
     std::smatch match;
     std::regex_search(message, match, re);
 
-    std::string host = match[1].str();
+    std::string host = match[1].str(); // TODO add error checking
     std::string port = "80";
-    
-    if(match.size() == 3)
+
+    if(match[2].matched)
     {
         port = match[2].str();
     }
