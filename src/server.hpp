@@ -1,20 +1,14 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
-#include <boost/asio/io_context.hpp>
-#include <boost/system/error_code.hpp>
-#include <boost/asio/signal_set.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
-
 #include "bridge.hpp"
 #include "config.hpp"
 
-#include <iostream>
-#include <string>
-#include <iostream>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/signal_set.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/system/error_code.hpp>
+#include <boost/thread/thread.hpp>
 
 class Server 
 {

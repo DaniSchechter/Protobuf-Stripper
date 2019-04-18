@@ -1,14 +1,11 @@
 #ifndef BRIDGE_HPP_
 #define BRIDGE_HPP_
 
-#include <boost/bind.hpp>
-#include <boost/lexical_cast.hpp> // TODO create a common h file for common includes
-#include <boost/asio.hpp> //TODO not include all
-
-#include <iostream>
-
 #include "logger.hpp"
 #include "request_parser.hpp"
+
+#include <boost/asio/io_context_strand.hpp>
+#include <boost/asio/ip/tcp.hpp>
 
 typedef boost::asio::ip::tcp::socket socket_type;
 
