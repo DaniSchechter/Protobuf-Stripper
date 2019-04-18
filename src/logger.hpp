@@ -9,8 +9,6 @@
 #define RST    "\x1B[0m"
 
 #include <iostream>
-#include <ostream>
-#include <vector>
 #include <mutex>
 
 class Logger

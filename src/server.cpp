@@ -3,6 +3,9 @@
 #include "server.hpp"
 #include "logger.hpp"
 
+#include <string>
+#include <boost/lexical_cast.hpp>
+
 Server::Server(std::unique_ptr<Config> config)
       : io_context_(new boost::asio::io_context),
         work_guard_(boost::asio::make_work_guard(*io_context_)),
@@ -82,16 +85,16 @@ void Server::handle_accept(const boost::system::error_code& error, std::shared_p
 
   connection_bridge->start();
   
-  // std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+  std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
   
-  // // Start accepting from client's socket associated with the bridhe
-  // acceptor_.async_accept(
-  //   next_connection_bridge->client_socket(),
-  //   [=](auto error)
-  //   {
-  //     handle_accept(error, next_connection_bridge);
-  //   }
-  // );
+  // Start accepting from client's socket associated with the bridhe
+  acceptor_.async_accept(
+    next_connection_bridge->client_socket(),
+    [=](auto error)
+    {
+      handle_accept(error, next_connection_bridge);
+    }
+  );
 }
 
 void Server::handle_stop()

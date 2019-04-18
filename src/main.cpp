@@ -1,12 +1,9 @@
-#include <iostream>
-#include <string>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-
 #include "server.hpp"
 #include "config.hpp"
 #include "logger.hpp"
 
+#include <string>
+#include <boost/bind.hpp>
 
 int main(int argc, char* argv[])
 {
