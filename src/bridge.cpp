@@ -1,5 +1,9 @@
 #include "bridge.hpp"
 
+#include <boost/asio/placeholders.hpp>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/asio/write.hpp>
 
 Bridge::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : strand_(*io_context),
@@ -53,7 +57,7 @@ void Bridge::connect_after_read(const boost::system::error_code& error,
         io_context_
     );
     
-    Logger::log("Attempting to connect to "+ boost::lexical_cast<std::string>(endpoint), Logger::LOG_LEVEL::WARNING);
+    Logger::log("Attempting to connect to "+ boost::lexical_cast<std::string>(endpoint), Logger::LOG_LEVEL::INFO);
 
     
     // Attempt connection to remote server (server side)

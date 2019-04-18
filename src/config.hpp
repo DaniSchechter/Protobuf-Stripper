@@ -2,8 +2,6 @@
 #define CONFIG_HPP_
 
 #include <string>
-#include <boost/property_tree/json_parser.hpp>
-#include <iostream>
 
 class Config
 {
