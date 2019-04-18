@@ -52,4 +52,4 @@ Thumbs.db
 *.app
 
 # Configuratio files
-config.json
+*config.json
