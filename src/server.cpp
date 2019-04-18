@@ -99,7 +99,7 @@ void Server::handle_accept(const boost::system::error_code& error, std::shared_p
 
 void Server::handle_stop()
 {
-  //todo add timeout for hard reset - check online what closes forcely
+  //TODO - getting - 32514 segmentation fault when stopping io_context, check for solution
   Logger::log("Server exits..." , Logger::LOG_LEVEL::WARNING);
   io_context_->stop();
   io_context_.reset();

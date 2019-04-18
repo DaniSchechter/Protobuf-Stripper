@@ -4,6 +4,7 @@
 #include "logger.hpp"
 #include "request_parser.hpp"
 
+#include <map>
 #include <boost/asio/io_context_strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
@@ -33,30 +34,36 @@ private:
 
   // Handle completion of a client write operation.
   // Start a new server read operation
-  void handle_client_write(const boost::system::error_code& error);
+  void handle_client_write(const socket_type& socket, const boost::system::error_code& error);
 
   // Handle completion of a server read operation.
   // Start a new clinet write operation
-  void handle_server_read(const boost::system::error_code& error,
+  void handle_server_read(const socket_type& socket, 
+                          const boost::system::error_code& error,
                           const size_t& bytes_transferred);
 
   // Handle completion of a server write operation.
   // Start a clinet read operation
-  void handle_server_write(const boost::system::error_code& error);
+  void handle_server_write(const socket_type& socket, 
+                           const boost::system::error_code& error);
 
   // Handle completion of a client read operation.
   // Start a server write operation
-  void handle_client_read(const boost::system::error_code& error,
+  void handle_client_read(const socket_type& socket, 
+                          const boost::system::error_code& error,
                           std::size_t bytes_transferred);
 
-  void connect_after_read(const boost::system::error_code& error,
-                                std::size_t bytes_transferred);
+  void connect_after_read(const socket_type& socket, 
+                          const boost::system::error_code& error,
+                          std::size_t bytes_transferred);
 
   // Handle connection to a remote server.
-  void handle_server_connect(const boost::system::error_code& error);
+  void handle_server_connect(const socket_type& socket, 
+                             const boost::system::error_code& error);
 
   // Close the connection with both client and server
-  void close(const std::string & source);
+  void close(const socket_type& server_socket, 
+             const std::string & source);
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
@@ -68,9 +75,13 @@ private:
 
   // Socket for the connection to the server
   socket_type server_socket_;
+
+  // Map saving all server sockets for open server connections
+  // Maps server's host (and not IP) to it's socket
+  std::map<std::string, socket_type> server_socket_map_;
   
   // TODO switch to a generic bufffer like Dani the king saw in a video
-  //TODO get this conf in conf file
+  // TODO get this conf in conf file
   enum { max_data_length = 8192 }; //8KB
   char client_buffer_ [max_data_length];
   char server_buffer_  [max_data_length];

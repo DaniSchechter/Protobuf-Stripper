@@ -38,7 +38,8 @@ void Bridge::start()
 }
 
 // Hanadle first packet read from the client, resolve it's destination and continue in communication cycle
-void Bridge::connect_after_read(const boost::system::error_code& error,
+void Bridge::connect_after_read(const socket_type& socket,
+                                const boost::system::error_code& error,
                                 std::size_t bytes_transferred)
 {   
 
@@ -76,7 +77,8 @@ void Bridge::connect_after_read(const boost::system::error_code& error,
             boost::asio::placeholders::error));
 }
 
-void Bridge::handle_server_connect(const boost::system::error_code& error)
+void Bridge::handle_server_connect(const socket_type& socket,
+                                   const boost::system::error_code& error)
 {
     if (!error)
     {
@@ -117,7 +119,8 @@ void Bridge::handle_client_read(const boost::system::error_code& error,
 
 
 // Write to remote server complete, Async read from client
-void Bridge::handle_server_write(const boost::system::error_code& error)
+void Bridge::handle_server_write(const socket_type& socket,
+                                 const boost::system::error_code& error)
 {
     Logger::log("Client     Proxy --> Server", Logger::LOG_LEVEL::WARNING);
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
@@ -138,8 +141,9 @@ void Bridge::handle_server_write(const boost::system::error_code& error)
 }
 
 // Read from client complete, now send data to remote server
-void Bridge::handle_server_read(const boost::system::error_code& error,
-                            const size_t& bytes_transferred)
+void Bridge::handle_server_read(const socket_type& socket,
+                                const boost::system::error_code& error,
+                                const size_t& bytes_transferred)
 {
     Logger::log("Client     Proxy <-- Server", Logger::LOG_LEVEL::WARNING);
     Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
@@ -158,7 +162,8 @@ void Bridge::handle_server_read(const boost::system::error_code& error,
     
 }
 
-void Bridge::handle_client_write(const boost::system::error_code& error)
+void Bridge::handle_client_write(const socket_type& socket,
+                                 const boost::system::error_code& error)
 {
     Logger::log("Client <-- Proxy     Server", Logger::LOG_LEVEL::WARNING);
     Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
@@ -179,7 +184,8 @@ void Bridge::handle_client_write(const boost::system::error_code& error)
     
 }
 
-void Bridge::close(const std::string & source)
+void Bridge::close(const socket_type& server_socket,  
+                   const std::string & source)
 {
     //TODO add mutex
     Logger::log("error: " + source, Logger::LOG_LEVEL::DEBUG);

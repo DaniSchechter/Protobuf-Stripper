@@ -10,7 +10,7 @@ void Logger::log(const std::string& message, Logger::LOG_LEVEL level)
     switch(level)
     {
         case Logger::LOG_LEVEL::INFO:
-            COLOR = WHITE;
+            COLOR = GREEN;
             break;
         case Logger::LOG_LEVEL::WARNING:
             COLOR = YELLOW;
@@ -20,7 +20,7 @@ void Logger::log(const std::string& message, Logger::LOG_LEVEL level)
             break;
         case Logger::LOG_LEVEL::DEBUG:
             #ifdef DEBUG_MODE
-                COLOR = BLUE;
+                COLOR = WHITE;
             #else
                 return;
             #endif            
