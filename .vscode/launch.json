@@ -5,13 +5,13 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/main",
+            "program": "${workspaceFolder}/bin/protobuf_stripper",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
-            "externalConsole": true,
-            "preLaunchTask": "build",
+            "externalConsole": false,
+            //"preLaunchTask": "build",
             "linux": {
                 "MIMode": "gdb"
             },

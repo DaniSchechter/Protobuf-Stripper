@@ -1,14 +1,13 @@
 CC		:= g++
-C_FLAGS := -std=c++17 -Wall -Wextra
+C_FLAGS := -std=c++17 -pedantic -Wall -Wextra# -DINFO= #-Werror 
 
 BIN		:= bin
 SRC		:= src
-INCLUDE	:= include
-LIB		:= lib
+INCLUDE	:= /usr/lib -L /usr/lib
 
-LIBRARIES	:= -lboost_system
+LIBRARIES	:= -lboost_system -lpthread -lboost_thread -lboost_regex 
 
-EXECUTABLE	:= proto_stripper.exe
+EXECUTABLE	:= protobuf_stripper
 
 all: $(BIN)/$(EXECUTABLE)
 
@@ -18,5 +17,8 @@ clean:
 run: all
 	./$(BIN)/$(EXECUTABLE)
 
+debug: $(SRC)/*
+	$(CC) $(C_FLAGS) -D DEBUG_MODE -I $(INCLUDE) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
+
 $(BIN)/$(EXECUTABLE): $(SRC)/*
-	$(CC) $(C_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)
+	$(CC) $(C_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
