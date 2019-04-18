@@ -1,5 +1,9 @@
 #include "bridge.hpp"
 
+#include <boost/asio/placeholders.hpp>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/asio/write.hpp>
 
 Bridge::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : strand_(*io_context),

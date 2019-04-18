@@ -1,6 +1,8 @@
 #include "config.hpp"
 #include "logger.hpp"
 
+#include <boost/property_tree/json_parser.hpp>
+
 Config::Config(const std::string& file_path)
 {
 

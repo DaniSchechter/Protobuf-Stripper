@@ -1,5 +1,7 @@
 #include "request_parser.hpp"
+
 #include <regex>
+
 
 boost::asio::ip::tcp::endpoint Request_parser::resolve_host(const std::string& message, std::shared_ptr<boost::asio::io_context> io_context)
 {
@@ -15,9 +17,6 @@ boost::asio::ip::tcp::endpoint Request_parser::resolve_host(const std::string& m
     {
         port = match[2].str();
     }
-
-    std::cout << match[2].str() <<std::endl;
-    std::cout << match.size() <<std::endl;
 
     // Resolve the absoute URI to ip and port - endpoint
     boost::asio::ip::tcp::resolver resolver( *io_context );

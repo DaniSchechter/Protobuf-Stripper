@@ -50,3 +50,6 @@ Thumbs.db
 *.exe
 *.out
 *.app
+
+# Configuratio files
+config.json
