@@ -20,6 +20,8 @@ public:
     // Initialize thread pool and start first accept
     void run();
 
+    ~Server();
+
 private:
 
     // Handle new connection frmo a client
@@ -47,6 +49,8 @@ private:
 
     // Acceptor used to listen for incoming connections
     boost::asio::ip::tcp::acceptor acceptor_;
+
+    static int num; //TODO delete;
 
 };
 
