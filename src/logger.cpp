@@ -25,7 +25,7 @@ void Logger::log(const std::string& message, Logger::LOG_LEVEL level)
                 return;
             #endif            
     }
-
+    
     Logger::output_stream_lock_.lock();
     std::cout << COLOR << message << RST << std::endl << std::endl;
     Logger::output_stream_lock_.unlock();
