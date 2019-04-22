@@ -104,7 +104,7 @@ void Bridge::handle_client_read(const boost::system::error_code& error,
     );
     // Create a new server socket and insert to the map for future reuse
     std::shared_ptr<socket_type> new_server_socket = std::make_shared<socket_type>((*io_context_));
-    server_socket_map_[domain] = new_server_socket;
+    server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
 
     new_server_socket->async_connect(
         endpoint,
@@ -187,7 +187,7 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
             );
             // Create a new socket and start using it
             std::shared_ptr<socket_type> new_server_socket = std::make_shared<socket_type>((*io_context_));
-            server_socket_map_[domain] = new_server_socket;
+            server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
 
             new_server_socket->async_connect(
                 endpoint,
@@ -330,10 +330,10 @@ void Bridge::close(std::shared_ptr<socket_type> server_socket,
             client_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
             client_socket_.close();
         }
-        for(const auto& server_socket_iter: server_socket_map_)
+        for(auto& server_socket_iter: server_socket_map_)
         {
             server_socket_iter.second->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-            server_socket_iter.second->close();
+            server_socket_iter.second.reset();
         }
         server_socket_map_.clear();
     }
@@ -350,7 +350,7 @@ void Bridge::close(std::shared_ptr<socket_type> server_socket,
 
         // TODO if the erase raises exception we need to find the server socket and erase using the iterator
         server_socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-        server_socket->close();
+        server_socket.reset();
 
         // if it is the last server socket for this bridge, clear the client socket and close the bridge
         if(server_socket_map_.size() == 0)
