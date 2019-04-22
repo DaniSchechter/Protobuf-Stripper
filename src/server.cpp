@@ -6,6 +6,8 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
+int Server::num = 0;
+
 Server::Server(std::unique_ptr<Config> config)
       : io_context_(new boost::asio::io_context),
         work_guard_(boost::asio::make_work_guard(*io_context_)),
@@ -36,13 +38,20 @@ Server::Server(std::unique_ptr<Config> config)
     std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
   
     // Start accepting from client's socket associated with the bridhe
-    acceptor_.async_accept(
-      next_connection_bridge->client_socket(),
-      [=](auto error)
-      {
-        handle_accept(error, next_connection_bridge);
-      }
-    );
+    try{
+      acceptor_.async_accept(
+            next_connection_bridge->client_socket(),
+            [=](auto error)
+            {
+              handle_accept(error, next_connection_bridge);
+            }
+          );
+    }
+    catch( std::exception & ex )
+	  {
+      Logger::log(ex.what() , Logger::LOG_LEVEL::FATAL);
+	  }
+    
 }
 
 void Server::run()
@@ -65,15 +74,21 @@ void Server::run()
 
 void Server::WorkerThread( )
 {
-  try
-	{
-		io_context_->run();
-	}
-	catch( std::exception & ex )
-	{
-		Logger::log(ex.what() , Logger::LOG_LEVEL::FATAL);
-	}
+		try
+		{
+			boost::system::error_code ec;
+			io_context_->run( ec );
+			if( ec )
+			{
+				Logger::log("Error !, code: " + boost::lexical_cast<std::string>(ec), Logger::LOG_LEVEL::FATAL);
+			}
+		}
+		catch( std::exception & ex )
+		{
+			Logger::log("Exception: " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
+		}
 }
+
 
 void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge)
 {
@@ -82,24 +97,26 @@ void Server::handle_accept(const boost::system::error_code& error, std::shared_p
     //TODO modify
     return;
   }
-
-  connection_bridge->start();
-  
-  std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
-  
-  // Start accepting from client's socket associated with the bridhe
-  acceptor_.async_accept(
-    next_connection_bridge->client_socket(),
-    [=](auto error)
-    {
-      handle_accept(error, next_connection_bridge);
-    }
-  );
+  else{
+    connection_bridge->start();
+    std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+    Logger::log("Accepting: ",Logger::LOG_LEVEL::FATAL);
+    // boost::lexical_cast<std::string>(next_connection_bridge->client_socket().remote_endpoint()),Logger::LOG_LEVEL::FATAL);
+    
+    // Start accepting from client's socket associated with the bridhe
+    acceptor_.async_accept(
+      next_connection_bridge->client_socket(),
+      [=](auto error)
+      {
+        handle_accept(error, next_connection_bridge);
+      }
+    );
+  }
 }
 
 void Server::handle_stop()
 {
-  //todo add timeout for hard reset - check online what closes forcely
+  //TODO - getting - 32514 segmentation fault when stopping io_context, check for solution
   Logger::log("Server exits..." , Logger::LOG_LEVEL::WARNING);
   io_context_->stop();
   io_context_.reset();

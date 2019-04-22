@@ -2,10 +2,10 @@
 #define LOGGER_H_
 
 #define WHITE  "\x1B[39m"
-#define RED    "\x1B[31m"
-#define YELLOW "\x1B[33m"
-#define ORANGE "\x1B[101m"
-#define BLUE   "\x1B[34m"
+#define RED    "\x1B[91m"
+#define YELLOW "\x1B[93m"
+#define BLUE   "\x1B[96m"
+#define GREEN  "\x1B[32m"
 #define RST    "\x1B[0m"
 
 #include <iostream>

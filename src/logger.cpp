@@ -10,7 +10,7 @@ void Logger::log(const std::string& message, Logger::LOG_LEVEL level)
     switch(level)
     {
         case Logger::LOG_LEVEL::INFO:
-            COLOR = WHITE;
+            COLOR = BLUE;
             break;
         case Logger::LOG_LEVEL::WARNING:
             COLOR = YELLOW;
@@ -20,45 +20,14 @@ void Logger::log(const std::string& message, Logger::LOG_LEVEL level)
             break;
         case Logger::LOG_LEVEL::DEBUG:
             #ifdef DEBUG_MODE
-                COLOR = BLUE;
+                COLOR = WHITE;
             #else
                 return;
-            #endif            
+            #endif
     }
-
+    
     Logger::output_stream_lock_.lock();
     std::cout << COLOR << message << RST << std::endl << std::endl;
     Logger::output_stream_lock_.unlock();
 
 }
-
-// void Logger::log(const std::vector< const char* >& messages, Logger::LOG_LEVEL level)
-// {
-//     switch(level)
-//     {
-//         case Logger::LOG_LEVEL::INFO:
-//             std::cout << WHITE;
-//             for(const char* message: messages)
-//             {
-//                 std::cout << message << " ";
-//             }
-//             std::cout << RST << std::endl;
-//             break;
-//         case Logger::LOG_LEVEL::WARNING:
-//             std::cout << YELLOW;
-//             for(const char* message: messages)
-//             {
-//                 std::cout << message << " ";
-//             }
-//             std::cout << RST << std::endl;
-//             break;
-//         case Logger::LOG_LEVEL::FATAL:
-//             std::cerr << RED;
-//             for(const char* message: messages)
-//             {
-//                 std::cerr << message << " ";
-//             }
-//             std::cerr << RST << std::endl;
-//             break;
-//     }
-// }
