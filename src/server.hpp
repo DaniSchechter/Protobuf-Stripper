@@ -19,9 +19,7 @@ public:
 
     // Initialize thread pool and start first accept
     void run();
-
-    ~Server();
-
+    
 private:
 
     // Handle new connection frmo a client
