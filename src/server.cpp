@@ -88,7 +88,7 @@ void Server::WorkerThread( )
 		}
 		catch( std::exception & ex )
 		{
-			Logger::log("Exception " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
+			Logger::log("Exception: " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
 		}
 }
 
