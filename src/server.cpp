@@ -74,9 +74,6 @@ void Server::run()
 
 void Server::WorkerThread( )
 {
-  
-  // while( true )
-	// {
 		try
 		{
 			boost::system::error_code ec;

@@ -48,8 +48,6 @@ private:
     // Acceptor used to listen for incoming connections
     boost::asio::ip::tcp::acceptor acceptor_;
 
-    static int num; //TODO delete;
-
 };
 
 #endif // SERVER_HPP_
