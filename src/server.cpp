@@ -6,8 +6,6 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
-int Server::num = 0;
-
 Server::Server(std::unique_ptr<Config> config)
       : io_context_(new boost::asio::io_context),
         work_guard_(boost::asio::make_work_guard(*io_context_)),
