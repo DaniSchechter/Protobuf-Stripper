@@ -90,30 +90,22 @@ void Server::WorkerThread( )
 		{
 			Logger::log("Exception " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
 		}
-	// 
-
 }
 
- Server::~Server()
- {
-   std::cout<< "dtor of server" <<std::endl;
- }
 
 void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge)
 {
   if(error)
   {
     //TODO modify
-    std::cout << "DDDDDDDDDDDDDDD" << std::endl;
     return;
   }
   else{
-    std::cout << "before start" << std::endl;
     connection_bridge->start();
-    std::cout << "after start" << std::endl;
     std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+    Logger::log("Accepting: ",Logger::LOG_LEVEL::FATAL);
+    // boost::lexical_cast<std::string>(next_connection_bridge->client_socket().remote_endpoint()),Logger::LOG_LEVEL::FATAL);
     
-    std::cout << "before accept" << std::endl;
     // Start accepting from client's socket associated with the bridhe
     acceptor_.async_accept(
       next_connection_bridge->client_socket(),
@@ -122,9 +114,7 @@ void Server::handle_accept(const boost::system::error_code& error, std::shared_p
         handle_accept(error, next_connection_bridge);
       }
     );
-    std::cout << "after accept" << std::endl;
   }
-  
 }
 
 void Server::handle_stop()
