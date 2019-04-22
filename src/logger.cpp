@@ -23,7 +23,7 @@ void Logger::log(const std::string& message, Logger::LOG_LEVEL level)
                 COLOR = WHITE;
             #else
                 return;
-            #endif            
+            #endif
     }
     
     Logger::output_stream_lock_.lock();

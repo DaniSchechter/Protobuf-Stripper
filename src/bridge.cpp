@@ -44,7 +44,7 @@ void Bridge::handle_server_connect(std::shared_ptr<socket_type> server_socket,
     Logger::log(
         "Connection established.   [C] " + 
         client_host_ + "  [S] " + endpoint,
-        Logger::LOG_LEVEL::WARNING
+        Logger::LOG_LEVEL::INFO
     );    
     // Setup async read from remote server (server). Preperation for the following write
     server_socket->async_read_some(
@@ -80,7 +80,7 @@ void Bridge::handle_client_read(const boost::system::error_code& error,
     Logger::log(
         "Client --> Proxy     Server.   [C] " + 
         client_host_ + "  [Prev S] First read from this client" ,
-        Logger::LOG_LEVEL::WARNING
+        Logger::LOG_LEVEL::INFO
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
@@ -133,7 +133,7 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
     Logger::log(
         "Client --> Proxy     Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
-        Logger::LOG_LEVEL::WARNING
+        Logger::LOG_LEVEL::INFO
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
@@ -162,42 +162,45 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
     else
     {
         // Get the server socket associated with the remote host
-        auto server_socket = server_socket_map_.find(domain);
+        endpoint_type requested_endpoint  = Utils::resolve_endpoint(
+            domain, io_context_
+        );
+
+        if(requested_endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) 
+        { 
+            Logger::log(
+                "Got a new domain: " + domain + ", and could not resolve it to an endpoint",
+                Logger::LOG_LEVEL::INFO
+            );
+            return;
+            // Read again, since we was provided with a new domain so we can't sent the message to the prev server
+            //TODO call the read again
+        }
+
+        auto cached_server_socket = server_socket_map_.find(boost::lexical_cast<std::string>(requested_endpoint));
 
         // Check if there is already a socket for this endpoint
-        if(server_socket == server_socket_map_.end()) // doesnt exist yet
+        if(cached_server_socket == server_socket_map_.end()) // doesnt exist yet
         {
-            endpoint_type endpoint  = Utils::resolve_endpoint(
-                domain, io_context_
-            );
-
-            if(endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) { 
-                Logger::log(
-                    "Got a new domain: " + domain + ", and could not resolve it to an endpoint",
-                    Logger::LOG_LEVEL::WARNING
-                );
-
-                // Read again, since we was provided with a new domain so we can't sent the message to the prev server
-                //TODO call the read again
-            }
             Logger::log(
                 "2) Attempting to connect to " + domain + 
                 " [C] " + client_host_,
                 Logger::LOG_LEVEL::INFO
             );
+
             // Create a new socket and start using it
             std::shared_ptr<socket_type> new_server_socket = std::make_shared<socket_type>((*io_context_));
-            server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
+            server_socket_map_[boost::lexical_cast<std::string>(requested_endpoint)] = new_server_socket;
 
             new_server_socket->async_connect(
-                endpoint,
+                requested_endpoint,
                 boost::bind(
                     &Bridge::handle_server_connect,
                     shared_from_this(),
                     new_server_socket,
                     error,
                     bytes_transferred,
-                    boost::lexical_cast<std::string>(endpoint)
+                    boost::lexical_cast<std::string>(requested_endpoint)
                 )
             );
         }
@@ -206,19 +209,18 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
         else
         {
             async_write(
-                *(server_socket->second),
+                *(cached_server_socket->second),
                 boost::asio::buffer(client_buffer_,bytes_transferred),
                 boost::bind(
                     &Bridge::handle_server_write,
                     shared_from_this(),
-                    server_socket->second,
+                    cached_server_socket->second,
                     boost::asio::placeholders::error,
                     endpoint
                 )
             );
         }
     }
-
 }
 
 // Write to remote server complete, Async read from client
@@ -234,7 +236,7 @@ void Bridge::handle_server_write(std::shared_ptr<socket_type> server_socket,
     Logger::log(
         "Client     Proxy --> Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
-        Logger::LOG_LEVEL::WARNING
+        Logger::LOG_LEVEL::INFO
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
 
@@ -264,7 +266,7 @@ void Bridge::handle_server_read(std::shared_ptr<socket_type> server_socket,
     Logger::log(
         "Client     Proxy <-- Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
-        Logger::LOG_LEVEL::WARNING
+        Logger::LOG_LEVEL::INFO
     );
     Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
 
@@ -293,7 +295,7 @@ void Bridge::handle_client_write(std::shared_ptr<socket_type> server_socket,
     Logger::log(
         "Client <-- Proxy     Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
-        Logger::LOG_LEVEL::WARNING
+        Logger::LOG_LEVEL::INFO
     );
 
     Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
@@ -357,9 +359,8 @@ void Bridge::close(std::shared_ptr<socket_type> server_socket,
         {
             Logger::log(
                 "All servers are gone, clearing up this bridge [C] " +
-                client_host_ + 
-                " - CLIENT_READ_ERROR IS COMING SOON..."
-                ,Logger::LOG_LEVEL::FATAL
+                client_host_,
+                Logger::LOG_LEVEL::INFO
             );
             client_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
             client_socket_.close();
@@ -400,5 +401,5 @@ void Bridge::print_error_source(SOCKET_ERROR_SOURCE error_source)
 }
 
 Bridge::~Bridge(){
-      Logger::log("d'tor of Bridge ", Logger::LOG_LEVEL::FATAL);
+      Logger::log("D'tor of Bridge ", Logger::LOG_LEVEL::INFO);
   }
