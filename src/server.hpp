@@ -23,7 +23,7 @@ public:
 private:
 
     // Handle new connection frmo a client
-    void handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge);
+    void handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge<boost::asio::ip::tcp::socket>> connection_bridge);
 
     // Handle a request to stop the server
     void handle_stop();

@@ -33,7 +33,7 @@ Server::Server(std::unique_ptr<Config> config)
     acceptor_.bind(endpoint);
     acceptor_.listen();
 
-    std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+    std::shared_ptr<Bridge<boost::asio::ip::tcp::socket>> next_connection_bridge = std::make_shared<Bridge<boost::asio::ip::tcp::socket>>(io_context_);
   
     // Start accepting from client's socket associated with the bridhe
     try{
@@ -88,7 +88,7 @@ void Server::WorkerThread( )
 }
 
 
-void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge)
+void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge<boost::asio::ip::tcp::socket>> connection_bridge)
 {
   if(error)
   {
@@ -97,7 +97,7 @@ void Server::handle_accept(const boost::system::error_code& error, std::shared_p
   }
   else{
     connection_bridge->start();
-    std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+    std::shared_ptr<Bridge<boost::asio::ip::tcp::socket>> next_connection_bridge = std::make_shared<Bridge<boost::asio::ip::tcp::socket>>(io_context_);
     Logger::log("Accepting: ",Logger::LOG_LEVEL::FATAL);
     // boost::lexical_cast<std::string>(next_connection_bridge->client_socket().remote_endpoint()),Logger::LOG_LEVEL::FATAL);
     
