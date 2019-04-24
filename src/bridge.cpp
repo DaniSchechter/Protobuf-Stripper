@@ -4,32 +4,37 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
+#include <boost/asio/ssl.hpp>
 
-Bridge::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
+template <typename SocketType>
+Bridge<SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : strand_(*io_context),
     io_context_(io_context),
     client_socket_(*io_context){}
 
-socket_type& Bridge::client_socket()
+template <typename SocketType>
+SocketType& Bridge<SocketType>::client_socket()
 {
   return client_socket_;
 }
 
-void Bridge::start()
+template <typename SocketType>
+void Bridge<SocketType>::start()
 {
     // Read the first packet from the client and resolve its destination
     client_socket_.async_read_some(
         boost::asio::buffer(client_buffer_, max_data_length),
         boost::bind(
             &Bridge::handle_client_read,
-            shared_from_this(),
+            this->shared_from_this(),
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred
         )
     );
 }
 
-void Bridge::handle_server_connect(std::shared_ptr<socket_type> server_socket,
+template <typename SocketType>
+void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> server_socket,
                                    const boost::system::error_code& error,
                                    std::size_t bytes_transferred,
                                    const std::string& endpoint)
@@ -50,7 +55,7 @@ void Bridge::handle_server_connect(std::shared_ptr<socket_type> server_socket,
         boost::asio::buffer(server_buffer_,max_data_length),
         boost::bind(
             &Bridge::handle_server_read,
-            shared_from_this(),
+            this->shared_from_this(),
             server_socket,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
@@ -64,14 +69,16 @@ void Bridge::handle_server_connect(std::shared_ptr<socket_type> server_socket,
         boost::asio::buffer(client_buffer_,bytes_transferred),
         boost::bind(
             &Bridge::handle_server_write,
-            shared_from_this(),
+            this->shared_from_this(),
             server_socket,
             boost::asio::placeholders::error,
             endpoint
         )
     );
 }
-void Bridge::handle_client_read(const boost::system::error_code& error,
+
+template <typename SocketType>
+void Bridge<SocketType>::handle_client_read(const boost::system::error_code& error,
                                 std::size_t bytes_transferred)
 {
     if(error) { return; }
@@ -102,14 +109,14 @@ void Bridge::handle_client_read(const boost::system::error_code& error,
         Logger::LOG_LEVEL::INFO
     );
     // Create a new server socket and insert to the map for future reuse
-    std::shared_ptr<socket_type> new_server_socket = std::make_shared<socket_type>((*io_context_));
+    std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
     server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
 
     new_server_socket->async_connect(
         endpoint,
         boost::bind(
             &Bridge::handle_server_connect,
-            shared_from_this(),
+            this->shared_from_this(),
             new_server_socket,
             error,
             bytes_transferred,
@@ -119,7 +126,8 @@ void Bridge::handle_client_read(const boost::system::error_code& error,
 }
 
 // Reading from client is completed, now send the data to the remote server
-void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket, 
+template <typename SocketType>
+void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_socket, 
                                 const boost::system::error_code& error,
                                 std::size_t bytes_transferred,
                                 const std::string& endpoint)
@@ -149,7 +157,7 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
             boost::asio::buffer(client_buffer_,bytes_transferred),
             boost::bind(
                 &Bridge::handle_server_write,
-                shared_from_this(),
+                this->shared_from_this(),
                 server_socket,
                 boost::asio::placeholders::error,
                 endpoint
@@ -188,14 +196,14 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
             );
 
             // Create a new socket and start using it
-            std::shared_ptr<socket_type> new_server_socket = std::make_shared<socket_type>((*io_context_));
+            std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
             server_socket_map_[boost::lexical_cast<std::string>(requested_endpoint)] = new_server_socket;
 
             new_server_socket->async_connect(
                 requested_endpoint,
                 boost::bind(
                     &Bridge::handle_server_connect,
-                    shared_from_this(),
+                    this->shared_from_this(),
                     new_server_socket,
                     error,
                     bytes_transferred,
@@ -212,7 +220,7 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
                 boost::asio::buffer(client_buffer_,bytes_transferred),
                 boost::bind(
                     &Bridge::handle_server_write,
-                    shared_from_this(),
+                    this->shared_from_this(),
                     cached_server_socket->second,
                     boost::asio::placeholders::error,
                     endpoint
@@ -223,7 +231,8 @@ void Bridge::handle_client_read(std::shared_ptr<socket_type> server_socket,
 }
 
 // Write to remote server complete, Async read from client
-void Bridge::handle_server_write(std::shared_ptr<socket_type> server_socket,
+template <typename SocketType>
+void Bridge<SocketType>::handle_server_write(std::shared_ptr<SocketType> server_socket,
                                  const boost::system::error_code& error,
                                  const std::string& endpoint)
 {
@@ -243,7 +252,7 @@ void Bridge::handle_server_write(std::shared_ptr<socket_type> server_socket,
         boost::asio::buffer(client_buffer_,max_data_length),
         boost::bind(
             &Bridge::handle_client_read,
-            shared_from_this(),
+            this->shared_from_this(),
             server_socket,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
@@ -253,7 +262,8 @@ void Bridge::handle_server_write(std::shared_ptr<socket_type> server_socket,
 }
 
 // Read from client complete, now send data to remote server
-void Bridge::handle_server_read(std::shared_ptr<socket_type> server_socket,
+template <typename SocketType>
+void Bridge<SocketType>::handle_server_read(std::shared_ptr<SocketType> server_socket,
                                 const boost::system::error_code& error,
                                 const size_t& bytes_transferred,
                                 const std::string& endpoint)
@@ -274,7 +284,7 @@ void Bridge::handle_server_read(std::shared_ptr<socket_type> server_socket,
         boost::asio::buffer(server_buffer_,bytes_transferred),
         boost::bind(
             &Bridge::handle_client_write,
-            shared_from_this(),
+            this->shared_from_this(),
             server_socket,
             boost::asio::placeholders::error,
             endpoint
@@ -282,7 +292,8 @@ void Bridge::handle_server_read(std::shared_ptr<socket_type> server_socket,
     );
 }
 
-void Bridge::handle_client_write(std::shared_ptr<socket_type> server_socket,
+template <typename SocketType>
+void Bridge<SocketType>::handle_client_write(std::shared_ptr<SocketType> server_socket,
                                  const boost::system::error_code& error,
                                  const std::string& endpoint)
 {
@@ -303,7 +314,7 @@ void Bridge::handle_client_write(std::shared_ptr<socket_type> server_socket,
         boost::asio::buffer(server_buffer_,max_data_length),
         boost::bind(
             &Bridge::handle_server_read,
-            shared_from_this(),
+            this->shared_from_this(),
             server_socket,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred,
@@ -312,7 +323,8 @@ void Bridge::handle_client_write(std::shared_ptr<socket_type> server_socket,
     );
 }
 
-void Bridge::close(std::shared_ptr<socket_type> server_socket,  
+template <typename SocketType>
+void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,  
                    SOCKET_ERROR_SOURCE error_source,
                    const std::string& endpoint)
 {
@@ -367,7 +379,8 @@ void Bridge::close(std::shared_ptr<socket_type> server_socket,
     }
 }
 
-void Bridge::print_error_source(SOCKET_ERROR_SOURCE error_source)
+template <typename SocketType>
+void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source)
 {
     switch(error_source)
     {
@@ -399,6 +412,10 @@ void Bridge::print_error_source(SOCKET_ERROR_SOURCE error_source)
     }
 }
 
-Bridge::~Bridge(){
+template <typename SocketType>
+Bridge<SocketType>::~Bridge<SocketType>()
+{
       Logger::log("D'tor of Bridge ", Logger::LOG_LEVEL::INFO);
-  }
+}
+
+template class Bridge<boost::asio::ip::tcp::socket>;

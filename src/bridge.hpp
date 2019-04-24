@@ -8,12 +8,12 @@
 #include <boost/asio/io_context_strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
-typedef boost::asio::ip::tcp::socket socket_type;
 typedef boost::asio::ip::tcp::endpoint endpoint_type;
 
+template <typename SocketType>
 // Represents a single connection from a client to a server
 class Bridge
-  : public std::enable_shared_from_this<Bridge>
+  : public std::enable_shared_from_this<Bridge<SocketType>>
 {
 public:
   
@@ -26,55 +26,56 @@ public:
   explicit Bridge(std::shared_ptr<boost::asio::io_context> io_context);
 
   // Get the socket associated with the client
-  socket_type& client_socket();
-
-  // Get the socket associated with the server
-  socket_type& server_socket();
+  SocketType& client_socket();
 
   // Start the first asynchronous operation for the connection.
   void start();
 
   ~Bridge();
 
-private:
+protected:
 
   // Handle completion of a client write operation.
   // Start a new server read operation
-  void handle_client_write(std::shared_ptr<socket_type> server_socket, 
+  void handle_client_write(std::shared_ptr<SocketType> server_socket, 
                           const boost::system::error_code& error, 
                           const std::string& endpoint);
 
   // Handle completion of a server read operation.
   // Start a new clinet write operation
-  void handle_server_read(std::shared_ptr<socket_type> server_socket, 
+  void handle_server_read(std::shared_ptr<SocketType> server_socket, 
                           const boost::system::error_code& error,
                           const size_t& bytes_transferred,
                           const std::string& endpoint);
 
   // Handle completion of a server write operation.
   // Start a clinet read operation
-  void handle_server_write(std::shared_ptr<socket_type> server_socket, 
+  void handle_server_write(std::shared_ptr<SocketType> server_socket, 
                            const boost::system::error_code& error,
                            const std::string& endpoint);
 
-  // Handle completion of a client read operation.
-  // Start a server write operation
+  // Handle the completion of the first client read operation.
+  // Connect to the remote server
   void handle_client_read(const boost::system::error_code& error,
                           std::size_t bytes_transferred);
-                          
-  void handle_client_read(std::shared_ptr<socket_type> server_socket,
+  
+  // Handle completion of client read operation.
+  // Start a server write operation
+  void handle_client_read(std::shared_ptr<SocketType> server_socket,
                           const boost::system::error_code& error,
                           std::size_t bytes_transferred,
                           const std::string& endpoint);
 
   // Handle connection to a remote server.
-  void handle_server_connect(std::shared_ptr<socket_type> server_socket, 
+  // Send the first received message from the client, to the remote servore
+  // Invoke client read operation
+  void handle_server_connect(std::shared_ptr<SocketType> server_socket, 
                              const boost::system::error_code& error,
                              std::size_t bytes_transferred,
                              const std::string& endpoint);
 
   // Close the connection with both client and server
-  void close(std::shared_ptr<socket_type> server_socket, 
+  void close(std::shared_ptr<SocketType> server_socket, 
              SOCKET_ERROR_SOURCE error_source,
              const std::string& endpoint);
 
@@ -86,14 +87,14 @@ private:
   std::shared_ptr<boost::asio::io_context> io_context_;
 
   // Socket for the connection to the client
-  socket_type client_socket_;
+  SocketType client_socket_;
 
   // Client host and port
   std::string client_host_;
 
   // Map saving all server sockets for open server connections
   // Maps server's domain (<Host>:<Port>) to it's socket
-  std::unordered_map< std::string, std::shared_ptr<socket_type> > server_socket_map_;
+  std::unordered_map< std::string, std::shared_ptr<SocketType> > server_socket_map_;
   
   // TODO switch to a generic bufffer like Dani the king saw in a video
   // TODO get this conf in conf file
