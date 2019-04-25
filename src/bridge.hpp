@@ -17,9 +17,9 @@ using HttpSocketType = boost::asio::ip::tcp::socket;
 using endpoint_type = boost::asio::ip::tcp::endpoint; // TODO change to using in the whole project
 
 // Represents a single connection from a client to a server
-template <typename SocketType>
+template <class BridgeType, typename SocketType>
 class Bridge
-  : public std::enable_shared_from_this<Bridge<SocketType>>
+  : public std::enable_shared_from_this<Bridge<BridgeType, SocketType>>
 {
 private:
 
@@ -94,19 +94,19 @@ protected:
   // Derived classes need this to create new server sockets
   std::shared_ptr<boost::asio::io_context> io_context_;
 
-private:
-
-  // // Get the cerived Bridge type for static polymorphism where needed
-  // BridgeType*       derrived_bridge_type() { return static_cast<BridgeType*>(this); }
-  // BridgeType const* derrived_bridge_type() const { return static_cast<BridgeType const*>(this); }
-
-  // Strand to ensure the connection's handlers are not called concurrently.
-  boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
-
   std::shared_ptr<SocketType> client_socket_;
 
   // Client host and port
   std::string client_host_;
+
+private:
+
+  // Get the cerived Bridge type for static polymorphism where needed
+  BridgeType*       derrived_bridge_type() { return static_cast<BridgeType*>(this); }
+  BridgeType const* derrived_bridge_type() const { return static_cast<BridgeType const*>(this); }
+
+  // Strand to ensure the connection's handlers are not called concurrently.
+  boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
 
   // Map saving all server sockets for open server connections
   // Maps server's domain (<Host>:<Port>) to it's socket
@@ -121,11 +121,8 @@ protected:
   
   /* To be implemented for each derived bridge*/
 
-  // Returns the correct socket type that supports the function calls
-  SocketType& get_actual_socket();
-
   // Creates and returns a new server socket
-  virtual std::shared_ptr<SocketType> create_new_server_socket() = 0;
+  std::shared_ptr<SocketType> create_new_server_socket();
 
 };
 

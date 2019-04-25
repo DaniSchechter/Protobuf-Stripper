@@ -4,7 +4,7 @@
 #include "bridge.hpp"
 #include <boost/asio/ssl.hpp>
 
-class HttpBridge: public Bridge<HttpSocketType>
+class HttpBridge: public Bridge<HttpBridge, HttpSocketType>
 {
 public:
 
@@ -14,11 +14,10 @@ public:
                         HttpSocketType& client_socket);
 
     explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context);
-    
-protected:
 
-    // Override functions
-    std::shared_ptr<HttpSocketType> create_new_server_socket() override;
+    /* Override functions */
+    HttpSocketType& get_actual_socket(HttpSocketType& socket);
+    std::shared_ptr<HttpSocketType> create_new_server_socket();
 };
 
 #endif // HTTP_BRIDGE_HPP
