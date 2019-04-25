@@ -13,8 +13,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
 
-typedef boost::asio::ip::tcp::endpoint endpoint_type; // TODO change to using in the whole project
 using HttpSocketType = boost::asio::ip::tcp::socket;
+using endpoint_type = boost::asio::ip::tcp::endpoint; // TODO change to using in the whole project
 
 // Represents a single connection from a client to a server
 template <typename SocketType>
@@ -102,7 +102,7 @@ private:
 
   std::shared_ptr<boost::asio::io_context> io_context_;
 
-  std::unique_ptr<SocketType> client_socket_;
+  std::shared_ptr<SocketType> client_socket_;
 
   // Client host and port
   std::string client_host_;
@@ -117,10 +117,12 @@ private:
   char server_buffer_  [max_data_length];
 
 protected:
-  void set_client_socket(const SocketType& other)
+
+  void set_client_socket(std::shared_ptr<SocketType> socket)
   {
-    client_socket_ = std::make_unique<SocketType>(other);
+    client_socket_ = socket;
   }
+
 };
 
 #endif //BRIDGE_HPP_

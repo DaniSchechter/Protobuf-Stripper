@@ -28,8 +28,8 @@ void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
     );
 
     // Create a new server socket and insert to the map for future reuse
-    std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
-    // server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
+    std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>(*io_context_);
+    server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
 
     new_server_socket->lowest_layer().async_connect(
         endpoint,

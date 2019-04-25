@@ -55,8 +55,8 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error)
   {
     case HTTP:
     {
-      // HttpBridge bridge(io_context_, client_socket_);
-      // bridge.start_by_connect(client_buffer_, endpoint, domain);
+      HttpBridge bridge(io_context_, client_socket_);
+      bridge.start_by_connect(client_buffer_, endpoint, domain);
       break;
     }
     case HTTPS:
