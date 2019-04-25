@@ -1,9 +1,8 @@
 #include "httpBridge.hpp"
 
 HttpBridge::HttpBridge(std::shared_ptr<boost::asio::io_context> io_context,
-                       HttpSocketType& socket)
-  : Bridge(io_context),
-    client_socket_(std::move(socket))
-    {
-        set_client_socket(std::move(client_socket_));
-    }
+                       HttpSocketType& client_socket)
+  : Bridge(io_context)
+{
+    set_client_socket(std::make_shared<HttpSocketType>(client_socket));
+}

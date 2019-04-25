@@ -13,12 +13,12 @@ class HttpsBridge: public Bridge<SslStreamType>
 public:
 
     explicit HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
-                          HttpSocketType& socket);
+                         HttpSocketType& client_socket);
                 
 private:
 
     boost::asio::ssl::context ctx_;
-    SslStreamType ssl_stream_;    
+    std::shared_ptr<SslStreamType> ssl_stream_;    
 };
 
 #endif // HTTPS_BRIDGE_HPP

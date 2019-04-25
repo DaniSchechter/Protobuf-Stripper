@@ -1,7 +1,6 @@
 #ifndef HTTP_BRIDGE_HPP
 #define HTTP_BRIDGE_HPP
 
-
 #include "bridge.hpp"
 #include <boost/asio/ssl.hpp>
 
@@ -9,11 +8,13 @@ class HttpBridge: public Bridge<HttpSocketType>
 {
 public:
 
-    // Construct a connection with the given io_context.
+    // Construct an Http bridge with a given client socket
+    // On which the bridge connector accepted connection
     explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context,
-                        HttpSocketType& socket);
+                        HttpSocketType& client_socket);
 
-    HttpSocketType client_socket_;
+    explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context);
+
 };
 
 #endif // HTTP_BRIDGE_HPP
