@@ -1,43 +1,55 @@
 #include "bridge.hpp"
 
+#include "httpBridge.hpp"
+#include "httpsBridge.hpp"
+
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
-#include <boost/asio/ssl.hpp>
 
-template <typename SocketType>
+template <class SocketType>
 Bridge<SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : strand_(*io_context),
-    io_context_(io_context),
-    client_socket_(*io_context){}
+    io_context_(io_context){}
 
-template <typename SocketType>
-SocketType& Bridge<SocketType>::client_socket()
+template <class SocketType>
+void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
+                                                      endpoint_type endpoint,
+                                                      const std::string& domain)
 {
-  return client_socket_;
-}
+    // save the message  
+    strncpy(client_buffer_, client_buffer, max_data_length);
 
-template <typename SocketType>
-void Bridge<SocketType>::start()
-{
-    // Read the first packet from the client and resolve its destination
-    client_socket_.async_read_some(
-        boost::asio::buffer(client_buffer_, max_data_length),
-        boost::bind(
-            &Bridge::handle_client_read,
-            this->shared_from_this(),
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred
-        )
+    Logger::log(
+        "1) Attempting to connect to " + domain + 
+        " [C] " + boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint()),
+        Logger::LOG_LEVEL::INFO
     );
+
+    // Create a new server socket and insert to the map for future reuse
+    std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
+    // server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
+
+    new_server_socket->lowest_layer().async_connect(
+        endpoint,
+        boost::bind(
+            &Bridge::handle_server_connect,
+            this->shared_from_this(),
+            new_server_socket,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred,
+            boost::lexical_cast<std::string>(endpoint)
+        )
+    ); 
 }
 
-template <typename SocketType>
-void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> server_socket,
-                                   const boost::system::error_code& error,
-                                   std::size_t bytes_transferred,
-                                   const std::string& endpoint)
+template <class SocketType>
+void Bridge<SocketType>::handle_server_connect( 
+    std::shared_ptr<SocketType> server_socket,
+    const boost::system::error_code& error,
+    std::size_t bytes_transferred,
+    const std::string& endpoint)
 {
     if(error)
     {
@@ -77,56 +89,8 @@ void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> serve
     );
 }
 
-template <typename SocketType>
-void Bridge<SocketType>::handle_client_read(const boost::system::error_code& error,
-                                std::size_t bytes_transferred)
-{
-    if(error) { return; }
-    client_host_ = boost::lexical_cast<std::string>(client_socket_.remote_endpoint());
-    Logger::log(
-        "Client --> Proxy     Server.   [C] " + 
-        client_host_ + "  [Prev S] First read from this client" ,
-        Logger::LOG_LEVEL::INFO
-    );
-    Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
-    
-    // Resolve the remote host (If appeared in the message)
-    std::string domain = Utils::parse_domain(
-        boost::lexical_cast<std::string>(client_buffer_)
-    );
-
-    // If no Domain in the first message, there is nothing to do with it
-    if (domain == EMPTY_DOMAIN) { return; }
-
-    endpoint_type endpoint  = Utils::resolve_endpoint(
-        domain, io_context_
-    );
-
-    if(endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) { return; }
-    Logger::log(
-        "1) Attempting to connect to " + domain + 
-        " [C] " + boost::lexical_cast<std::string>(client_socket_.remote_endpoint()),
-        Logger::LOG_LEVEL::INFO
-    );
-    // Create a new server socket and insert to the map for future reuse
-    std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
-    server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
-
-    new_server_socket->async_connect(
-        endpoint,
-        boost::bind(
-            &Bridge::handle_server_connect,
-            this->shared_from_this(),
-            new_server_socket,
-            error,
-            bytes_transferred,
-            boost::lexical_cast<std::string>(endpoint)
-        )
-    );
-}
-
 // Reading from client is completed, now send the data to the remote server
-template <typename SocketType>
+template <class SocketType>
 void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_socket, 
                                 const boost::system::error_code& error,
                                 std::size_t bytes_transferred,
@@ -170,7 +134,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     {
         // Get the server socket associated with the remote host
         endpoint_type requested_endpoint  = Utils::resolve_endpoint(
-            domain, io_context_
+            domain, *io_context_
         );
 
         if(requested_endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) 
@@ -199,7 +163,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
             std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
             server_socket_map_[boost::lexical_cast<std::string>(requested_endpoint)] = new_server_socket;
 
-            new_server_socket->async_connect(
+            new_server_socket->lowest_layer().async_connect(
                 requested_endpoint,
                 boost::bind(
                     &Bridge::handle_server_connect,
@@ -231,7 +195,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
 }
 
 // Write to remote server complete, Async read from client
-template <typename SocketType>
+template <class SocketType>
 void Bridge<SocketType>::handle_server_write(std::shared_ptr<SocketType> server_socket,
                                  const boost::system::error_code& error,
                                  const std::string& endpoint)
@@ -248,7 +212,7 @@ void Bridge<SocketType>::handle_server_write(std::shared_ptr<SocketType> server_
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
 
-    client_socket_.async_read_some(
+    client_socket_->async_read_some(
         boost::asio::buffer(client_buffer_,max_data_length),
         boost::bind(
             &Bridge::handle_client_read,
@@ -262,7 +226,7 @@ void Bridge<SocketType>::handle_server_write(std::shared_ptr<SocketType> server_
 }
 
 // Read from client complete, now send data to remote server
-template <typename SocketType>
+template <class SocketType>
 void Bridge<SocketType>::handle_server_read(std::shared_ptr<SocketType> server_socket,
                                 const boost::system::error_code& error,
                                 const size_t& bytes_transferred,
@@ -280,7 +244,7 @@ void Bridge<SocketType>::handle_server_read(std::shared_ptr<SocketType> server_s
     Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
 
     async_write(
-        client_socket_,
+        *client_socket_,
         boost::asio::buffer(server_buffer_,bytes_transferred),
         boost::bind(
             &Bridge::handle_client_write,
@@ -292,7 +256,7 @@ void Bridge<SocketType>::handle_server_read(std::shared_ptr<SocketType> server_s
     );
 }
 
-template <typename SocketType>
+template <class SocketType>
 void Bridge<SocketType>::handle_client_write(std::shared_ptr<SocketType> server_socket,
                                  const boost::system::error_code& error,
                                  const std::string& endpoint)
@@ -323,7 +287,7 @@ void Bridge<SocketType>::handle_client_write(std::shared_ptr<SocketType> server_
     );
 }
 
-template <typename SocketType>
+template <class SocketType>
 void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,  
                    SOCKET_ERROR_SOURCE error_source,
                    const std::string& endpoint)
@@ -334,18 +298,18 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
     // Initiate graceful connection closure.
     boost::system::error_code ignored_ec;
 
-    // If the error is in the clinet socket, close it as well as all server sockets
+    // If the error is in the client socket, close it as well as all server sockets
     if( error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR || 
         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR )
     {
-        if (client_socket_.is_open())
+        if (client_socket_->lowest_layer().is_open())
         {
-            client_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-            client_socket_.close();
+            client_socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+            // client_socket_->close();
         }
         for(auto& server_socket_iter: server_socket_map_)
         {
-            server_socket_iter.second->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+            server_socket_iter.second->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
             server_socket_iter.second.reset();
         }
         server_socket_map_.clear();
@@ -353,7 +317,7 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
 
     
     // Error is with one of the server sockets in the map
-    else if(server_socket->is_open())
+    else if(server_socket->lowest_layer().is_open())
     {
         Logger::log(
             "Deleting [S] " + endpoint + " for [C] ",
@@ -362,7 +326,7 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
         server_socket_map_.erase(endpoint);
 
         // TODO if the erase raises exception we need to find the server socket and erase using the iterator
-        server_socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+        server_socket->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
         server_socket.reset();
 
         // if it is the last server socket for this bridge, clear the client socket and close the bridge
@@ -373,13 +337,13 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
                 client_host_,
                 Logger::LOG_LEVEL::INFO
             );
-            client_socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-            client_socket_.close();
+            client_socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+            // client_socket_->lower.close();
         }
     }
 }
 
-template <typename SocketType>
+template <class SocketType>
 void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source)
 {
     switch(error_source)
@@ -412,10 +376,13 @@ void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source)
     }
 }
 
-template <typename SocketType>
+template <class SocketType>
 Bridge<SocketType>::~Bridge<SocketType>()
 {
       Logger::log("D'tor of Bridge ", Logger::LOG_LEVEL::INFO);
 }
 
-template class Bridge<boost::asio::ip::tcp::socket>;
+template class Bridge<HttpSocketType>;
+template class Bridge<SslStreamType>;
+
+// boost::asio::ssl::stream<boost::asio::basic_stream_socket<boost::asio::ip::tcp> >::stream(boost::asio::io_context&)

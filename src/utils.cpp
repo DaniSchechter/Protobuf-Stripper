@@ -28,7 +28,7 @@ std::string Utils::parse_domain(const std::string& message)
 }
 
 boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
-                                                       std::shared_ptr<boost::asio::io_context> io_context)
+                                                       boost::asio::io_context& io_context)
 {
     // Resolve the end point for the requested domain
     int pos = domain.find_first_of(":");
@@ -37,7 +37,7 @@ boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
 
     try{
         // Resolve the absoute URI to ip and port - endpoint
-        boost::asio::ip::tcp::resolver resolver( *io_context );
+        boost::asio::ip::tcp::resolver resolver( io_context );
         boost::asio::ip::tcp::resolver::query query(host, port);
         boost::asio::ip::tcp::resolver::iterator iterator = resolver.resolve( query );
         boost::asio::ip::tcp::endpoint endpoint = iterator->endpoint();
