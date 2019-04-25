@@ -14,7 +14,11 @@ public:
                         HttpSocketType& client_socket);
 
     explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context);
+    
+protected:
 
+    // Override functions
+    std::shared_ptr<HttpSocketType> create_new_server_socket() override;
 };
 
 #endif // HTTP_BRIDGE_HPP

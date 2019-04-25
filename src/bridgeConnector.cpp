@@ -17,12 +17,14 @@ void BridgeConnector::start()
       boost::bind(
           &BridgeConnector::handle_client_read,
           this->shared_from_this(),
-          boost::asio::placeholders::error
+          boost::asio::placeholders::error,
+          boost::asio::placeholders::bytes_transferred
       )
   );
 }
 
-void BridgeConnector::handle_client_read(const boost::system::error_code& error)
+void BridgeConnector::handle_client_read(const boost::system::error_code& error,
+                                         std::size_t bytes_transferred)
 {
   if(error) { return; }
 
@@ -56,13 +58,13 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error)
     case HTTP:
     {
       HttpBridge bridge(io_context_, client_socket_);
-      bridge.start_by_connect(client_buffer_, endpoint, domain);
+      bridge.start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
     case HTTPS:
     {
       HttpsBridge bridge(io_context_, client_socket_);
-      bridge.start_by_connect(client_buffer_, endpoint, domain);
+      bridge.start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
     case SMTP:
