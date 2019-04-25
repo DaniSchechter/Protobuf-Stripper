@@ -18,7 +18,7 @@ struct Utils
 
     // Resolve the host to endpoint
     static boost::asio::ip::tcp::endpoint resolve_endpoint(std::string domain,
-                                                           std::shared_ptr<boost::asio::io_context> io_context);
+                                                           boost::asio::io_context& io_context);
 };
 
 #endif // UTILS_HPP_

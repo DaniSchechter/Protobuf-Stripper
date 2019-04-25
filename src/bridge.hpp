@@ -8,13 +8,23 @@
 #include <boost/asio/io_context_strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
-typedef boost::asio::ip::tcp::endpoint endpoint_type;
+#include <boost/asio/placeholders.hpp>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/asio/write.hpp>
 
-template <typename SocketType>
+typedef boost::asio::ip::tcp::endpoint endpoint_type; // TODO change to using in the whole project
+using HttpSocketType = boost::asio::ip::tcp::socket;
+
 // Represents a single connection from a client to a server
+template <typename SocketType>
 class Bridge
   : public std::enable_shared_from_this<Bridge<SocketType>>
 {
+private:
+
+  enum { max_data_length = 8192 }; //8KB
+
 public:
   
   enum class SOCKET_ERROR_SOURCE
@@ -25,11 +35,11 @@ public:
   // Construct a connection with the given io_context.
   explicit Bridge(std::shared_ptr<boost::asio::io_context> io_context);
 
-  // Get the socket associated with the client
-  SocketType& client_socket();
-
-  // Start the first asynchronous operation for the connection.
-  void start();
+  // Start to handle the request
+  // Connects to the requested remote server, and forwards the message it got from bridge connector
+  void start_by_connect(char client_buffer [max_data_length],
+                        endpoint_type endpoint,
+                        const std::string& domain);
 
   ~Bridge();
 
@@ -53,11 +63,6 @@ protected:
   void handle_server_write(std::shared_ptr<SocketType> server_socket, 
                            const boost::system::error_code& error,
                            const std::string& endpoint);
-
-  // Handle the completion of the first client read operation.
-  // Connect to the remote server
-  void handle_client_read(const boost::system::error_code& error,
-                          std::size_t bytes_transferred);
   
   // Handle completion of client read operation.
   // Start a server write operation
@@ -79,15 +84,25 @@ protected:
              SOCKET_ERROR_SOURCE error_source,
              const std::string& endpoint);
 
+  // Overrided For each bridge type
+  // Returns the correct socket type that supports the function calls
+  SocketType& get_actual_socket();
+
   void print_error_source(SOCKET_ERROR_SOURCE error_source);
+
+private:
+
+  // Get the actual socket for which async operations are done
+  // BridgeType* get_bridge_type() { return static_cast<BridgeType*>(this); }
+  // BridgeType const* get_const_bridge_type() { return static_cast<BridgeType const*>(this); }
+
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
 
   std::shared_ptr<boost::asio::io_context> io_context_;
 
-  // Socket for the connection to the client
-  SocketType client_socket_;
+  std::unique_ptr<SocketType> client_socket_;
 
   // Client host and port
   std::string client_host_;
@@ -98,9 +113,14 @@ protected:
   
   // TODO switch to a generic bufffer like Dani the king saw in a video
   // TODO get this conf in conf file
-  enum { max_data_length = 8192 }; //8KB
   char client_buffer_ [max_data_length];
   char server_buffer_  [max_data_length];
+
+protected:
+  void set_client_socket(const SocketType& other)
+  {
+    client_socket_ = std::make_unique<SocketType>(other);
+  }
 };
 
 #endif //BRIDGE_HPP_
