@@ -38,6 +38,8 @@ public:
   // Start to handle the request
   // Connects to the requested remote server, and forwards the message it got from bridge connector
   void start_by_connect(char client_buffer [max_data_length],
+                        const boost::system::error_code& error,
+                        std::size_t bytes_transferred,
                         endpoint_type endpoint,
                         const std::string& domain);
 
@@ -84,23 +86,22 @@ protected:
              SOCKET_ERROR_SOURCE error_source,
              const std::string& endpoint);
 
-  // Overrided For each bridge type
-  // Returns the correct socket type that supports the function calls
-  SocketType& get_actual_socket();
+  // Enable derived Bridges to set the correct socket
+  void set_client_socket(std::shared_ptr<SocketType> socket) { client_socket_ = socket;}
 
   void print_error_source(SOCKET_ERROR_SOURCE error_source);
 
+  // Derived classes need this to create new server sockets
+  std::shared_ptr<boost::asio::io_context> io_context_;
+
 private:
 
-  // Get the actual socket for which async operations are done
-  // BridgeType* get_bridge_type() { return static_cast<BridgeType*>(this); }
-  // BridgeType const* get_const_bridge_type() { return static_cast<BridgeType const*>(this); }
-
+  // // Get the cerived Bridge type for static polymorphism where needed
+  // BridgeType*       derrived_bridge_type() { return static_cast<BridgeType*>(this); }
+  // BridgeType const* derrived_bridge_type() const { return static_cast<BridgeType const*>(this); }
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
-
-  std::shared_ptr<boost::asio::io_context> io_context_;
 
   std::shared_ptr<SocketType> client_socket_;
 
@@ -117,11 +118,14 @@ private:
   char server_buffer_  [max_data_length];
 
 protected:
+  
+  /* To be implemented for each derived bridge*/
 
-  void set_client_socket(std::shared_ptr<SocketType> socket)
-  {
-    client_socket_ = socket;
-  }
+  // Returns the correct socket type that supports the function calls
+  SocketType& get_actual_socket();
+
+  // Creates and returns a new server socket
+  virtual std::shared_ptr<SocketType> create_new_server_socket() = 0;
 
 };
 

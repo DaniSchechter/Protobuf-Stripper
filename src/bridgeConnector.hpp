@@ -27,7 +27,8 @@ public:
 
     // Handle the completion of the first client read operation.
     // Initializes the correct Bridge (http / https) to hande the request
-    void handle_client_read(const boost::system::error_code& error);
+    void handle_client_read(const boost::system::error_code& error,
+                            std::size_t bytes_transferred);
 
 private:
 

@@ -8,3 +8,8 @@ HttpsBridge::HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
 { 
     set_client_socket(ssl_stream_);
 }
+
+std::shared_ptr<SslStreamType> HttpsBridge::create_new_server_socket()
+{
+    return std::make_shared<SslStreamType>(*io_context_, ctx_);
+}

@@ -10,13 +10,15 @@
 
 template <class SocketType>
 Bridge<SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
-  : strand_(*io_context),
-    io_context_(io_context){}
+  : io_context_(io_context),
+    strand_(*io_context){}
 
 template <class SocketType>
 void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
-                                                      endpoint_type endpoint,
-                                                      const std::string& domain)
+                                          const boost::system::error_code& error,
+                                          std::size_t bytes_transferred,
+                                          endpoint_type endpoint,
+                                          const std::string& domain)
 {
     // save the message  
     strncpy(client_buffer_, client_buffer, max_data_length);
@@ -28,7 +30,7 @@ void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
     );
 
     // Create a new server socket and insert to the map for future reuse
-    std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>(*io_context_);
+    std::shared_ptr<SocketType> new_server_socket = create_new_server_socket();
     server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
 
     new_server_socket->lowest_layer().async_connect(
@@ -37,8 +39,8 @@ void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
             &Bridge::handle_server_connect,
             this->shared_from_this(),
             new_server_socket,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred,
+            error,
+            bytes_transferred,
             boost::lexical_cast<std::string>(endpoint)
         )
     ); 
@@ -160,7 +162,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
             );
 
             // Create a new socket and start using it
-            std::shared_ptr<SocketType> new_server_socket = std::make_shared<SocketType>((*io_context_));
+            std::shared_ptr<SocketType> new_server_socket = create_new_server_socket();
             server_socket_map_[boost::lexical_cast<std::string>(requested_endpoint)] = new_server_socket;
 
             new_server_socket->lowest_layer().async_connect(
