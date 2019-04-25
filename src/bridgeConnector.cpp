@@ -57,14 +57,14 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
   {
     case HTTP:
     {
-      HttpBridge bridge(io_context_, client_socket_);
-      bridge.start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
+      std::shared_ptr<HttpBridge> bridge = std::make_shared<HttpBridge>(io_context_, client_socket_);
+      bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
     case HTTPS:
     {
-      HttpsBridge bridge(io_context_, client_socket_);
-      bridge.start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
+      std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_);
+      bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
     case SMTP:

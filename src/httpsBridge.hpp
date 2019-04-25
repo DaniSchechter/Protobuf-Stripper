@@ -8,17 +8,16 @@
 using SslStreamType = boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ;
 using BasicSocketType = boost::asio::basic_socket<boost::asio::ip::tcp>;
 
-class HttpsBridge: public Bridge<SslStreamType>
+class HttpsBridge: public Bridge<HttpsBridge, SslStreamType>
 {
 public:
 
     explicit HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
                          HttpSocketType& client_socket);
-    
-protected:
 
-    // Override functions
-    std::shared_ptr<SslStreamType> create_new_server_socket() override;
+    /* Override functions */
+    BasicSocketType& get_actual_socket(SslStreamType& socket);
+    std::shared_ptr<SslStreamType> create_new_server_socket();
 
 private:
 
