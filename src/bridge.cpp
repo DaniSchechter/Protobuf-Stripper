@@ -15,35 +15,16 @@ Bridge<BridgeType, SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> 
 
 template <class BridgeType, typename SocketType>
 void Bridge<BridgeType, SocketType>::start_by_connect(char client_buffer [max_data_length],
-                                          const boost::system::error_code& error,
-                                          std::size_t bytes_transferred,
-                                          endpoint_type endpoint,
-                                          const std::string& domain)
+                                                    const boost::system::error_code& error,
+                                                    std::size_t bytes_transferred,
+                                                    endpoint_type endpoint,
+                                                    const std::string& domain)
 {
-    // save the message  
-    strncpy(client_buffer_, client_buffer, max_data_length);
-
-    Logger::log(
-        "1) Attempting to connect to " + domain + 
-        " [C] " + boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint()),
-        Logger::LOG_LEVEL::INFO
-    );
-
-    // Create a new server socket and insert to the map for future reuse
-    std::shared_ptr<SocketType> new_server_socket = derrived_bridge_type()->create_new_server_socket();
-    server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
-
-    derrived_bridge_type()->get_actual_socket(*new_server_socket).async_connect(
-        endpoint,
-        boost::bind(
-            &Bridge::handle_server_connect,
-            this->shared_from_this(),
-            new_server_socket,
-            error,
-            bytes_transferred,
-            boost::lexical_cast<std::string>(endpoint)
-        )
-    ); 
+    derrived_bridge_type()->start_by_connect(client_buffer,
+                                            error,
+                                            bytes_transferred,
+                                            endpoint,
+                                            domain);
 }
 
 template <class BridgeType, typename SocketType>
@@ -64,6 +45,9 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
         client_host_ + "  [S] " + endpoint,
         Logger::LOG_LEVEL::INFO
     );    
+
+    derrived_bridge_type()->do_handshake(server_socket, boost::asio::ssl::stream_base::client);
+
     // Setup async read from remote server (server). Preperation for the following write
     server_socket->async_read_some(
         boost::asio::buffer(server_buffer_,max_data_length),

@@ -20,10 +20,7 @@ using endpoint_type = boost::asio::ip::tcp::endpoint; // TODO change to using in
 template <class BridgeType, typename SocketType>
 class Bridge
   : public std::enable_shared_from_this<Bridge<BridgeType, SocketType>>
-{
-private:
-
-  enum { max_data_length = 8192 }; //8KB
+{  
 
 public:
   
@@ -31,6 +28,8 @@ public:
   {
     CLIENT_READ_ERROR, CLIENT_WRITE_ERROR, SERVER_READ_ERROR, SERVER_WRITE_ERROR, SERVER_CONNECT_ERROR  
   };
+
+  enum { max_data_length = 8192 }; //8KB
 
   // Construct a connection with the given io_context.
   explicit Bridge(std::shared_ptr<boost::asio::io_context> io_context);
@@ -43,9 +42,16 @@ public:
                         endpoint_type endpoint,
                         const std::string& domain);
 
+  void handle_server_connect(std::shared_ptr<SocketType> server_socket,
+                            const boost::system::error_code& error,
+                            std::size_t bytes_transferred,
+                            const std::string& endpoint);
+
   ~Bridge();
 
 protected:
+
+  
 
   // Handle completion of a client write operation.
   // Start a new server read operation
@@ -73,13 +79,7 @@ protected:
                           std::size_t bytes_transferred,
                           const std::string& endpoint);
 
-  // Handle connection to a remote server.
-  // Send the first received message from the client, to the remote servore
-  // Invoke client read operation
-  void handle_server_connect(std::shared_ptr<SocketType> server_socket, 
-                             const boost::system::error_code& error,
-                             std::size_t bytes_transferred,
-                             const std::string& endpoint);
+
 
   // Close the connection with both client and server
   void close(std::shared_ptr<SocketType> server_socket, 
@@ -108,21 +108,22 @@ private:
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
 
-  // Map saving all server sockets for open server connections
-  // Maps server's domain (<Host>:<Port>) to it's socket
-  std::unordered_map< std::string, std::shared_ptr<SocketType> > server_socket_map_;
-  
-  // TODO switch to a generic bufffer like Dani the king saw in a video
-  // TODO get this conf in conf file
-  char client_buffer_ [max_data_length];
-  char server_buffer_  [max_data_length];
-
 protected:
   
   /* To be implemented for each derived bridge*/
 
   // Creates and returns a new server socket
   std::shared_ptr<SocketType> create_new_server_socket();
+
+  // Map saving all server sockets for open server connections
+  // Maps server's domain (<Host>:<Port>) to it's socket
+  std::unordered_map< std::string, std::shared_ptr<SocketType> > server_socket_map_;
+
+  
+  // TODO switch to a generic bufffer like Dani the king saw in a video
+  // TODO get this conf in conf file
+  char client_buffer_ [max_data_length];
+  char server_buffer_  [max_data_length];
 
 };
 
