@@ -5,7 +5,7 @@
 
 std::string Utils::parse_domain(const std::string& message)
 {
-    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})([^/ \\t\\n]+)(?:.*?:(\\d+))?");
+    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^/ :\\t\\n]+)(?:.*?:(\\d+))?");
     std::smatch match;
     std::regex_search(message, match, re);
 
