@@ -1,0 +1,3 @@
+API_KEY=Ns1qtHUPHey9vPceRleElhOX6bf18jb6QooeJrncJ7rcvk6v
+USER_ID=alonbl
+MAX_SIZE=10000000

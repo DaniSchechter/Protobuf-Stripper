@@ -1,67 +1,62 @@
-#include "blacklistIp.h"
-#include "httprequest.hpp"
-#define API_KEY "Ns1qtHUPHey9vPceRleElhOX6bf18jb6QooeJrncJ7rcvk6v";
-#define USER_ID "alonbl";
-#define MAX_SIZE 10000000
-bool requestdensity(std::string srcIP, std::string dstIP, std::string rawdata) {
-
-		static std::unordered_map<destinationIp, std::list<std::string>> map;
-
-		destinationIp* key = new destinationIp(dstIP);
-		if (map.find(*key) == map.end())
+#include "HashOverrideDestIp.hpp"
+#include"TestsConfig.h"
+#include"SFML/Network.hpp"
+//Checks how much requests there sent to the destination Ip from different source Ips, if its the first time this ip is accessed, send the Ip address to Ip blacklist api to verify it's a legitimate site Ip, return true if it's not legitimate and false if it is.
+bool request_density(const std::string& srcIP, const std::string& dstIP, const std::string& rawdata) {
+	// store the data in map as [destination ip, set of source ip's that accessed him]
+	static std::unordered_map<destinationIp, std::set<std::string>, my_string_hash> map;
+	destinationIp* key = new destinationIp(dstIP);
+	if (map.find(*key) == map.end())
+	{
+		std::set<std::string> srcset;
+		srcset.insert(srcIP);
+		map[*key] = srcset;
+		// may be malicious, this is the first request from the network to this destination ip
+		// check if the ip is a legitimate site
+		try
 		{
-			std::list<std::string> srclist;
-			srclist.push_front(srcIP);
-			map[*key] = srclist;
-			// may be malicious, this is the first request from the network to this destination ip, make further checks on the destination ip
-			// check if the ip is legitimate site
-			try
-			{
-				std::string tmp = "ip=" + dstIP;
-				http::Request request("https://neutrinoapi.com/ip-blocklist"+ tmp);
-				// send a get request
-				std::vector<std::string> vectortmp;
-				std::string userid = USER_ID;
-				std::string apikey = API_KEY;
-				vectortmp.push_back("user-id:" + userid);
-				vectortmp.push_back("api-key:" + apikey);
-
-				http::Response response = request.send("GET","", vectortmp);
-				char* res;
-				for (int i = 0; i<response.body.size(); i++) {
-					res[i] = response.body.data()[i];
-				}
-				std::string strtemp(res);
-				std::size_t found = strtemp.find("true");
-				if (found != std::string::npos)
-					return false;
-
-			}
-			catch (const std::exception& e)
-			{
-				std::cerr << "Request failed, error: " << e.what() << std::endl;
-			}
+			sf::Http http("https://neutrinoapi.com/ip-blocklist");
+			std::string tmp = "?ip=" + dstIP;
+			sf::Http::Request request;
+			request.setMethod(sf::Http::Request::Get);
+			request.setUri(tmp);
+			request.setHttpVersion(1, 1); // HTTP 1.1
+			std::string userid = test_config("USER_ID");
+			std::string apikey = test_config("API_KEY");
+			request.setField("user-id:", userid);
+			request.setField("api-key:", apikey);
+			sf::Http::Response response = http.sendRequest(request);
+			std::size_t found = response.getBody().find("true");
+			if (found != std::string::npos)
+				return true; //ip found in blacklist
+			return false; // ip not in blacklists
 		}
-		else 
+		catch (const std::exception & e)
 		{
-			std::string temp;
-			std::list<std::string> srclist = map[*key];
-			temp = *(std::find(srclist.begin(), srclist.end(), srcIP));
-			if (temp != *srclist.end())
-			{
-				//already exists 
-			}
-			else
-			{
-				srclist.push_front(srcIP);
-				map[*key] = srclist;
-				// if list len is less then 3 check the size of the 
-				if (srclist.size() <= 3)
-				{
-					if (rawdata.size() > MAX_SIZE)
-						return false;
-				}
-			}
+			std::cerr << "Request failed, error: " << e.what() << std::endl;
 		}
-
 	}
+	else
+	{
+		std::string temp;
+		std::set<std::string> srcset = map[*key];
+		temp = *(std::find(srcset.begin(), srcset.end(), srcIP));
+		if (temp != *srcset.end())
+		{
+			return false;
+		}
+		else
+		{
+			srcset.insert(srcIP);
+			map[*key] = srcset;
+			//on destination Ips that there accessed from less than 3 source ips, check that the size of the raw data doesn't exceed the defined limit and return true if exceeded.
+			if (srcset.size() <= 3)
+			{
+				if (rawdata.size() > atoi(test_config("MAX_SIZE").c_str()))
+					return true;
+			}
+		}
+		return false;
+	}
+
+}
