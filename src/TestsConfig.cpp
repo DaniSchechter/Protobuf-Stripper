@@ -1,6 +1,6 @@
 #include"TestsConfig.h"
 
-std::string test_config(const std::string cname)
+std::string test_config(const std::string& cname)
 {
 	std::ifstream cFile("config.txt");
 	if (cFile.is_open())
