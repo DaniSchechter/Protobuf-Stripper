@@ -30,6 +30,11 @@ public:
     void handle_client_read(const boost::system::error_code& error,
                             std::size_t bytes_transferred);
 
+    std::string get_password() const
+    {
+    return "test";
+    }
+
 private:
 
     std::shared_ptr<boost::asio::io_context> io_context_;

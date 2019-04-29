@@ -36,6 +36,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
 {
     if(error)
     {
+        Logger::log("Error in SERVER_CONNECT: " + error.message(), Logger::LOG_LEVEL::WARNING);
         // TODO think of edge cases
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR, endpoint);
         return;
@@ -84,6 +85,8 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
 {
     if(error)
     {
+        Logger::log("Error in CLIENT_READ: " + error.message(), Logger::LOG_LEVEL::WARNING);
+        Logger::log("From [C] " + client_host_ + " To " + endpoint, Logger::LOG_LEVEL::WARNING);
             close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, endpoint);
             return;
     }
@@ -188,6 +191,7 @@ void Bridge<BridgeType, SocketType>::handle_server_write(std::shared_ptr<SocketT
 {
     if(error) 
     {
+        Logger::log("Error in SERVER_WRITE: " + error.message(), Logger::LOG_LEVEL::WARNING);
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_WRITE_ERROR, endpoint);
         return;
     }
@@ -219,6 +223,7 @@ void Bridge<BridgeType, SocketType>::handle_server_read(std::shared_ptr<SocketTy
                                 const std::string& endpoint)
 {
     if(error) {
+        Logger::log("Error in SERVER_READ: " + error.message(), Logger::LOG_LEVEL::WARNING);
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR, endpoint);
         return;
     } 
@@ -249,7 +254,8 @@ void Bridge<BridgeType, SocketType>::handle_client_write(std::shared_ptr<SocketT
 {
     if(error) 
     {
-        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, endpoint); 
+        Logger::log("Error in CLIENT_WRITE: " + error.message(), Logger::LOG_LEVEL::WARNING);
+        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR, endpoint); 
         return;
     }
     Logger::log(

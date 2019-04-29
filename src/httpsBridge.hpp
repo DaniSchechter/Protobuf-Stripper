@@ -13,7 +13,8 @@ class HttpsBridge: public Bridge<HttpsBridge, SslStreamType>
 public:
 
     explicit HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
-                         HttpSocketType& client_socket);
+                         HttpSocketType& client_socket,
+                         std::shared_ptr<boost::asio::ssl::context> context);
 
     // Start to handle the request
     // Connects to the requested remote server, and forwards the message it got from bridge connector
@@ -31,15 +32,21 @@ public:
     /* Override functions */
     
     // Start to handle the ssl handshake
-    void do_handshake(std::shared_ptr<SslStreamType> socket,
+    void do_handshake(std::shared_ptr<SslStreamType>& socket,
                       boost::asio::ssl::stream_base::handshake_type handshake_type);
 
     BasicSocketType& get_actual_socket(SslStreamType& socket);
     std::shared_ptr<SslStreamType> create_new_server_socket();
 
+    void do_something()
+{
+    sleep(3);
+}
+
 private:
 
-    boost::asio::ssl::context ctx_;
+    std::shared_ptr<boost::asio::ssl::context> client_ctx_;
+    std::shared_ptr<boost::asio::ssl::context> server_ctx_;
     std::shared_ptr<SslStreamType> ssl_stream_;    
 };
 
