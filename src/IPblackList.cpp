@@ -50,7 +50,7 @@ bool request_density(const std::string& srcIP, const std::string& dstIP, const s
 			srcset.insert(srcIP);
 			map[*key] = srcset;
 			//on destination Ips that there accessed from less than 3 source ips, check that the size of the raw data doesn't exceed the defined limit and return true if exceeded.
-			if (srcset.size() <= 3)
+			if (srcset.size() <= atoi(test_config("CHECK_SIZE").c_str()))
 			{
 				if (rawdata.size() > atoi(test_config("MAX_SIZE").c_str()))
 					return true;
