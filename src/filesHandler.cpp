@@ -1,4 +1,4 @@
-#include "filesHandler.h"
+#include "filesHandler.hpp"
 
 //To open the files before the functions and to pass the text in a string variable.
 //To call data from disk as little as possible.(efficiency)
@@ -9,33 +9,42 @@ std::string isStrExistsInFile(const std::string& fileName, const std::string& wo
 	std::fstream file;
 
 	file.open(fileName, std::ios::in);
-	if (file.is_open())
+	
+	//checks if the file opened properlly
+	if (!file.is_open())
+		return "error";
+	else
 	{
 		std::string line;
 		char* parseLine;
 
 		while (!file.eof())
 		{
+			//get a line from the file
 			getline(file, line);
 
 			if (strcmp(line.c_str(), "") != 0)
 			{
 
-				std::vector <std::string> tokens;
+				std::vector<std::string> tokens;
 
 
 				std::stringstream split(line);
 
 				std::string intermediate;
 
-
+				//split the line from the value (ex.   virus-3)
 				while (getline(split, intermediate, '-'))
 				{
 					tokens.push_back(intermediate);
 				}
+
+				//if the word from the file is the same as the checked word
 				if (strcmp(tokens[0].c_str(), word.c_str()) == 0)
 				{
 					file.close();
+
+					// if the size if 2 then there is a value in the file (the function will call with two types of files)
 					if (tokens.size() == 2)
 						return tokens[1];
 					else
@@ -44,9 +53,7 @@ std::string isStrExistsInFile(const std::string& fileName, const std::string& wo
 			}
 		}
 		file.close();
-
 	}
-	return "0";
 }
 
 
@@ -55,13 +62,18 @@ void printFile(const std::string& fileName)
 	std::fstream file;
 
 	file.open(fileName, std::ios::in);
-	if (file.is_open())
+	if (!file.is_open())
+		return;
+	else
 	{
 		std::string line;
 
 		while (!file.eof())
 		{
+			//get a line from the file
 			getline(file, line);
+			
+			//print the line to the screen
 			std::cout << line << '\n';
 		}
 		file.close();
@@ -80,10 +92,17 @@ void copyFilesContent(const std::string& srcFile, const std::string& dstFile)
 	std::fstream temp;
 
 	temp.open(srcFile, std::ios::in);
-	if (temp.is_open())
+	
+	//if the file opened properlly
+	if (!temp.is_open())
+		return;
+	else
 	{
+		//while there is a text to read in the file
 		while (!temp.eof())
 		{
+			
+			
 			getline(temp, line);
 			if (strcmp(line.c_str(), "\r\n") != 0 && strcmp(line.c_str(), "") != 0)
 				file << line << "\n";
@@ -94,27 +113,36 @@ void copyFilesContent(const std::string& srcFile, const std::string& dstFile)
 	}
 }
 
-bool deleteLinesFromFile(const std::string& fileName, std::vector<std::string> vec)
+
+bool deleteLinesFromFile(const std::string& fileName, std::set<std::string> s)
 {
 
 	std::fstream file;
 	bool flag = false;
 
 	file.open(fileName, std::ios::in);
-	if (file.is_open())
+	
+	//if the file opened properlly
+	if (!file.is_open())
+		return false;
+	else
 	{
 		std::string line;
 
 		std::ofstream tempFile;
 		tempFile.open("tempFile.csv");
-
-		if (vec.size() == 0)
+		
+		// if there isn't line to remove
+		if (s.size() == 0)
 			return false;
+		
 		while (!file.eof())
 		{
+			//get a line from the file
 			getline(file, line);
-
-			if (std::find(vec.begin(), vec.end(), line) == vec.end() && strcmp(line.c_str(), "\r\n") != 0)
+			
+			//if the line from the file isn't in the set
+			if (std::find(s.begin(), s.end(), line) == s.end() && strcmp(line.c_str(), "\r\n") != 0)
 				tempFile << line + "\n";
 			else if (line != "")
 				flag = true;

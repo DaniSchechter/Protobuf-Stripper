@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "menu.hpp"
 
 
 const std::string currentDateTime()
@@ -25,15 +25,19 @@ bool isValidIp(const std::string& ip)
 	char * charIp = new char[ip.length() + 1];
 	try
 	{
+		
 		int digitsAmount = 0;
 		strcpy_s(charIp, ip.length() + 1, ip.c_str());
 		char* context = NULL;
 		char* words = strtok_s(charIp, ".", &context);
 		int count = 0;
+		
+		//parsing the segments of the IP
 		while (words != NULL)
 		{
 			int size = strlen(words);
 
+			//check if the ip segment contains only numbers
 			for (int i = 0; i < size; i++)
 			{
 				if (words[i] - '0' > 9 || words[i] - '0' < 0)
@@ -44,6 +48,7 @@ bool isValidIp(const std::string& ip)
 				else
 					digitsAmount += 1;
 			}
+			//if the length of the segment is bigger than 3
 			if (size > 3)
 			{
 				delete[] charIp;
@@ -52,7 +57,7 @@ bool isValidIp(const std::string& ip)
 			count++;
 			words = strtok_s(NULL, ".", &context);
 		}
-
+		//check if there is 4 segments and 3 dots.
 		if (count == 4 && ip.length() - digitsAmount == 3)
 		{
 			delete[] charIp;
@@ -80,6 +85,8 @@ void setMaliciousIp()
 	do
 	{
 		std::cin >> ip;
+		
+		//check if the IP in valid
 		if (isValidIp(ip) == true)
 			file << ip + "\n";
 		else if (ip != "99")
@@ -94,6 +101,8 @@ bool isValidWord(const std::string& word)
 	int len = word.length();
 	if (word == "")
 		return false;
+	
+	//check if the word doesnt contain digits.
 	for (int i = 0; i < len; i++)
 	{
 		if (word[i] - '0' <= 9 && word[i] - '0' >= 0)
@@ -131,6 +140,8 @@ void viewBadRequests()
 	std::ifstream f(maliciousRequestsFile);
 	std::string line;
 	std::cout << "\n\n";
+	
+	//check if the file opened
 	if (file.is_open())
 	{
 		while (!file.eof())
@@ -141,8 +152,11 @@ void viewBadRequests()
 		}
 		file.close();
 	}
+	//if the file isn't exist
 	else if (f.good() == false)
 		std::cout << "There aren't bad requests\n";
+	
+	//the file exists but can't be opened
 	else
 		std::cout << "There was an error opening the file\n";
 }
@@ -176,6 +190,8 @@ void menu()
 	int options[menu_size];
 	bool flag = false;
 	std::cin.exceptions(std::istream::failbit);
+	
+	//getting the wanted actions from the user
 	do
 	{
 
@@ -273,22 +289,24 @@ void writeRequestToFile(const std::string& srcIP, const std::string& dstIP, cons
 }
 
 
-std::vector<std::string> chooseDelete()
+std::set<std::string> chooseDelete()
 {
 
-	std::vector<std::string> vec;
+	std::set<std::string> s;
 	std::string str;
 
 	std::cout << "\n\nPlease enter what you want to delete\n";
 	std::cout << "To stop please insert 99\n";
+	
+	//getting from the user which words to delete
 	do
 	{
 		std::cin >> str;
 		if (str != "99")
-			vec.insert(vec.begin(), str);
+			s.insert(s.begin(), str);
 	} while (str != "99");
 
-	return vec;
+	return s;
 }
 
 void changeBadWordsList()

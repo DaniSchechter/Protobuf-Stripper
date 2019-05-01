@@ -1,41 +1,25 @@
-#include "server.hpp"
-#include "config.hpp"
-#include "logger.hpp"
+#include "intervalRule.hpp"
+#include "menu.hpp"
+#include <chrono>
+#include <thread>
 
-#include <string>
-#include <boost/bind.hpp>
-
-int main(int argc, char* argv[])
+int main()
 {
-  #ifdef DEBUG_MODE
-    std::cout<<"Running in Debug mode"<<std::endl;
-  #endif
-  
-  std::unique_ptr<Config> config;
+	
+		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
+		std::cout << "asdas\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(7000));
+		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
 
-  try
-  { 
-    std::vector <std::string> compilation_flags;
-    if(argc > 1)
-    {
-      config = std::make_unique<Config>(Config::get_config(argv[1]));
-    }
-    else
-    {
-      config = std::make_unique<Config>(Config::get_config());
-    }
-
-    // Initialize the server.
-    // TODO changr to normal cast from std
-    Server s(std::move(config));
-
-    // Run the server until stopped.
-    s.run();
-  }
-  catch (std::exception& e)
-  {
-    Logger::log(e.what(), Logger::LOG_LEVEL::FATAL);
-  }
-
-  return 0;
+		getchar();
+	
+	return 0;
 }
