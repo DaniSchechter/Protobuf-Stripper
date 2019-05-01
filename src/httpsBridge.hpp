@@ -38,11 +38,6 @@ public:
     BasicSocketType& get_actual_socket(SslStreamType& socket);
     std::shared_ptr<SslStreamType> create_new_server_socket();
 
-    void do_something()
-{
-    sleep(3);
-}
-
 private:
 
     std::shared_ptr<boost::asio::ssl::context> client_ctx_;
