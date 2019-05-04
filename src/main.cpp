@@ -1,25 +1,14 @@
-#include "intervalRule.hpp"
-#include "menu.hpp"
-#include <chrono>
-#include <thread>
+#include "EncryptedData.hpp"
+#include <iostream>
+#include <string>
+using namespace std;
 
 int main()
 {
-	
-		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
-		std::cout << "asdas\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(7000));
-		std::cout << isInterval("5.5.5.5", "6.6.6.6") + "\n";
 
-		getchar();
-	
+	string strtest = "";
+	cout << "Plain text entropy: " << Entropy(strtest)<< "\n";
+	string strteste = "";
+	cout << "encrypted text entropy: " << Entropy(strteste);
 	return 0;
 }

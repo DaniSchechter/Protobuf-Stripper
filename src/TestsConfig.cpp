@@ -1,4 +1,4 @@
-#include"TestsConfig.h"
+#include"TestsConfig.hpp"
 
 std::string test_config(const std::string& cname)
 {
