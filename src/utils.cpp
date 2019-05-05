@@ -3,18 +3,24 @@
 #include <regex>
 #include <iostream>
 
-std::string Utils::parse_domain(const std::string& message)
+int Utils::parse_domain(const std::string& message, std::string& domain)
 {
-    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^/ :\\t\\n]+)(?:.*?:(\\d+))?");
+    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^ :\\t\\n]+)(?:.*?:(\\d+))?.*?[ \\t]+");
     std::smatch match;
     std::regex_search(message, match, re);
 
     std::string port = "80";
 
     // If there is no valid URI
-    if (!match[1].matched)
+    if(!match[1].matched)
     {
         return EMPTY_DOMAIN;
+    }
+
+    // The absolute URI is /
+    if(match[1].str()[0] == '/')
+    {
+        return EMPTY_ABSOLUTE_URI;
     }
 
     std::string host = match[1].str(); 
@@ -24,7 +30,10 @@ std::string Utils::parse_domain(const std::string& message)
         port = match[2].str();
     } 
 
-    return host + ":" + port;
+    std::string new_domain = host + ":" + port;
+
+    domain.assign(new_domain, 0, new_domain.length());
+    return 0;
 }
 
 boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
@@ -48,3 +57,26 @@ boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
         return boost::asio::ip::tcp::endpoint();
     }
 }
+
+
+const char* Utils::generate_absolute_uri_request(const std::string& message)
+{
+    // Get the host
+    std::regex host_re("Host:[ \\t](.*)");
+    std::smatch host;
+    std::regex_search(message, host, host_re);
+
+    // Get the rest of the request - from the absolute URI and on 
+    std::regex full_message_re("GET[ \\t]*[/]([\\s\\S]+)");
+    std::smatch full_message;
+    std::regex_search(message, full_message, full_message_re);
+
+
+    std::string st = "GET http://" + host[1].str() + "/" + full_message[1].str();
+    std::cout << "the new request is : " << st << std::endl;
+
+    const char* s = new char[st.length()+1];
+    s=st.c_str();
+    return s;
+}
+

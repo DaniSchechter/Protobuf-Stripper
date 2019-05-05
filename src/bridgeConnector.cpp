@@ -27,7 +27,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
                                          std::size_t bytes_transferred)
 {
   if(error) { return; }
-
+  std::cout << "11111111111111\n";
   Logger::log(
       "Client --> Proxy     Server.   [C] " + 
       boost::lexical_cast<std::string>(client_socket_.remote_endpoint()) + 
@@ -38,12 +38,13 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
   Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
   
   // Resolve the remote host (If appeared in the message)
-  std::string domain = Utils::parse_domain(
-      boost::lexical_cast<std::string>(client_buffer_)
+  std::string domain; 
+  int parsing_error = Utils::parse_domain(
+      boost::lexical_cast<std::string>(client_buffer_), domain
   );
-
+  std::cout << "the domain is: " << domain << std::endl;
   // If no Domain in the first message, there is nothing to do with it (we do not pereserve queue)
-  if (domain == EMPTY_DOMAIN) 
+  if (parsing_error == Utils::EMPTY_DOMAIN) 
   {
     Logger::log("Could not parse the domain out of the request", Logger::LOG_LEVEL::WARNING); 
     return; 
@@ -72,11 +73,15 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
     }
     case HTTPS:
     {
-      std::cout << "sending connection established message to client \n";
       std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
       client_socket_.write_some(boost::asio::buffer(str, str.length()));
-      std::cout << "Done sending connection established message to client \n";
-      
+      std::cout << "22222222222222\n";
+      Logger::log(
+        "Client <-- Proxy     Server.   [C] " + 
+        boost::lexical_cast<std::string>(client_socket_.remote_endpoint()) + "\n" + str,
+        Logger::LOG_LEVEL::INFO
+      );
+
       std::shared_ptr<boost::asio::ssl::context> ctx = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
       ctx->set_options(
         boost::asio::ssl::context::default_workarounds
@@ -86,7 +91,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
       ctx->use_certificate_chain_file("../server.crt");
       ctx->use_private_key_file("../server.key", boost::asio::ssl::context::pem);
-      // ctx->use_tmp_dh_file("../dh512.pem");
+      ctx->use_tmp_dh_file("../dh512.pem");
       std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
