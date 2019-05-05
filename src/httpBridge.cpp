@@ -4,20 +4,21 @@ HttpBridge::HttpBridge(std::shared_ptr<boost::asio::io_context> io_context,
                        HttpSocketType& client_socket)
   : Bridge(io_context)
 {
-    set_client_socket(std::make_shared<HttpSocketType>(std::move(client_socket)));
-    client_host_ = boost::lexical_cast<std::string>( client_socket_->remote_endpoint());
 
+    set_client_socket(std::make_shared<HttpSocketType>(std::move(client_socket)));
+    std::cout << "333333333333\n";
+    client_host_ = boost::lexical_cast<std::string>( client_socket_->remote_endpoint());
 }
 
 void HttpBridge::start_by_connect(char client_buffer [max_data_length],
-                                                    const boost::system::error_code& error,
-                                                    std::size_t bytes_transferred,
-                                                    endpoint_type endpoint,
-                                                    const std::string& domain)
+                                  const boost::system::error_code& error,
+                                  std::size_t bytes_transferred,
+                                  endpoint_type endpoint,
+                                  const std::string& domain)
 {
     // save the message  
     strncpy(client_buffer_, client_buffer, max_data_length);
-
+std::cout << "444444444444\n";
     Logger::log(
         "1) Attempting to connect to " + domain + 
         " [C] " + boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint()),

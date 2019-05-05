@@ -51,8 +51,6 @@ public:
 
 protected:
 
-  
-
   // Handle completion of a client write operation.
   // Start a new server read operation
   void handle_client_write(std::shared_ptr<SocketType> server_socket, 

@@ -41,14 +41,14 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR, endpoint);
         return;
     }
+    std::cout << "aaaaaaaaa\n";
     Logger::log(
-        "Connection established.   [C] " + 
+        "Connection established with the requested server. [C] " + 
         client_host_ + "  [S] " + endpoint,
         Logger::LOG_LEVEL::INFO
     );    
 
     derrived_bridge_type()->do_handshake(server_socket, boost::asio::ssl::stream_base::client);
-
     // Setup async read from remote server (server). Preperation for the following write
     server_socket->async_read_some(
         boost::asio::buffer(server_buffer_,max_data_length),
@@ -63,17 +63,37 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
     );
 
     // Send the first messaage to the server
-    async_write(
-        *server_socket,
-        boost::asio::buffer(client_buffer_,bytes_transferred),
-        boost::bind(
-            &Bridge::handle_server_write,
-            this->shared_from_this(),
-            server_socket,
-            boost::asio::placeholders::error,
-            endpoint
-        )
-    );
+    // Only if got a message to forward - e.g Https first message that we get is CONNECT 
+    // We dont want to forward it so we are not saving it in client_buffer_
+
+    if(strlen(client_buffer_) > 0)
+    {
+        async_write(
+            *server_socket,
+            boost::asio::buffer(client_buffer_,bytes_transferred),
+            boost::bind(
+                &Bridge::handle_server_write,
+                this->shared_from_this(),
+                server_socket,
+                boost::asio::placeholders::error,
+                endpoint
+            )
+        );
+    }
+    else
+    {
+        client_socket_->async_read_some(
+            boost::asio::buffer(client_buffer_,max_data_length),
+            boost::bind(
+                &Bridge::handle_client_read,
+                this->shared_from_this(),
+                server_socket,
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred,
+                endpoint
+            )
+        );
+    }
 }
 
 // Reading from client is completed, now send the data to the remote server
@@ -90,6 +110,8 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
             close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, endpoint);
             return;
     }
+    std::cout << "bbbbbbbbbbb\n";
+
     Logger::log(
         "Client --> Proxy     Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
@@ -98,13 +120,20 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
     // Resolve the remote host (If appeared in the message)
-    std::string domain = Utils::parse_domain(
-        boost::lexical_cast<std::string>(client_buffer_)
+    std::string domain;
+    int parsing_error = Utils::parse_domain(
+        boost::lexical_cast<std::string>(client_buffer_), domain
     );
-
+    
     // No new Host was provided in the message - use the current one
-    if (domain == EMPTY_DOMAIN)
+    if (parsing_error)
     {
+        // Check if the request's domain is empty
+        if (parsing_error == Utils::EMPTY_ABSOLUTE_URI)
+        {
+            const char* s = Utils::generate_absolute_uri_request(boost::lexical_cast<std::string>(client_buffer_));
+            strncpy(client_buffer_, s, strlen(s)); 
+        }
         async_write(
             *server_socket,
             boost::asio::buffer(client_buffer_,bytes_transferred),
@@ -195,6 +224,8 @@ void Bridge<BridgeType, SocketType>::handle_server_write(std::shared_ptr<SocketT
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_WRITE_ERROR, endpoint);
         return;
     }
+    std::cout << "dddddddddd\n";
+
     Logger::log(
         "Client     Proxy --> Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
@@ -227,6 +258,8 @@ void Bridge<BridgeType, SocketType>::handle_server_read(std::shared_ptr<SocketTy
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR, endpoint);
         return;
     } 
+    std::cout << "eeeeeeeee\n";
+    
     Logger::log(
         "Client     Proxy <-- Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
@@ -258,6 +291,8 @@ void Bridge<BridgeType, SocketType>::handle_client_write(std::shared_ptr<SocketT
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR, endpoint); 
         return;
     }
+    std::cout << "ffffffff\n";
+
     Logger::log(
         "Client <-- Proxy     Server.   [C] " + 
         client_host_ + "  [S] " + endpoint,
@@ -312,9 +347,10 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
     else if(server_socket->lowest_layer().is_open())
     {
         Logger::log(
-            "Deleting [S] " + endpoint + " for [C] ",
+            "Deleting [S] " + endpoint + " for [C]",
             Logger::LOG_LEVEL::DEBUG
         );
+
         server_socket_map_.erase(endpoint);
 
         // TODO if the erase raises exception we need to find the server socket and erase using the iterator

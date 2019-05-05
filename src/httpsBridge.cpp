@@ -12,12 +12,12 @@ HttpsBridge::HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
 }
 
 void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
-                                    const boost::system::error_code& error,
-                                    std::size_t bytes_transferred,
-                                    endpoint_type endpoint,
-                                    const std::string& domain)
+                                   const boost::system::error_code& error,
+                                   std::size_t bytes_transferred,
+                                   endpoint_type endpoint,
+                                   const std::string& domain)
 {
-    auto self(shared_from_this());
+    std::cout << "55555555555555\n";
     client_host_ = boost::lexical_cast<std::string>( ssl_stream_->lowest_layer().remote_endpoint());
 
     // TODO add error message
@@ -25,9 +25,6 @@ void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
     {
         return;
     }
-
-    std::string str = "HTTP/1.1 200 connection established\r\n";
-    std::copy(str.begin(), str.end() +1, server_buffer_);
 
     // Preform the handshake with the client
     do_handshake(client_socket_, boost::asio::ssl::stream_base::server);    
@@ -54,13 +51,17 @@ void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
 void HttpsBridge::do_handshake(std::shared_ptr<SslStreamType>& socket,
                                boost::asio::ssl::stream_base::handshake_type handshake_type)
 {
-    auto self(shared_from_this());
-    Logger::log("starting handshake with " + socket->lowest_layer().remote_endpoint().address().to_string(), Logger::LOG_LEVEL::INFO);
+    std::cout << "666666666666666666\n";
+    std::string endpoint = boost::lexical_cast<std::string>(socket->lowest_layer().remote_endpoint());
+    Logger::log(
+        "SSL handshake started with " + endpoint,
+        Logger::LOG_LEVEL::INFO
+    );
+
     socket->handshake(handshake_type);
 
     Logger::log(
-        "SSL handshake complited with [C]" + 
-        boost::lexical_cast<std::string>(socket->lowest_layer().remote_endpoint()), 
+        "SSL handshake completed with " + endpoint,
         Logger::LOG_LEVEL::INFO
     );
 }
