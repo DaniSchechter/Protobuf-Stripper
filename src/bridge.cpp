@@ -41,7 +41,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR, endpoint);
         return;
     }
-    std::cout << "aaaaaaaaa\n";
+
     Logger::log(
         "Connection established with the requested server. [C] " + 
         client_host_ + "  [S] " + endpoint,
@@ -110,7 +110,6 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
             close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, endpoint);
             return;
     }
-    std::cout << "bbbbbbbbbbb\n";
 
     Logger::log(
         "Client --> Proxy     Server.   [C] " + 
@@ -224,7 +223,6 @@ void Bridge<BridgeType, SocketType>::handle_server_write(std::shared_ptr<SocketT
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_WRITE_ERROR, endpoint);
         return;
     }
-    std::cout << "dddddddddd\n";
 
     Logger::log(
         "Client     Proxy --> Server.   [C] " + 
@@ -258,7 +256,6 @@ void Bridge<BridgeType, SocketType>::handle_server_read(std::shared_ptr<SocketTy
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR, endpoint);
         return;
     } 
-    std::cout << "eeeeeeeee\n";
     
     Logger::log(
         "Client     Proxy <-- Server.   [C] " + 
@@ -291,7 +288,6 @@ void Bridge<BridgeType, SocketType>::handle_client_write(std::shared_ptr<SocketT
         close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR, endpoint); 
         return;
     }
-    std::cout << "ffffffff\n";
 
     Logger::log(
         "Client <-- Proxy     Server.   [C] " + 

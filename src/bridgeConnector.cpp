@@ -27,7 +27,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
                                          std::size_t bytes_transferred)
 {
   if(error) { return; }
-  std::cout << "11111111111111\n";
+
   Logger::log(
       "Client --> Proxy     Server.   [C] " + 
       boost::lexical_cast<std::string>(client_socket_.remote_endpoint()) + 
@@ -42,7 +42,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
   int parsing_error = Utils::parse_domain(
       boost::lexical_cast<std::string>(client_buffer_), domain
   );
-  std::cout << "the domain is: " << domain << std::endl;
+
   // If no Domain in the first message, there is nothing to do with it (we do not pereserve queue)
   if (parsing_error == Utils::EMPTY_DOMAIN) 
   {
@@ -75,7 +75,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
     {
       std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
       client_socket_.write_some(boost::asio::buffer(str, str.length()));
-      std::cout << "22222222222222\n";
+
       Logger::log(
         "Client <-- Proxy     Server.   [C] " + 
         boost::lexical_cast<std::string>(client_socket_.remote_endpoint()) + "\n" + str,

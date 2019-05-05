@@ -1,5 +1,5 @@
-#ifndef HTTPS_BRIDGE_HPP
-#define HTTPS_BRIDGE_HPP
+#ifndef HTTPS_BRIDGE_HPP_
+#define HTTPS_BRIDGE_HPP_
 
 #include "bridge.hpp"
 #include <boost/asio/ssl/stream.hpp>
@@ -45,4 +45,4 @@ private:
     std::shared_ptr<SslStreamType> ssl_stream_;    
 };
 
-#endif // HTTPS_BRIDGE_HPP
+#endif // HTTPS_BRIDGE_HPP_

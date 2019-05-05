@@ -4,8 +4,6 @@
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
 
-#include <boost/asio/ip/tcp.hpp>
-
 class BridgeConnector
     : public std::enable_shared_from_this<BridgeConnector>
 {
