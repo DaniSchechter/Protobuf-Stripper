@@ -5,6 +5,7 @@
 #include <boost/asio/ip/tcp.hpp>
 
 #define ENDPOINT_ADDRESS_ERROR "0.0.0.0:0"
+#define DEFAULT_HTTP_METHOD "Get "
 
 // Parser for incoming requests.
 struct Utils

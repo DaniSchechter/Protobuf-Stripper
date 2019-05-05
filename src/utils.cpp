@@ -65,16 +65,22 @@ const char* Utils::generate_absolute_uri_request(const std::string& message)
     std::smatch host;
     std::regex_search(message, host, host_re);
 
-    // Get the rest of the request - from the absolute URI and on 
+    // Get the rest of the request 
+    // 1) Http method
+    // 2) all the content after the /
     std::regex full_message_re("(.*?)[/]([\\s\\S]+)");
     std::smatch full_message;
     std::regex_search(message, full_message, full_message_re);
+    std::string http_method = full_message[1].str();
 
+    // If the request starts with / and no HTTP Method, concat default http method at the beginning 
+    if(http_method == "")
+    {
+        std::cout << "*********************************************************************************************************\n";
+        http_method = DEFAULT_HTTP_METHOD;
+    }
+    std::string new_message = http_method + host[1].str() + "/" + full_message[2].str();
 
-    std::string st = full_message[1].str() + host[1].str() + "/" + full_message[2].str();
-
-    const char* s = new char[st.length()+1];
-    s=st.c_str();
-    return s;
+    return new_message.c_str();
 }
 
