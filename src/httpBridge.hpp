@@ -1,5 +1,5 @@
-#ifndef HTTP_BRIDGE_HPP
-#define HTTP_BRIDGE_HPP
+#ifndef HTTP_BRIDGE_HPP_
+#define HTTP_BRIDGE_HPP_
 
 #include "bridge.hpp"
 #include <boost/asio/ssl.hpp>
@@ -31,4 +31,4 @@ public:
     std::shared_ptr<HttpSocketType> create_new_server_socket();
 };
 
-#endif // HTTP_BRIDGE_HPP
+#endif // HTTP_BRIDGE_HPP_

@@ -58,7 +58,6 @@ boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
     }
 }
 
-
 const char* Utils::generate_absolute_uri_request(const std::string& message)
 {
     // Get the host
@@ -67,13 +66,12 @@ const char* Utils::generate_absolute_uri_request(const std::string& message)
     std::regex_search(message, host, host_re);
 
     // Get the rest of the request - from the absolute URI and on 
-    std::regex full_message_re("GET[ \\t]*[/]([\\s\\S]+)");
+    std::regex full_message_re("(.*?)[/]([\\s\\S]+)");
     std::smatch full_message;
     std::regex_search(message, full_message, full_message_re);
 
 
-    std::string st = "GET http://" + host[1].str() + "/" + full_message[1].str();
-    std::cout << "the new request is : " << st << std::endl;
+    std::string st = full_message[1].str() + host[1].str() + "/" + full_message[2].str();
 
     const char* s = new char[st.length()+1];
     s=st.c_str();

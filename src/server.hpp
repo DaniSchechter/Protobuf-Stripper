@@ -2,12 +2,9 @@
 #define SERVER_HPP_
 
 #include "config.hpp"
-#include "bridge.hpp"
 #include "bridgeConnector.hpp"
 
-#include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
-#include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/thread/thread.hpp>
 
