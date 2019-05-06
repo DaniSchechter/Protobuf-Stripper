@@ -130,8 +130,11 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
         // Check if the request's domain is empty
         if (parsing_error == Utils::EMPTY_ABSOLUTE_URI)
         {
-            const char* s = Utils::generate_absolute_uri_request(boost::lexical_cast<std::string>(client_buffer_));
-            strncpy(client_buffer_, s, strlen(s)); 
+            std::string message = Utils::generate_absolute_uri_request(
+                boost::lexical_cast<std::string>(client_buffer_), 
+                derrived_bridge_type()->get_http_type()
+            );
+            strncpy(client_buffer_, message.c_str(), message.length()); 
         }
         async_write(
             *server_socket,

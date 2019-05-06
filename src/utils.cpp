@@ -5,7 +5,7 @@
 
 int Utils::parse_domain(const std::string& message, std::string& domain)
 {
-    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^ :\\t\\n]+)(?:.*?:(\\d+))?.*?[ \\t]+");
+    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
     std::smatch match;
     std::regex_search(message, match, re);
 
@@ -58,20 +58,20 @@ boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
     }
 }
 
-const char* Utils::generate_absolute_uri_request(const std::string& message)
+std::string Utils::generate_absolute_uri_request(const std::string& message, const std::string& http_type)
 {
     // Get the host
     std::regex host_re("Host:[ \\t](.*)");
     std::smatch host;
     std::regex_search(message, host, host_re);
-
+    
     // Get the rest of the request 
     // 1) Http method
     // 2) all the content after the /
-    std::regex full_message_re("(.*?)[/]([\\s\\S]+)");
+    std::regex full_message_re("(.*?)(?:https?:/{2})?[/]([\\s\\S]+)");
     std::smatch full_message;
     std::regex_search(message, full_message, full_message_re);
-    std::string http_method = full_message[1].str();
+    std::string http_method = full_message[1].str() + http_type + "://";
 
     // If the request starts with / and no HTTP Method, concat default http method at the beginning 
     if(http_method == "")
@@ -79,8 +79,6 @@ const char* Utils::generate_absolute_uri_request(const std::string& message)
         std::cout << "*********************************************************************************************************\n";
         http_method = DEFAULT_HTTP_METHOD;
     }
-    std::string new_message = http_method + host[1].str() + "/" + full_message[2].str();
-
-    return new_message.c_str();
+    return http_method + host[1].str() + "/" + full_message[2].str();
 }
 

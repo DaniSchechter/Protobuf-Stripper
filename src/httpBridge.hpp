@@ -27,6 +27,8 @@ public:
     void do_handshake(std::shared_ptr<HttpSocketType> socket,
                       boost::asio::ssl::stream_base::handshake_type handshake_type);
 
+    std::string get_http_type() { return "http"; }
+
     HttpSocketType& get_actual_socket(HttpSocketType& socket);
     std::shared_ptr<HttpSocketType> create_new_server_socket();
 };
