@@ -54,3 +54,6 @@ bin/*
 
 # Configuratio files
 *config.json
+
+# ssh Keys
+keys/*

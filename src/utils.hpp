@@ -25,7 +25,7 @@ struct Utils
                                                            boost::asio::io_context& io_context);
 
     // If the requested domain is empty (GET / http...) return a new request with the host as the domain
-    static const char* generate_absolute_uri_request(const std::string& message);
+    static std::string generate_absolute_uri_request(const std::string& message, const std::string& http_type);
 };
 
 #endif // UTILS_HPP_
