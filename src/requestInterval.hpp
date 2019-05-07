@@ -3,7 +3,7 @@
 #include <ctime>
 #include <chrono>
 
-#endif
+
 
 class requestInterval
 {
@@ -39,3 +39,5 @@ public:
 		return this->interval;
 	}
 };
+
+#endif

@@ -23,7 +23,6 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 	//if the source and destination ip doesn't exist in the map
 	if (map.find(key) == map.end())
 	{
-		std::cout << "1\n";
 		requestInterval interval(duration, 0);
 		//inset a new instance with the interval-o to the map
 		map[key] = interval;
@@ -36,7 +35,6 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 		//if the interval is zero
 		if (map[key].getInterval() == 0)
 		{
-			std::cout << "2\n";
 			requestInterval interval(duration, duration - map[key].getRecieveTime());
 			//calculate the new interval and save in in the map
 			map[key] = interval;
@@ -45,16 +43,14 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 		else
 		{
 			// checks if the message is sent with the same frequanty
-			if (map[key].getInterval() - (duration - map[key].getRecieveTime())<500 && (duration - map[key].getRecieveTime()) - map[key].getInterval()<500)
+			if (map[key].getInterval() - (duration - map[key].getRecieveTime())< intervalError && (duration - map[key].getRecieveTime()) - map[key].getInterval()< intervalError)
 			{
-				std::cout << "3\n";
 				requestInterval interval(duration, map[key].getInterval());
 				map[key] = interval;
 				return true;
 			}
 			else
 			{
-				std::cout << "4\n";
 				// change the interval to zero
 				requestInterval interval(duration, 0);
 				map[key] = interval;

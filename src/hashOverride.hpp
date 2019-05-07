@@ -1,3 +1,5 @@
+#ifndef hashOverride.hpp
+
 #include "requestID.hpp"
 #include <ctime>
 
@@ -24,3 +26,5 @@ public:
 	}
 
 };
+
+#endif

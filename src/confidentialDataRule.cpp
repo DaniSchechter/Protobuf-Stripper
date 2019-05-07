@@ -1,5 +1,6 @@
 #include "confientialDataRule.hpp"
 #include "filesHandler.hpp"
+#include "TestsConfig.hpp"
 
 bool checkIfMaliciousIp(const std::string& dstIp)
 {
@@ -25,28 +26,25 @@ bool checkIfDataConfidential(const std::string& data)
 	int num = 0;
 
 	//loop through all the words
-	for (int i = 0; i < tokens.size(); i++)
+	for(const std::string& str : tokens)
 	{
 		//checks if the word is forbidden and if it is then return it's value
-		std::string temp = isStrExistsInFile(maliciousWordsFile, tokens[i]);
+		std::string temp = isStrExistsInFile(maliciousWordsFile, str);
 		
 		countBadWords += atoi(temp.c_str());
 		
 		
 		//checks if the word exists in the list of words the user doesn't allow
-		if (isStrExistsInFile(blockWordsFile, tokens[i]) == "")
+		if (isStrExistsInFile(blockWordsFile, str) == "")
 			return true;
 		countTotalWords++;
 	}
 
-
-	//if the data is smaller than 1000 words and the number of bad words are greater than 5 then the packet is forbidden
-	if (countTotalWords <= 1000 && countBadWords >= 5)
+	//if the frequanty of bad words is too much bigger then the function will return true
+	if (((double)countBadWords / countTotalWords) >= atoi(test_config("FREQ_BAD_WORDS").c_str()))
 		return true;
 	
-	//like the previous comment
-	else if (countTotalWords >= 1000 && countBadWords >= 8)
-		return true;
+	
 	return false;
 
 }
