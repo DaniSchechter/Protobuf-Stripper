@@ -1,4 +1,4 @@
-
+#ifndef  menu.hpp
 
 #include "filesHandler.hpp"
 
@@ -54,3 +54,5 @@ void changeBadWordsList();
 
 //The function changes the bad IPs list
 void changeBadIpsList();
+
+#endif

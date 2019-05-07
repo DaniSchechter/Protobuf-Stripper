@@ -1,3 +1,6 @@
+#ifndef filesHandler.hpp
+
+
 
 
 #include <iostream>
@@ -32,3 +35,5 @@ void copyFilesContent(const std::string& srcFile, const std::string& dstFile);
 
 //The function delete the lines from the file
 bool deleteLinesFromFile(const std::string& fileName, std::set<std::string> s);
+
+#endif // !filesHandler.hpp

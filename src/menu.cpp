@@ -36,9 +36,9 @@ bool isValidIp(const std::string& ip)
 		while (words != NULL)
 		{
 			int size = strlen(words);
-
+			
 			//check if the ip segment contains only numbers
-			for (int i = 0; i < size; i++)
+			for (char i = 0; i < size; i++)
 			{
 				if (words[i] - '0' > 9 || words[i] - '0' < 0)
 				{
