@@ -27,11 +27,11 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
                                          std::size_t bytes_transferred)
 {
   if(error) { return; }
+  std::string client_remote_endpoint = boost::lexical_cast<std::string>(client_socket_.remote_endpoint());
 
   Logger::log(
-      "Client --> Proxy     Server.   [C] " + 
-      boost::lexical_cast<std::string>(client_socket_.remote_endpoint()) + 
-      "  [Prev S] First read from this client" ,
+      "Client --> Proxy     Server.   [C] " + client_remote_endpoint + 
+      " [Prev S] First read from this client" ,
       Logger::LOG_LEVEL::INFO
   );
 
@@ -77,8 +77,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       client_socket_.write_some(boost::asio::buffer(str, str.length()));
 
       Logger::log(
-        "Client <-- Proxy     Server.   [C] " + 
-        boost::lexical_cast<std::string>(client_socket_.remote_endpoint()) + "\n" + str,
+        "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
         Logger::LOG_LEVEL::INFO
       );
 

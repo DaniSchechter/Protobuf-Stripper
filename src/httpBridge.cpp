@@ -5,6 +5,7 @@ HttpBridge::HttpBridge(std::shared_ptr<boost::asio::io_context> io_context,
   : Bridge(io_context)
 {
     set_client_socket(std::make_shared<HttpSocketType>(std::move(client_socket)));
+    std::cout<<"Mybe here ;-)\n";
     client_host_ = boost::lexical_cast<std::string>( client_socket_->remote_endpoint());
 }
 
@@ -16,9 +17,9 @@ void HttpBridge::start_by_connect(char client_buffer [max_data_length],
 {
     // save the message  
     strncpy(client_buffer_, client_buffer, max_data_length);
-
+    std::cout<<"Or even here ;-)\n";
     Logger::log(
-        "1) Attempting to connect to " + domain + 
+        "First domain for this Bridge\nAttempting to connect to " + domain + 
         " [C] " + boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint()),
         Logger::LOG_LEVEL::INFO
     );

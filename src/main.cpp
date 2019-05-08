@@ -27,15 +27,16 @@ int main(int argc, char* argv[])
 
     // Initialize the server.
     // TODO changr to normal cast from std
-    Server s(std::move(config));
+    Server server(std::move(config));
 
     // Run the server until stopped.
-    s.run();
+    server.run();
+    std::cout <<"in main after server run exited";
   }
   catch (std::exception& e)
   {
     Logger::log(e.what(), Logger::LOG_LEVEL::FATAL);
   }
-
+  std::cout <<"111111111111111111111111111111";
   return 0;
 }
