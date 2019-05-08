@@ -73,7 +73,7 @@ std::string Utils::generate_absolute_uri_request(const std::string& message, con
     std::regex_search(message, full_message, full_message_re);
     std::string http_method = full_message[1].str() + http_type + "://";
 
-    // If the request starts with / and no HTTP Method, concat default http method at the beginning 
+    // If the request starts with / and no HTTP Method, aconcat defult http method at the beginning 
     if(http_method == "")
     {
         std::cout << "*********************************************************************************************************\n";

@@ -44,9 +44,7 @@ public:
   void handle_server_connect(std::shared_ptr<SocketType> server_socket,
                             const boost::system::error_code& error,
                             std::size_t bytes_transferred,
-                            const std::string& endpoint);
-
-  ~Bridge();
+                            const std::string& server_host);
 
 protected:
 
@@ -54,39 +52,38 @@ protected:
   // Start a new server read operation
   void handle_client_write(std::shared_ptr<SocketType> server_socket, 
                           const boost::system::error_code& error, 
-                          const std::string& endpoint);
+                          const std::string& server_host);
 
   // Handle completion of a server read operation.
   // Start a new clinet write operation
   void handle_server_read(std::shared_ptr<SocketType> server_socket, 
                           const boost::system::error_code& error,
                           const size_t& bytes_transferred,
-                          const std::string& endpoint);
+                          const std::string& server_host);
 
   // Handle completion of a server write operation.
   // Start a clinet read operation
   void handle_server_write(std::shared_ptr<SocketType> server_socket, 
                            const boost::system::error_code& error,
-                           const std::string& endpoint);
+                           const std::string& server_host);
   
   // Handle completion of client read operation.
   // Start a server write operation
   void handle_client_read(std::shared_ptr<SocketType> server_socket,
                           const boost::system::error_code& error,
                           std::size_t bytes_transferred,
-                          const std::string& endpoint);
+                          const std::string& server_host);
 
 
 
   // Close the connection with both client and server
   void close(std::shared_ptr<SocketType> server_socket, 
              SOCKET_ERROR_SOURCE error_source,
-             const std::string& endpoint);
+             const std::string& server_host,
+             const std::string& error_message);
 
   // Enable derived Bridges to set the correct socket
   void set_client_socket(std::shared_ptr<SocketType> socket) { client_socket_ = socket;}
-
-  void print_error_source(SOCKET_ERROR_SOURCE error_source);
 
   // Derived classes need this to create new server sockets
   std::shared_ptr<boost::asio::io_context> io_context_;
@@ -101,6 +98,11 @@ private:
   // Get the cerived Bridge type for static polymorphism where needed
   BridgeType*       derrived_bridge_type() { return static_cast<BridgeType*>(this); }
   BridgeType const* derrived_bridge_type() const { return static_cast<BridgeType const*>(this); }
+
+  // Prints the error messaage indside close function
+  void print_error_source(SOCKET_ERROR_SOURCE error_source, 
+                          const std::string& server_host,
+                          const std::string& error_message);
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
