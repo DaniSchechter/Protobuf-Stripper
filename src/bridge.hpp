@@ -46,10 +46,6 @@ public:
                             std::size_t bytes_transferred,
                             const std::string& server_host);
 
-  ~Bridge(){
-    std::cout<<"d'tor of bridge" << std::endl;
-  }
-
 protected:
 
   // Handle completion of a client write operation.

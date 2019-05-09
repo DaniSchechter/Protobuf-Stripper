@@ -83,7 +83,6 @@ void Server::WorkerThread( )
 		{
 			Logger::log("Exception: " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
 		}
-    std::cout <<"trying to see if it gets here\n";
 }
 
 
@@ -117,12 +116,5 @@ void Server::handle_stop()
   //TODO - getting - 32514 segmentation fault when stopping io_context, check for solution
   Logger::log("Server exits..." , Logger::LOG_LEVEL::WARNING);
   io_context_->stop();
-  std::cout<<"one\n";
   io_context_.reset();
-  std::cout<<"two\n";
-}
-
-Server::~Server()
-{
-  std::cout <<"server dtor...\n";
 }
