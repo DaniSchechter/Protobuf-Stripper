@@ -328,30 +328,17 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
     if( error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR || 
         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR )
     {
-        std::cout << "eeeeeeeee\n";
-
         if (client_socket_->lowest_layer().is_open())
         {
-        std::cout << "qqqqqqq\n";
-
             client_socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-        std::cout << "wwwwwwww\n";
-
             // client_socket_->close();
         }
         for(auto& server_socket_iter: server_socket_map_)
         {
-            std::cout << "rrrrrrrr\n";
             server_socket_iter.second->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-            std::cout << "tttttttttt\n";
             server_socket_iter.second.reset();
-            std::cout << "yyyyyyyyy\n";
         }
-        std::cout << "uuuuuuuuuuu\n";
-
         server_socket_map_.clear();
-        std::cout << "iiiiiiiiiiiiii\n";
-
     }
 
     
@@ -362,17 +349,11 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
             "Deleting [S] " + server_host + " for [C]",
             Logger::LOG_LEVEL::DEBUG
         );
-        std::cout << "bbbbbbbbb\n";
-
         server_socket_map_.erase(server_host);
-        std::cout << "aaaaaaaa\n";
         // TODO if the erase raises exception we need to find the server socket and erase using the iterator
         server_socket->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-        std::cout << "cccccccccc\n";
 
         server_socket.reset();
-        std::cout << "ddddddddd\n";
-
 
         // if it is the last server socket for this bridge, clear the client socket and close the bridge
         if(server_socket_map_.size() == 0)
@@ -382,9 +363,7 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
                 client_host_,
                 Logger::LOG_LEVEL::INFO
             );
-            std::cout << "111111111111\n";
             client_socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-            std::cout << "2222222222222\n";            
             // client_socket_->lower.close();
         }
     }

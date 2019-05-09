@@ -37,6 +37,5 @@ int main(int argc, char* argv[])
   {
     Logger::log(e.what(), Logger::LOG_LEVEL::FATAL);
   }
-  std::cout <<"111111111111111111111111111111";
   return 0;
 }

@@ -17,7 +17,6 @@ void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
                                    endpoint_type endpoint,
                                    const std::string& domain)
 {
-    std::cout<<"Too many places boy\n";
     client_host_ = boost::lexical_cast<std::string>( ssl_stream_->lowest_layer().remote_endpoint());
 
     // TODO add error message
@@ -51,7 +50,6 @@ void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
 void HttpsBridge::do_handshake(std::shared_ptr<SslStreamType>& socket,
                                boost::asio::ssl::stream_base::handshake_type handshake_type)
 {
-    std::cout<<"Telehhhh\n";
     std::string endpoint = boost::lexical_cast<std::string>(socket->lowest_layer().remote_endpoint());
     Logger::log(
         "SSL handshake started with " + endpoint,
