@@ -31,7 +31,6 @@ int main(int argc, char* argv[])
 
     // Run the server until stopped.
     server.run();
-    std::cout <<"in main after server run exited";
   }
   catch (std::exception& e)
   {
