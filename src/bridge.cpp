@@ -37,7 +37,12 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
     if(error)
     {
         // TODO think of edge cases
-        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR, server_host, error.message());
+        strand_.post(boost::bind(&Bridge::close,
+                                this->shared_from_this(),
+                                server_socket, 
+                                Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR, 
+                                server_host, 
+                                error.message()));
         return;
     }
 
@@ -104,7 +109,7 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
 {
     if(error)
     {
-        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, server_host, error.message());
+        strand_.post(boost::bind (&Bridge::close,this->shared_from_this(),server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, server_host, error.message()));
         return;
     }
 
@@ -125,14 +130,14 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     if (parsing_error)
     {
         // Check if the request's domain is empty
-        if (parsing_error == Utils::EMPTY_ABSOLUTE_URI)
-        {
-            std::string message = Utils::generate_absolute_uri_request(
-                boost::lexical_cast<std::string>(client_buffer_), 
-                derrived_bridge_type()->get_http_type()
-            );
-            strncpy(client_buffer_, message.c_str(), message.length()); 
-        }
+        // if (parsing_error == Utils::EMPTY_ABSOLUTE_URI)
+        // {
+        //     std::string message = Utils::generate_absolute_uri_request(
+        //         boost::lexical_cast<std::string>(client_buffer_), 
+        //         derrived_bridge_type()->get_http_type()
+        //     );
+        //     strncpy(client_buffer_, message.c_str(), message.length()); 
+        // }
         async_write(
             *server_socket,
             boost::asio::buffer(client_buffer_,bytes_transferred),
@@ -219,7 +224,7 @@ void Bridge<BridgeType, SocketType>::handle_server_write(std::shared_ptr<SocketT
 {
     if(error) 
     {
-        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_WRITE_ERROR, server_host, error.message());
+        strand_.post(boost::bind (&Bridge::close,this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_WRITE_ERROR, server_host, error.message()));
         return;
     }
 
@@ -251,7 +256,7 @@ void Bridge<BridgeType, SocketType>::handle_server_read(std::shared_ptr<SocketTy
                                 const std::string& server_host)
 {
     if(error) {
-        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR, server_host, error.message());
+        strand_.post(boost::bind (&Bridge::close,this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR, server_host, error.message()));
         return;
     } 
     
@@ -282,7 +287,7 @@ void Bridge<BridgeType, SocketType>::handle_client_write(std::shared_ptr<SocketT
 {
     if(error) 
     {
-        close(server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR, server_host, error.message()); 
+        strand_.post(boost::bind (&Bridge::close,this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR, server_host, error.message())); 
         return;
     }
 
@@ -323,17 +328,30 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
     if( error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR || 
         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR )
     {
+        std::cout << "eeeeeeeee\n";
+
         if (client_socket_->lowest_layer().is_open())
         {
+        std::cout << "qqqqqqq\n";
+
             client_socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+        std::cout << "wwwwwwww\n";
+
             // client_socket_->close();
         }
         for(auto& server_socket_iter: server_socket_map_)
         {
+            std::cout << "rrrrrrrr\n";
             server_socket_iter.second->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+            std::cout << "tttttttttt\n";
             server_socket_iter.second.reset();
+            std::cout << "yyyyyyyyy\n";
         }
+        std::cout << "uuuuuuuuuuu\n";
+
         server_socket_map_.clear();
+        std::cout << "iiiiiiiiiiiiii\n";
+
     }
 
     
@@ -344,12 +362,17 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
             "Deleting [S] " + server_host + " for [C]",
             Logger::LOG_LEVEL::DEBUG
         );
+        std::cout << "bbbbbbbbb\n";
 
         server_socket_map_.erase(server_host);
-
+        std::cout << "aaaaaaaa\n";
         // TODO if the erase raises exception we need to find the server socket and erase using the iterator
         server_socket->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+        std::cout << "cccccccccc\n";
+
         server_socket.reset();
+        std::cout << "ddddddddd\n";
+
 
         // if it is the last server socket for this bridge, clear the client socket and close the bridge
         if(server_socket_map_.size() == 0)
@@ -359,7 +382,9 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
                 client_host_,
                 Logger::LOG_LEVEL::INFO
             );
+            std::cout << "111111111111\n";
             client_socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+            std::cout << "2222222222222\n";            
             // client_socket_->lower.close();
         }
     }
