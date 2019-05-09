@@ -70,6 +70,8 @@ void Server::run()
 
 void Server::WorkerThread( )
 {
+  while( true )
+  {
 		try
 		{
 			boost::system::error_code ec;
@@ -78,11 +80,13 @@ void Server::WorkerThread( )
 			{
 				Logger::log("Error !, code: " + boost::lexical_cast<std::string>(ec), Logger::LOG_LEVEL::FATAL);
 			}
+      break;
 		}
 		catch( std::exception & ex )
 		{
 			Logger::log("Exception: " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
 		}
+  } 
 }
 
 
