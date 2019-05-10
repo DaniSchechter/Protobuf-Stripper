@@ -1,12 +1,10 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
-#include "bridge.hpp"
 #include "config.hpp"
+#include "bridgeConnector.hpp"
 
-#include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
-#include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/thread/thread.hpp>
 
@@ -19,11 +17,11 @@ public:
 
     // Initialize thread pool and start first accept
     void run();
-    
+
 private:
 
     // Handle new connection frmo a client
-    void handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge);
+    void handle_accept(const boost::system::error_code& error, std::shared_ptr<BridgeConnector> bridge_connector);
 
     // Handle a request to stop the server
     void handle_stop();
