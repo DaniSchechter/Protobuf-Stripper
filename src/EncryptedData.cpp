@@ -1,24 +1,25 @@
 #include "EncryptedData.hpp"
-double Entropy(std::string str)
+//calculate the entropy of the raw data to determine if if was encrypted.
+double Entropy(const std::string& str)
 {
 	static std::unordered_map<char, int> map;
 	int string_lenth = str.length();
-	for (int i = 0; i < string_lenth; i++)
+	for (char ch in str)
 	{
-		if (map.find(str[i]) == map.end())
+		if (map.find(ch) == map.end())
 		{
-			map[str[i]] = 1;
+			map[ch] = 1;
 		}
 		else {
-			map[str[i]] += 1;
+			map[ch] += 1;
 		}
 	}
 	double result = 0.0;
 	std::for_each(map.begin(), map.end(),
-		[&](std::pair<char, int > maprow)
+	[&](std::pair<char, int > maprow)
 	{
-		double frequency = (double)maprow.second / string_lenth;
-		result -= frequency * (log(frequency) / log(2));
+	double frequency = (double)maprow.second / string_lenth;
+	result -= frequency * (log(frequency) / log(2));
 	});
 	return result;
 }
