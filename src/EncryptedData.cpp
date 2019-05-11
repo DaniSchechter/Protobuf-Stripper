@@ -1,4 +1,6 @@
 #include "EncryptedData.hpp"
+#include <algorithm>
+#include <unordered_map>
 //calculate the entropy of the raw data to determine if if was encrypted.
 double Entropy(const std::string& str)
 {

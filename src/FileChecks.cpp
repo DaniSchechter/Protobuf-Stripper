@@ -1,6 +1,8 @@
 #include "FileChecks.hpp"
 #include <vector>
 #include <sstream>
+#include <iostream>
+#include <fstream>
 bool find_str_in_file(const std::string& fileName, const std::string& word)
 {
 	std::string line;
