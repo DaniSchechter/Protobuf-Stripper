@@ -15,6 +15,7 @@ bool find_str_in_file(const std::string& fileName, const std::string& word)
 		getline(file, line);
 		if ((line.find(word, 0)) != std::string::npos)
 		{
+			file.close();
 			return true;
 		}
 	}
@@ -25,6 +26,7 @@ bool read_csv_ip_blacklist(const std::string& fileName, const std::string& IP)
 {
 	std::ifstream file;
 	file.open(fileName);
+	if (!file.is_open())return;
 	std::vector<std::string> rowvec;
 	std::string line, word, temp;
 
@@ -36,8 +38,10 @@ bool read_csv_ip_blacklist(const std::string& fileName, const std::string& IP)
 			rowvec.push_back(word);
 		}
 		if (rowvec[2].find(IP) != std::string::npos) {
+			file.close();
 			return true;
 		}
 	}
+	file.close();
 	return false;
 }
