@@ -63,3 +63,4 @@ bin/*
 *.sqlite-journal
 *.suo
 *.ipch
+/.vs

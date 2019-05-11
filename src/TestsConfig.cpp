@@ -1,5 +1,7 @@
 #include"TestsConfig.hpp"
-
+#include <iostream>
+#include <fstream>
+#include <algorithm>
 std::string test_config(const std::string& cname)
 {
 	std::ifstream cFile("config.txt");
