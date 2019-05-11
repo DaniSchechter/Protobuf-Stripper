@@ -54,3 +54,11 @@ bin/*
 
 # Configuratio files
 *config.json
+
+#Visual Studio 2017 Automatically Created Files
+*.db
+*.opendb
+*.json
+*.sqlite
+*.sqlite-journal
+*.suo
