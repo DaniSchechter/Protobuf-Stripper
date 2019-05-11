@@ -62,4 +62,4 @@ bin/*
 *.sqlite
 *.sqlite-journal
 *.suo
-.ipch
+*.ipch
