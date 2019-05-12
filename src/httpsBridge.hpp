@@ -47,7 +47,7 @@ private:
 
     std::shared_ptr<boost::asio::ssl::context> client_ctx_;
     std::shared_ptr<boost::asio::ssl::context> server_ctx_;
-    std::shared_ptr<SslStreamType> ssl_stream_;    
+    std::shared_ptr<SslStreamType> ssl_stream_; 
 };
 
 #endif // HTTPS_BRIDGE_HPP

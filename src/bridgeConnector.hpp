@@ -3,6 +3,7 @@
 
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
+#include "ftpBridge.hpp"
 
 #include <boost/asio/ip/tcp.hpp>
 
@@ -13,7 +14,7 @@ public:
 
     enum KNOWN_PORTS
     {
-        HTTP = 80, HTTPS = 443, SMTP = 25 
+        HTTP = 80, HTTPS = 443, SMTP = 25, FTPCONTROL = 21, FTPTRANSFER = 20
     };
 
     explicit BridgeConnector(std::shared_ptr<boost::asio::io_context> io_context);

@@ -64,6 +64,13 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
   // Initialize the correct bridge to handle the request
   switch(endpoint.port())
   {
+    case FTPCONTROL:
+    {
+      std::cout << "shay" << std::endl;
+      std::shared_ptr<FtpBridge> bridge = std::make_shared<FtpBridge>(io_context_, client_socket_);
+      bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
+      break;
+    }
     case HTTP:
     {
       std::shared_ptr<HttpBridge> bridge = std::make_shared<HttpBridge>(io_context_, client_socket_);

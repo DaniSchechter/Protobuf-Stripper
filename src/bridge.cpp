@@ -2,6 +2,7 @@
 
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
+#include "ftpBridge.hpp"
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
@@ -45,7 +46,8 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
         "Connection established.   [C] " + 
         client_host_ + "  [S] " + endpoint,
         Logger::LOG_LEVEL::INFO
-    );    
+    );
+    std::cout << "shay1" << std::endl;
 
     derrived_bridge_type()->do_handshake(server_socket, boost::asio::ssl::stream_base::client);
 
@@ -83,6 +85,7 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
                                 std::size_t bytes_transferred,
                                 const std::string& endpoint)
 {
+    std::cout << "shay4" << std::endl;
     if(error)
     {
         Logger::log("Error in CLIENT_READ: " + error.message(), Logger::LOG_LEVEL::WARNING);
@@ -96,6 +99,7 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
         Logger::LOG_LEVEL::INFO
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
+    std::cout << "shay3" << std::endl;
     
     // Resolve the remote host (If appeared in the message)
     std::string domain = Utils::parse_domain(
@@ -105,6 +109,7 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     // No new Host was provided in the message - use the current one
     if (domain == EMPTY_DOMAIN)
     {
+        std::cout << "shay1" << std::endl;
         async_write(
             *server_socket,
             boost::asio::buffer(client_buffer_,bytes_transferred),
@@ -375,6 +380,8 @@ Bridge<BridgeType, SocketType>::~Bridge<BridgeType, SocketType>()
 }
 
 template class Bridge<HttpBridge, HttpSocketType>;
+template class Bridge<FtpBridge, HttpSocketType>; 
 template class Bridge<HttpsBridge, SslStreamType>;
+
 
 // boost::asio::ssl::stream<boost::asio::basic_stream_socket<boost::asio::ip::tcp> >::stream(boost::asio::io_context&)

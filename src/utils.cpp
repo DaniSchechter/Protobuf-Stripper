@@ -5,11 +5,11 @@
 
 std::string Utils::parse_domain(const std::string& message)
 {
-    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^/ :\\t\\n]+)(?:.*?:(\\d+))?");
+    std::regex re("^.+?[ \\t]+(?:https?|ftp:[/]{2})?([^/ :\\t\\n]+)(?:.*?:(\\d+))?");
     std::smatch match;
     std::regex_search(message, match, re);
 
-    std::string port = "80";
+    std::string port = "21";
 
     // If there is no valid URI
     if (!match[1].matched)
@@ -23,7 +23,6 @@ std::string Utils::parse_domain(const std::string& message)
     {
         port = match[2].str();
     } 
-
     return host + ":" + port;
 }
 
@@ -34,7 +33,7 @@ boost::asio::ip::tcp::endpoint Utils::resolve_endpoint(std::string domain,
     int pos = domain.find_first_of(":");
     std::string host = domain.substr(0, pos);
     std::string port = domain.substr(pos+1);
-
+    std::cout << host << " " << port << std::endl;
     try{
         // Resolve the absoute URI to ip and port - endpoint
         boost::asio::ip::tcp::resolver resolver( io_context );

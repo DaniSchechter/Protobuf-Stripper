@@ -29,7 +29,7 @@ public:
     CLIENT_READ_ERROR, CLIENT_WRITE_ERROR, SERVER_READ_ERROR, SERVER_WRITE_ERROR, SERVER_CONNECT_ERROR  
   };
 
-  enum { max_data_length = 8192 }; //8KB
+  enum { max_data_length = 8128 }; //8KB
 
   // Construct a connection with the given io_context.
   explicit Bridge(std::shared_ptr<boost::asio::io_context> io_context);
