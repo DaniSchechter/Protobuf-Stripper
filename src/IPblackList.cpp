@@ -1,4 +1,3 @@
-#include "HashOverrideDestIp.hpp"
 #include"TestsConfig.hpp"
 #include "FileChecks.hpp"
 #include"LoadSetFromFile.hpp"
@@ -16,7 +15,7 @@ bool request_density(const std::string& srcIP, const std::string& dstIP, const s
 		{
 			IpBlackList = FileImportSet(test_config("IP_BLACKLIST_CSV"));
 		}
-		if (IpBlackList.get_set()->find(dstIP)) {
+		if (IpBlackList.get_set()->find(dstIP) != IpBlackList.get_set()->end()) {
 			map[dstIP].insert(test_config("BLACK_LIST_IP_IDENTIFIER"));
 			return true;
 		}
@@ -27,9 +26,8 @@ bool request_density(const std::string& srcIP, const std::string& dstIP, const s
 		auto set_element = map[dstIP].begin();
 		std::string first_element = *set_element;
 		if (first_element == test_config("BLACK_LIST_IP_IDENTIFIER")) return true;
-		std::string temp;
-		temp = *(std::find(map[dstIP].begin(), map[dstIP].end(), srcIP));
-		if (temp != map[dstIP].end())
+
+		if (map.find(dstIP) != map.end())
 		{
 			return false;
 		}

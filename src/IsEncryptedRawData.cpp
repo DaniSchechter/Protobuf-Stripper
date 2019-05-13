@@ -3,5 +3,5 @@
 bool Is_Encrypted(const std::string& rawdata)
 {
 	//high entropy means more chances the raw data is encrypted
-	return Entropy(rawdata) > std::stoi(test_config("Min_Entropy"))
+	return Entropy(rawdata) > std::stoi(test_config("Min_Entropy"));
 }

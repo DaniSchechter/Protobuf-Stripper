@@ -11,6 +11,7 @@ bool find_str_in_file(const std::string& fileName, const std::string& word)
 	if (!file.is_open())
 	{
 		std::cout << "Unable to open the file." << std::endl;
+		return true;
 	}
 	while (!file.eof())
 	{
@@ -28,7 +29,11 @@ bool read_csv_ip_blacklist(const std::string& fileName, const std::string& IP)
 {
 	std::ifstream file;
 	file.open(fileName);
-	if (!file.is_open())return;
+	if (!file.is_open())
+	{
+		std::cout << "Unable to open the file." << std::endl;
+		return true;
+	}
 	std::vector<std::string> rowvec;
 	std::string line, word, temp;
 
