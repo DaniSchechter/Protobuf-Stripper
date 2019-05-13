@@ -6,7 +6,7 @@ double Entropy(const std::string& str)
 {
 	static std::unordered_map<char, int> map;
 	int string_lenth = str.length();
-	for (char ch in str)
+	for (char ch : str)
 	{
 		if (map.find(ch) == map.end())
 		{
