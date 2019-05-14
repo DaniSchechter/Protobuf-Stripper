@@ -52,7 +52,7 @@ void HttpsBridge::do_handshake(std::shared_ptr<SslStreamType>& socket,
 {
     std::string endpoint = boost::lexical_cast<std::string>(socket->lowest_layer().remote_endpoint());
     Logger::log(
-        "SSL handshake started with " + endpoint,
+        "SSL handshake started with " + endpoint + " [C] " + client_host_,
         Logger::LOG_LEVEL::INFO
     );
 

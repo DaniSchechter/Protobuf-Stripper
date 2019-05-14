@@ -3,6 +3,8 @@
 
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
+#include <mutex>
+#include <unordered_set>
 
 class BridgeConnector
     : public std::enable_shared_from_this<BridgeConnector>
@@ -37,6 +39,9 @@ private:
 
     std::shared_ptr<boost::asio::io_context> io_context_;
     boost::asio::ip::tcp::socket client_socket_;
+
+    static std::unordered_set< std::string > host_certificate_set_;
+    static std::mutex certificate_map_lock_;
 
     enum { max_data_length = 8192 }; //8KB
     char client_buffer_ [max_data_length];
