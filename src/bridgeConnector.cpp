@@ -86,6 +86,38 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
         Logger::LOG_LEVEL::INFO
       );
 
+      std::string common_name;
+      if( Utils::split_domain(domain, common_name) == Utils::COMMON_NAME_ERROR )
+      {
+        Logger::log(
+          "No match while parsing common name out of the domain: " + domain, Logger::LOG_LEVEL::FATAL
+        );
+        return;
+      }
+
+      // If this is a new domain
+      BridgeConnector::certificate_map_lock_.lock();
+      if (host_certificate_set_.find(common_name) == host_certificate_set_.end())
+      {
+        Logger::log(
+            "Generating a new certificate for\nFull domain: " + domain +
+            "\nCommon name: " + common_name, Logger::LOG_LEVEL::INFO
+        );
+        // Set the new certificate file for the requested domain
+        std::string script_command = boost::lexical_cast<std::string>(LEAF_CERTIFICATE_SCRIPT) + common_name;
+        if(system(script_command.c_str()) != 0)
+        {
+          Logger::log(
+            "Error generating a new certificate for" + common_name, Logger::LOG_LEVEL::FATAL
+          );
+          return;
+        }
+        BridgeConnector::host_certificate_set_.insert(common_name);
+      }      
+      BridgeConnector::certificate_map_lock_.unlock();
+
+      // Initialize the context
+
       std::shared_ptr<boost::asio::ssl::context> ctx = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
       ctx->set_options(
         boost::asio::ssl::context::default_workarounds
@@ -93,24 +125,8 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
         | boost::asio::ssl::context::no_sslv3);
       ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
 
-      // TODO check if their is already a certificate for this domain
-      std::string only_domain = Utils::split_domain(domain);
-      // If this is a new domain
-      BridgeConnector::certificate_map_lock_.lock();
-      if (host_certificate_set_.find(only_domain) == host_certificate_set_.end())
-      {
-        // Set the new certificate file for the requested domain
-        std::string s = boost::lexical_cast<std::string>(LEAF_CERTIFICATE_SCRIPT) + only_domain;
-        if(system(s.c_str()) != 0)
-        {
-          return;
-        }
-        BridgeConnector::host_certificate_set_.insert(only_domain);
-      }      
-      BridgeConnector::certificate_map_lock_.unlock();
-
-      ctx->use_certificate_chain_file("keys/" + only_domain + "/" + only_domain + ".crt");
-      ctx->use_private_key_file("keys/" + only_domain + "/" + only_domain + ".key", boost::asio::ssl::context::pem);
+      ctx->use_certificate_chain_file("keys/" + common_name + "/" + common_name + ".crt");
+      ctx->use_private_key_file("keys/" + common_name + "/" + common_name + ".key", boost::asio::ssl::context::pem);
 
       std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);

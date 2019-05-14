@@ -81,11 +81,21 @@ std::string Utils::generate_absolute_uri_request(const std::string& message, con
     return http_method + host[1].str() + "/" + full_message[2].str();
 }
 
-std::string Utils::split_domain(const std::string& domain)
+int Utils::split_domain(const std::string& domain, std::string& common_name)
 {
-    std::regex re("^.+?[.]([^/ :\\t\\n]+)");
+    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){2,}[^.:]+)(?:[:]\\d+)?$");
     std::smatch match;
     std::regex_search(domain, match, re);
 
-    return match[1].str(); 
+    for(int i=1; i<match.length(); i++)
+    {
+        if(match[i].matched)
+        {
+            common_name.assign(match[i].str(), 0, match[i].str().length());
+            return 0;
+        }
+
+    } 
+    
+    return COMMON_NAME_ERROR;
 }
