@@ -84,6 +84,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
             )
         );
     }
+    // This is an https bridge so no need to send to the server the first message
     else
     {
         client_socket_->async_read_some(
@@ -129,15 +130,6 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     // No new Host was provided in the message - use the current one
     if (parsing_error)
     {
-        // Check if the request's domain is empty
-        // if (parsing_error == Utils::EMPTY_ABSOLUTE_URI)
-        // {
-        //     std::string message = Utils::generate_absolute_uri_request(
-        //         boost::lexical_cast<std::string>(client_buffer_), 
-        //         derrived_bridge_type()->get_http_type()
-        //     );
-        //     strncpy(client_buffer_, message.c_str(), message.length()); 
-        // }
         async_write(
             *server_socket,
             boost::asio::buffer(client_buffer_,bytes_transferred),
@@ -407,5 +399,3 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
 
 template class Bridge<HttpBridge, HttpSocketType>;
 template class Bridge<HttpsBridge, SslStreamType>;
-
-// boost::asio::ssl::stream<boost::asio::basic_stream_socket<boost::asio::ip::tcp> >::stream(boost::asio::io_context&)

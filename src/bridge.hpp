@@ -12,6 +12,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
 
+
 using HttpSocketType = boost::asio::ip::tcp::socket;
 using endpoint_type = boost::asio::ip::tcp::endpoint; // TODO change to using in the whole project
 
@@ -106,6 +107,7 @@ private:
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
+
 
 protected:
   
