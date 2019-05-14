@@ -11,7 +11,8 @@
 template <class BridgeType, typename SocketType>
 Bridge<BridgeType, SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
-    strand_(*io_context){}
+    strand_(*io_context),
+    my_timer_(*io_context, boost::posix_time::minutes(15)){}
 
 template <class BridgeType, typename SocketType>
 void Bridge<BridgeType, SocketType>::start_by_connect(char client_buffer [max_data_length],
@@ -32,7 +33,8 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
     std::shared_ptr<SocketType> server_socket,
     const boost::system::error_code& error,
     std::size_t bytes_transferred,
-    const std::string& server_host)
+    const std::string& server_host,
+    const bool is_first_https_message)
 {
     if(error)
     {
@@ -70,7 +72,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
     // Only if got a message to forward - e.g Https first message that we get is CONNECT 
     // We dont want to forward it so we are not saving it in client_buffer_
 
-    if(strlen(client_buffer_) > 0)
+    if(!is_first_https_message)
     {
         async_write(
             *server_socket,
@@ -84,6 +86,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
             )
         );
     }
+    // This is an https bridge so no need to send to the server the first message
     else
     {
         client_socket_->async_read_some(
@@ -107,6 +110,7 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
                                 std::size_t bytes_transferred,
                                 const std::string& server_host)
 {
+    std::cout << "readed for client: " << client_host_ << "from server: " << server_host << std::endl;
     if(error)
     {
         strand_.post(boost::bind (&Bridge::close,this->shared_from_this(),server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, server_host, error.message()));
@@ -193,7 +197,8 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
                     new_server_socket,
                     error,
                     bytes_transferred,
-                    boost::lexical_cast<std::string>(requested_endpoint)
+                    boost::lexical_cast<std::string>(requested_endpoint),
+                    false
                 )
             );
         }

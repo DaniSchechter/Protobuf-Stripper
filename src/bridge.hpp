@@ -12,6 +12,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
 
+
 using HttpSocketType = boost::asio::ip::tcp::socket;
 using endpoint_type = boost::asio::ip::tcp::endpoint; // TODO change to using in the whole project
 
@@ -44,7 +45,8 @@ public:
   void handle_server_connect(std::shared_ptr<SocketType> server_socket,
                             const boost::system::error_code& error,
                             std::size_t bytes_transferred,
-                            const std::string& server_host);
+                            const std::string& server_host,
+                            const bool is_first_https_message);
 
 protected:
 
@@ -106,6 +108,7 @@ private:
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
+
 
 protected:
   

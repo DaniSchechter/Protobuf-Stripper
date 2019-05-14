@@ -40,7 +40,8 @@ void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
             new_server_socket,
             boost::asio::placeholders::error,
             bytes_transferred,
-            boost::lexical_cast<std::string>(endpoint)
+            boost::lexical_cast<std::string>(endpoint),
+            true
         )
     ); 
 }
