@@ -108,7 +108,6 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
                                 std::size_t bytes_transferred,
                                 const std::string& server_host)
 {
-    std::cout << "readed for client: " << client_host_ << "from server: " << server_host << std::endl;
     if(error)
     {
         strand_.post(boost::bind (&Bridge::close,this->shared_from_this(),server_socket, Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR, server_host, error.message()));

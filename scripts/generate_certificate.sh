@@ -3,11 +3,15 @@
 # ./generate_certificate.sh clear . google.com
 if [ "$#" = 3 ] && [ "$1" = "clear" ]; then
 	eval "rm -r $2/$3"
-	exit 1
 elif [ "$#" -ne 2 ]; then
+    echo "You have entered: "
+    for i in $*; do 
+        echo $i 
+    done
     echo "Error: Wrong number of arguments"
     echo "Usage: generate_certificate.sh [PATH TO CRETIFICATES] [NEW DOMAIN]"
     echo ""
+    exit 1
 fi
 
 # If the folder already exists, do not create a new one

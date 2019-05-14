@@ -12,7 +12,7 @@ struct Utils
 { 
     enum HTTP_MESSAGE_ERROR
     {
-        EMPTY_DOMAIN = 1, EMPTY_ABSOLUTE_URI
+        EMPTY_DOMAIN = 1, EMPTY_ABSOLUTE_URI, COMMON_NAME_ERROR
     };
     
     Utils() = delete;
@@ -27,7 +27,7 @@ struct Utils
     // If the requested domain is empty (GET / http...) return a new request with the host as the domain
     static std::string generate_absolute_uri_request(const std::string& message, const std::string& http_type);
 
-    static std::string split_domain(const std::string& domain);
+    static int split_domain(const std::string& domain, std::string& common_name);
 };
 
 #endif // UTILS_HPP_
