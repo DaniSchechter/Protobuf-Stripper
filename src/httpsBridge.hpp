@@ -40,6 +40,7 @@ public:
 
     std::string get_http_type() { return "https"; }
 
+
 private:
 
     std::shared_ptr<boost::asio::ssl::context> client_ctx_;

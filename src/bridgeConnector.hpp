@@ -33,6 +33,8 @@ public:
     return "test";
     }
 
+    static std::unordered_map< std::string, std::string > host_certificate_map_;
+
 private:
 
     std::shared_ptr<boost::asio::io_context> io_context_;
