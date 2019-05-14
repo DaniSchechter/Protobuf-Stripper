@@ -11,8 +11,7 @@
 template <class BridgeType, typename SocketType>
 Bridge<BridgeType, SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
-    strand_(*io_context),
-    my_timer_(*io_context, boost::posix_time::minutes(15)){}
+    strand_(*io_context){}
 
 template <class BridgeType, typename SocketType>
 void Bridge<BridgeType, SocketType>::start_by_connect(char client_buffer [max_data_length],
@@ -33,8 +32,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
     std::shared_ptr<SocketType> server_socket,
     const boost::system::error_code& error,
     std::size_t bytes_transferred,
-    const std::string& server_host,
-    const bool is_first_https_message)
+    const std::string& server_host)
 {
     if(error)
     {
@@ -72,7 +70,7 @@ void Bridge<BridgeType, SocketType>::handle_server_connect(
     // Only if got a message to forward - e.g Https first message that we get is CONNECT 
     // We dont want to forward it so we are not saving it in client_buffer_
 
-    if(!is_first_https_message)
+    if(strlen(client_buffer_) > 0)
     {
         async_write(
             *server_socket,
@@ -133,15 +131,6 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     // No new Host was provided in the message - use the current one
     if (parsing_error)
     {
-        // Check if the request's domain is empty
-        // if (parsing_error == Utils::EMPTY_ABSOLUTE_URI)
-        // {
-        //     std::string message = Utils::generate_absolute_uri_request(
-        //         boost::lexical_cast<std::string>(client_buffer_), 
-        //         derrived_bridge_type()->get_http_type()
-        //     );
-        //     strncpy(client_buffer_, message.c_str(), message.length()); 
-        // }
         async_write(
             *server_socket,
             boost::asio::buffer(client_buffer_,bytes_transferred),
@@ -197,8 +186,7 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
                     new_server_socket,
                     error,
                     bytes_transferred,
-                    boost::lexical_cast<std::string>(requested_endpoint),
-                    false
+                    boost::lexical_cast<std::string>(requested_endpoint)
                 )
             );
         }
@@ -412,5 +400,3 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
 
 template class Bridge<HttpBridge, HttpSocketType>;
 template class Bridge<HttpsBridge, SslStreamType>;
-
-// boost::asio::ssl::stream<boost::asio::basic_stream_socket<boost::asio::ip::tcp> >::stream(boost::asio::io_context&)
