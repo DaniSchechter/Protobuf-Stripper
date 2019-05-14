@@ -88,9 +88,8 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
         | boost::asio::ssl::context::no_sslv3
         | boost::asio::ssl::context::single_dh_use);
       ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
-      ctx->use_certificate_chain_file("keys/server.crt");
-      ctx->use_private_key_file("keys/server.key", boost::asio::ssl::context::pem);
-      ctx->use_tmp_dh_file("keys/dh512.pem");
+      ctx->use_certificate_chain_file("keys/google.com/google.com.crt");
+      ctx->use_private_key_file("keys/google.com/google.com.key", boost::asio::ssl::context::pem);
       std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
