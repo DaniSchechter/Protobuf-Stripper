@@ -18,8 +18,8 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
        i. create a folder called *bin*, under the root directory of the project
 2. For running the application with a configuration file
 
-       i. create a folder called include
-       ii. create a file called config.json and paste the following into it: ( you can modify the settings )
+    1. create a folder called include
+    2. create a file called config.json and paste the following into it: ( you can modify the settings )
 
     ```javascript
     {
@@ -32,7 +32,7 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
     }
     ```
 
-        localHost - If you want to run locally, leave it    '127.0.0.1'. If you want to run on the LAN, change it to   the ip extrernal address
+    localHost - If you want to run locally, leave it    '127.0.0.1'. If you want to run on the LAN, change it to   the ip extrernal address
 
 3. For generating certificates
 
