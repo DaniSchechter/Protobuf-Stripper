@@ -26,6 +26,8 @@ struct Utils
 
     // If the requested domain is empty (GET / http...) return a new request with the host as the domain
     static std::string generate_absolute_uri_request(const std::string& message, const std::string& http_type);
+
+    static std::string split_domain(const std::string& domain);
 };
 
 #endif // UTILS_HPP_

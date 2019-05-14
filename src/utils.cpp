@@ -81,3 +81,11 @@ std::string Utils::generate_absolute_uri_request(const std::string& message, con
     return http_method + host[1].str() + "/" + full_message[2].str();
 }
 
+std::string Utils::split_domain(const std::string& domain)
+{
+    std::regex re("^.+?[.]([^/ :\\t\\n]+)");
+    std::smatch match;
+    std::regex_search(domain, match, re);
+
+    return match[1].str(); 
+}

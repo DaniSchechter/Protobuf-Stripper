@@ -1,9 +1,14 @@
+#define LEAF_CERTIFICATE_SCRIPT "./scripts/generate_certificate.sh ./keys "
+
 #include "bridgeConnector.hpp"
 #include "utils.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp> 
-#include <boost/asio/placeholders.hpp>
+#include <boost/asio/placeholders.hpp> 
+
+std::unordered_set< std::string > BridgeConnector::host_certificate_set_;
+std::mutex BridgeConnector::certificate_map_lock_;
 
 BridgeConnector::BridgeConnector(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
@@ -85,28 +90,28 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       ctx->set_options(
         boost::asio::ssl::context::default_workarounds
         | boost::asio::ssl::context::no_sslv2
-        | boost::asio::ssl::context::no_sslv3
-        | boost::asio::ssl::context::single_dh_use);
+        | boost::asio::ssl::context::no_sslv3);
       ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
 
       // TODO check if their is already a certificate for this domain
-      // Set the new certificate file for the requested domain
-      std::string only_domain = "google.com";
-      std::string folder_name = "./keys ";
-      std::string str = "./generate_certificate.sh ";
-      str = str + folder_name + domain;
-      const char* command = str.c_str();
-      if(system(command) != 0)
+      std::string only_domain = Utils::split_domain(domain);
+      // If this is a new domain
+      BridgeConnector::certificate_map_lock_.lock();
+      if (host_certificate_set_.find(only_domain) == host_certificate_set_.end())
       {
-        return;
-      }
+        // Set the new certificate file for the requested domain
+        std::string s = boost::lexical_cast<std::string>(LEAF_CERTIFICATE_SCRIPT) + only_domain;
+        if(system(s.c_str()) != 0)
+        {
+          return;
+        }
+        BridgeConnector::host_certificate_set_.insert(only_domain);
+      }      
+      BridgeConnector::certificate_map_lock_.unlock();
 
-      // TODO make a new certificate file for the new endpoint and save it in the map
-      host_certificate_map_[boost::lexical_cast<std::string>(domain)] = domain;/*dani's new certificate file*/
+      ctx->use_certificate_chain_file("keys/" + only_domain + "/" + only_domain + ".crt");
+      ctx->use_private_key_file("keys/" + only_domain + "/" + only_domain + ".key", boost::asio::ssl::context::pem);
 
-      ctx->use_certificate_chain_file("keys/google.com.crt");
-      ctx->use_private_key_file("keys/google.com.key", boost::asio::ssl::context::pem);
-      // ctx->use_tmp_dh_file("keys/dh512.pem");
       std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;

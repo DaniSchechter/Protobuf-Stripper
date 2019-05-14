@@ -45,8 +45,7 @@ public:
   void handle_server_connect(std::shared_ptr<SocketType> server_socket,
                             const boost::system::error_code& error,
                             std::size_t bytes_transferred,
-                            const std::string& server_host,
-                            const bool is_first_https_message);
+                            const std::string& server_host);
 
 protected:
 
