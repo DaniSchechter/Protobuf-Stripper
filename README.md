@@ -32,7 +32,7 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
     }
     ```
 
-    localHost - If you want to run locally, leave it    '127.0.0.1'. If you want to run on the LAN, change it to   the ip extrernal address
+    localHost - If you want to run locally, leave it    '127.0.0.1'. If you want to run on the LAN, change it to   the external address
 
 3. For generating certificates
 
