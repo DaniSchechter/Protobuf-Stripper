@@ -29,16 +29,16 @@ ROOT_CERTIFICATE_NAME="myCA"
 ABSOLUTE_ROOT_CERTIFICATE_NAME="$ROOT_CERTIFICATE_PATH/$ROOT_CERTIFICATE_NAME"
 
 # Create a new folder 
-eval "mkdir $CERTIFICATE_FOLER_PATH"
+mkdir $CERTIFICATE_FOLER_PATH
 
 # Create a provite key
-eval "openssl genrsa -out $PKEY_NAME.key 2048"
+openssl genrsa -out $PKEY_NAME.key 2048
 
 # Create a csr request 
-eval "openssl req -new -key $PKEY_NAME.key -out $PKEY_NAME.csr -subj \"/C=IL/ST=Israel/L=Israel=/O=Protobuf Stripper/OU=Development Department/CN=$COMMON_NAME\""
+openssl req -new -key $PKEY_NAME.key -out $PKEY_NAME.csr -subj "/C=IL/ST=Israel/L=Israel=/O=Protobuf Stripper/OU=Development Department/CN=$COMMON_NAME"
 
 # Create the certificate
-eval "openssl x509 -req -in $PKEY_NAME.csr -CA $ABSOLUTE_ROOT_CERTIFICATE_NAME.crt -CAkey $ABSOLUTE_ROOT_CERTIFICATE_NAME.key -CAcreateserial -out $PKEY_NAME.crt -days 1825 -sha256"
+openssl x509 -req -in $PKEY_NAME.csr -CA $ABSOLUTE_ROOT_CERTIFICATE_NAME.crt -CAkey $ABSOLUTE_ROOT_CERTIFICATE_NAME.key -CAcreateserial -out $PKEY_NAME.crt -days 1825 -sha256
 
 echo "Done"
 
