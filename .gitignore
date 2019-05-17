@@ -57,3 +57,6 @@ bin/*
 
 # SSL Keys
 keys/*
+
+# Generated while CA signing certificates and incremented each time CA sign a new certificate
+.srl
