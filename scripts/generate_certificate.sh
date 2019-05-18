@@ -21,10 +21,10 @@ fi
 
 # ./generate_certificate.sh . google.com
 CERTIFICATE_FOLER_PATH=$1/$2 		    # Folder called 		 ./google.com
-PKEY_NAME="$CERTIFICATE_FOLER_PATH/$2"	# Will create a nre file ./google.com/google.com.key
+PKEY_NAME="$CERTIFICATE_FOLER_PATH/$2"	# Will create a new file ./google.com/google.com.key
 COMMON_NAME="*.$2"					
 
-ROOT_CERTIFICATE_PATH="./keys/ROOT"
+ROOT_CERTIFICATE_PATH=$1"/ROOT"
 ROOT_CERTIFICATE_NAME="myCA"
 ABSOLUTE_ROOT_CERTIFICATE_NAME="$ROOT_CERTIFICATE_PATH/$ROOT_CERTIFICATE_NAME"
 

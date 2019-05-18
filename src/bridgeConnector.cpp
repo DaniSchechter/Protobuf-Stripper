@@ -1,4 +1,5 @@
-#define LEAF_CERTIFICATE_SCRIPT "./scripts/generate_certificate.sh ./keys "
+#define SSL_KEYS_DIRECOTRY "./.sslkeys"
+#define LEAF_CERTIFICATE_SCRIPT "./scripts/generate_certificate.sh " SSL_KEYS_DIRECOTRY " "
 
 #include "bridgeConnector.hpp"
 #include "utils.hpp"
@@ -125,8 +126,8 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
         | boost::asio::ssl::context::no_sslv3);
       ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
 
-      ctx->use_certificate_chain_file("keys/" + common_name + "/" + common_name + ".crt");
-      ctx->use_private_key_file("keys/" + common_name + "/" + common_name + ".key", boost::asio::ssl::context::pem);
+      ctx->use_certificate_chain_file(SSL_KEYS_DIRECOTRY + ("/" + common_name) + "/" + common_name + ".crt");
+      ctx->use_private_key_file(SSL_KEYS_DIRECOTRY  + ("/" + common_name) + "/" + common_name + ".key", boost::asio::ssl::context::pem);
 
       std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);

@@ -6,10 +6,10 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
 
 ## Folders to be Created under the root directory of the project
 
-1. **keys** - containing all the certificatese the program generates for secure HTTPS connection. 
+1. **.sslkeys** - containing all the certificatese the program generates for secure HTTPS connection.
 *scripts/generate_certificate.sh* will add the certificates under this folder
 
-2. **keys/ROOT** - containing the self generated ROOT CA and private keys that will be used to sign every leaf certificate.
+2. **.sslkeys/ROOT** - containing the self generated ROOT CA and private keys that will be used to sign every leaf certificate.
 
 ## Generating the needed files
 
@@ -36,7 +36,7 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
 
 3. For generating certificates
 
-    Under ***keys/ROOT*** folder run the following, and do not change names
+    Under ***.sslkeys/ROOT*** folder run the following, and do not change names
 
     1. ```openssl genrsa -des3 -out myCA.key 2048``` :      will generate a private key that will be used while       signing every leaf certificates for each domain
 
@@ -48,6 +48,6 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
 
     5. You will prompted for a bunch of questions. The       answers to those questions aren’t that important. They just show up when looking at the certificte. Only the Common Name should be set to something that you’ll        recognize as your root certificate in a list of other    certificates.
 
-    6. You should now have two files under *keys*   directory: *myCA.key* (your private key) and *myCA.crt* (your root certificate).
+    6. You should now have two files under *.sslkeys*   directory: *myCA.key* (your private key) and *myCA.crt* (your root certificate.
 
     7. Now import your root certificate - *myCA.crt* (and not your key - *myCA.key*) as a trusted ROOT CA of your favorite web browser ( Firefox prefared, easy to be made )
