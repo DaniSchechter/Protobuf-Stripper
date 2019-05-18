@@ -82,7 +82,27 @@ std::string Utils::generate_absolute_uri_request(const std::string& message, con
 
 int Utils::split_domain(const std::string& domain, std::string& common_name)
 {
-    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){2,}[^.:]+)(?:[:]\\d+)?$");
+    /*  Last part is two characters long
+        ------------------------------------------------------------------
+        ([^.]+?[.][^.:]+[.:][^.]{2}) - something.something.(two characters)
+        (?:[:]\\d+)?$ - if there is a port, e.g youtube.com:443, ignore the port till the end
+    */
+
+    /*  Two of more dots, when the last part is more than two characters long (not il, uk etc...)
+        -----------------------------------------------------------------------------------------
+        (?:[^.]+[.]) - for two or more dots, e.g www.youtube.org.il, ignore the forst subdomain (www)
+        ((?:[^.:]+[.]?){3,}[^.:]+) - for two or more dots, e.g www.youtube.org.il, 
+                                     capture everything from the first subdomain till the end
+        (?:[:]\\d+)?$ - if there is a port, e.g youtube.com:443, ignore the port till the end
+    */
+
+    /*  E.g google.com
+        -----------------------------------------------------------------------------------------
+        ([^.]+[.][^.:]+) - capture: subdomain.domain
+        (?:[:]\\d+)?$ - if there is a port, e.g youtube.com:443, ignore the port till the end
+    */
+        
+    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){3,}[^.:]+)(?:[:]\\d+)?$|([^.]+[.][^.:]+)(?:[:]\\d+)?$");
     std::smatch match;
     std::regex_search(domain, match, re);
 
