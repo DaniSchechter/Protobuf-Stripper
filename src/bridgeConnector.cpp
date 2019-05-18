@@ -132,7 +132,15 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
-    case SMTP:
+    case FTP:
+    {
+      std::shared_ptr<FtpBridge> bridge = std::make_shared<FtpBridge>(io_context_, client_socket_);
+      bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
+    }
+    default:
+       Logger::log(
+        "No suppoort for protocol on port " + endpoint.port(), Logger::LOG_LEVEL::WARNING
+      );
   }
 }
