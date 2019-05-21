@@ -13,8 +13,6 @@ public:
     explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context,
                         HttpSocketType& client_socket);
 
-    explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context);
-
     // Start to handle the request
     // Connects to the requested remote server, and forwards the message it got from bridge connector
     void start_by_connect(char client_buffer [max_data_length],
