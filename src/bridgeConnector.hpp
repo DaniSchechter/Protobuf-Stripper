@@ -3,7 +3,6 @@
 
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
-#include "ftpBridge.hpp"
 #include <mutex>
 #include <unordered_set>
 
