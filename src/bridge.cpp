@@ -382,7 +382,7 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
         }
         case Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR:
         {
-            Logger::log("SERVER_CONNECT_ERROR", Logger::LOG_LEVEL::WARNING);
+            Logger::log("SERVER_CONNECT_ERRO,R, Please make sure the host is reachable", Logger::LOG_LEVEL::WARNING);
             break; 
         }
         case Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR:
