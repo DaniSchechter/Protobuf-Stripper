@@ -2,6 +2,7 @@
 
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
+#include "ftpBridge.hpp"
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
@@ -127,8 +128,30 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
         boost::lexical_cast<std::string>(client_buffer_), domain
     );
     
-    // No new Host was provided in the message - use the current one
-    if (parsing_error)
+    // No new Host was provided in the message - use the current one (In case of a regex error)
+    if(parsing_error)
+    {
+        async_write(
+            *server_socket,
+            boost::asio::buffer(client_buffer_,bytes_transferred),
+            boost::bind(
+                &Bridge::handle_server_write,
+                this->shared_from_this(),
+                server_socket,
+                boost::asio::placeholders::error,
+                server_host
+            )
+        );
+        return;
+    } 
+
+    // Get the server socket associated with the remote host
+    endpoint_type requested_endpoint  = Utils::resolve_endpoint(
+        domain, *io_context_
+    );
+
+    // No new Host was provided in the message - use the current one ( the domain could not be translated to an endpoint )
+    if(boost::lexical_cast<std::string>(requested_endpoint) == ENDPOINT_ADDRESS_ERROR)
     {
         async_write(
             *server_socket,
@@ -142,26 +165,10 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
             )
         );
     } 
-    
+
     // New Host was written in the message - The endpoint is valid
     else
     {
-        // Get the server socket associated with the remote host
-        endpoint_type requested_endpoint  = Utils::resolve_endpoint(
-            domain, *io_context_
-        );
-
-        if(requested_endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) 
-        { 
-            Logger::log(
-                "Got a new domain: " + domain + ", and could not resolve it to an endpoint",
-                Logger::LOG_LEVEL::INFO
-            );
-            return;
-            // Read again, since we was provided with a new domain so we can't sent the message to the prev server
-            //TODO call the read again
-        }
-
         auto cached_server_socket = server_socket_map_.find(boost::lexical_cast<std::string>(requested_endpoint));
 
         // Check if there is already a socket for this endpoint
@@ -257,6 +264,7 @@ void Bridge<BridgeType, SocketType>::handle_server_read(std::shared_ptr<SocketTy
         client_host_ + "  [S] " + server_host,
         Logger::LOG_LEVEL::INFO
     );
+    
     Logger::log(std::string(server_buffer_), Logger::LOG_LEVEL::DEBUG);
 
     async_write(
@@ -380,7 +388,7 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
         }
         case Bridge::SOCKET_ERROR_SOURCE::SERVER_CONNECT_ERROR:
         {
-            Logger::log("SERVER_CONNECT_ERROR", Logger::LOG_LEVEL::WARNING);
+            Logger::log("SERVER_CONNECT_ERROOR, Please make sure the host is reachable", Logger::LOG_LEVEL::WARNING);
             break; 
         }
         case Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR:
@@ -394,8 +402,9 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
             break; 
         }   
     }
-    Logger::log("The error: " + error_message + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
+    Logger::log("ERROR: " + error_message + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
 }
 
 template class Bridge<HttpBridge, HttpSocketType>;
 template class Bridge<HttpsBridge, SslStreamType>;
+template class Bridge<FtpBridge, HttpSocketType>;

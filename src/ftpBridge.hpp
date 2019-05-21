@@ -1,16 +1,16 @@
-#ifndef HTTP_BRIDGE_HPP_
-#define HTTP_BRIDGE_HPP_
+#ifndef FTP_BRIDGE_HPP_
+#define FTP_BRIDGE_HPP_
 
 #include "bridge.hpp"
 #include <boost/asio/ssl.hpp>
 
-class HttpBridge: public Bridge<HttpBridge, HttpSocketType>
+class FtpBridge: public Bridge<FtpBridge, HttpSocketType>
 {
 public:
 
     // Construct an Http bridge with a given client socket
     // On which the bridge connector accepted connection
-    explicit HttpBridge(std::shared_ptr<boost::asio::io_context> io_context,
+    explicit FtpBridge(std::shared_ptr<boost::asio::io_context> io_context,
                         HttpSocketType& client_socket);
 
     // Start to handle the request
@@ -24,7 +24,7 @@ public:
     /* Override functions */
     void do_handshake(std::shared_ptr<HttpSocketType> socket,
                       boost::asio::ssl::stream_base::handshake_type handshake_type);
-                      
+
     HttpSocketType& get_actual_socket(HttpSocketType& socket);
     std::shared_ptr<HttpSocketType> create_new_server_socket();
 };
