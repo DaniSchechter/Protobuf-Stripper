@@ -48,6 +48,6 @@ Because git doesnt track empty directories, and beacase we havn't added secret f
 
     5. You will prompted for a bunch of questions. The       answers to those questions aren’t that important. They just show up when looking at the certificte. Only the Common Name should be set to something that you’ll        recognize as your root certificate in a list of other    certificates.
 
-    6. You should now have two files under *.sslkeys*   directory: *myCA.key* (your private key) and *myCA.crt* (your root certificate.
+    6. You should now have two files under *.sslkeys/ROOT*   directory: *myCA.key* (your private key) and *myCA.crt* (your root certificate.
 
     7. Now import your root certificate - *myCA.crt* (and not your key - *myCA.key*) as a trusted ROOT CA of your favorite web browser ( Firefox prefared, easy to be made )
