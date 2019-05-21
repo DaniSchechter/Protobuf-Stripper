@@ -30,7 +30,7 @@ void FtpBridge::start_by_connect(char client_buffer [max_data_length],
             &Bridge::handle_server_connect,
             this->shared_from_this(),
             new_server_socket,
-            error,
+            boost::asio::placeholders::error,
             bytes_transferred,
             boost::lexical_cast<std::string>(endpoint)
         )
