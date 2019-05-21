@@ -133,15 +133,15 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
-    // Including FTP 
-    default:
-      // If there is CONNECT message, send confirmation on tunnel creation
-      if(strstr(client_buffer_, "CONNECT") > 0)
-      {
-        std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
-        client_socket_.write_some(boost::asio::buffer(str, str.length()));
-      }
-      std::shared_ptr<HttpBridge> bridge = std::make_shared<HttpBridge>(io_context_, client_socket_);
+    case FTP:
+    {
+      std::shared_ptr<FtpBridge> bridge = std::make_shared<FtpBridge>(io_context_, client_socket_);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
+      break;
+    }
+    default:
+       Logger::log(
+        "No suppoort for protocol on port " + endpoint.port(), Logger::LOG_LEVEL::WARNING
+      );
   }
 }

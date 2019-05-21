@@ -2,6 +2,7 @@
 
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
+#include "ftpBridge.hpp"
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
@@ -251,7 +252,7 @@ void Bridge<BridgeType, SocketType>::handle_server_read(std::shared_ptr<SocketTy
         strand_.post(boost::bind (&Bridge::close,this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::SERVER_READ_ERROR, server_host, error.message()));
         return;
     } 
-
+    
     Logger::log(
         "Client     Proxy <-- Server.   [C] " + 
         client_host_ + "  [S] " + server_host,
@@ -400,3 +401,4 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
 
 template class Bridge<HttpBridge, HttpSocketType>;
 template class Bridge<HttpsBridge, SslStreamType>;
+template class Bridge<FtpBridge, HttpSocketType>;
