@@ -1,5 +1,5 @@
-#ifndef HTTPS_BRIDGE_HPP_
-#define HTTPS_BRIDGE_HPP_
+#ifndef GTPD_BRIDGE_HPP_
+#define GTPD_BRIDGE_HPP_
 
 #include "bridge.hpp"
 #include <boost/asio/ssl/stream.hpp>
@@ -8,13 +8,15 @@
 using SslStreamType = boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ;
 using BasicSocketType = boost::asio::basic_socket<boost::asio::ip::tcp>;
 
-class HttpsBridge: public Bridge<HttpsBridge, SslStreamType>
+class FtpsBridge: public std::enable_shared_from_this<FtpsBridge>
 {
 public:
 
-    explicit HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
-                         HttpSocketType& client_socket,
-                         std::shared_ptr<boost::asio::ssl::context> context);
+    enum { max_data_length = 32768 }; //8KB
+
+    explicit FtpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
+                        HttpSocketType& client_socket,
+                        std::shared_ptr<boost::asio::ssl::context> context);
 
     // Start to handle the request
     // Connects to the requested remote server, and forwards the message it got from bridge connector
@@ -41,7 +43,8 @@ public:
 private:
 
     std::shared_ptr<boost::asio::ssl::context> ctx_;
-    std::shared_ptr<SslStreamType> ssl_stream_;    
+    std::shared_ptr<SslStreamType> ssl_stream_; 
+    std::shared_ptr<HttpSocketType> client_socket_;
 };
 
-#endif // HTTPS_BRIDGE_HPP_
+#endif // GTPD_BRIDGE_HPP_

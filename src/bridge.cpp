@@ -200,20 +200,20 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
         // If there is a socket, continue in the cycle
         else
         {
-            async_write(
-                *(cached_server_socket->second),
-                boost::asio::buffer(client_buffer_,bytes_transferred),
-                boost::bind(
-                    &Bridge::handle_server_write,
-                    this->shared_from_this(),
-                    cached_server_socket->second,
-                    boost::asio::placeholders::error,
-                    server_host
-                )
-            );
+                async_write(
+                    *(cached_server_socket->second),
+                    boost::asio::buffer(client_buffer_,bytes_transferred),
+                    boost::bind(
+                        &Bridge::handle_server_write,
+                        this->shared_from_this(),
+                        cached_server_socket->second,
+                        boost::asio::placeholders::error,
+                        server_host
+                    )
+                );
+            }
         }
     }
-}
 
 // Write to remote server complete, Async read from client
 template <class BridgeType, typename SocketType>

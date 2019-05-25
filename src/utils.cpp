@@ -5,14 +5,14 @@
 
 int Utils::parse_domain(const std::string& message, std::string& domain)
 {
-    std::regex re("^.+?[ \\t]+(?:ftp|https?)?(?:[:][/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
+    std::regex re("^.+?[ \\t]+(ftp|https?)?(?:[:][/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
     std::smatch match;
     std::regex_search(message, match, re);
 
     std::string port = "80";
 
     // If there is no valid URI
-    if(!match[1].matched)
+    if(!match[2].matched)
     {
         return EMPTY_DOMAIN;
     }
@@ -23,12 +23,16 @@ int Utils::parse_domain(const std::string& message, std::string& domain)
         return EMPTY_ABSOLUTE_URI;
     }
 
-    std::string host = match[1].str(); 
+    std::string host = match[2].str(); 
 
-    if(match[2].matched)
+    if(match[3].matched)
     {
-        port = match[2].str();
+        port = match[3].str();
     } 
+    else if(match[1].matched && match[1].str() == "ftp")
+    {
+        port = "21";
+    }
 
     std::string new_domain = host + ":" + port;
 
