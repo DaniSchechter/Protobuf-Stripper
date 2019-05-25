@@ -62,7 +62,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
   );
 
   // Could not resolve the correct endpoint fir the domain
-  if(endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) 
+  if(boost::lexical_cast<std::string>(endpoint) == ENDPOINT_ADDRESS_ERROR) 
   {
     Logger::log("Could not resolve the domain to an endpoint", Logger::LOG_LEVEL::WARNING); 
     return; 
@@ -88,7 +88,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       );
 
       std::string common_name;
-      if( Utils::split_domain(domain, common_name) == Utils::COMMON_NAME_ERROR )
+      if( Utils::fetch_common_name(domain, common_name) == Utils::COMMON_NAME_ERROR )
       {
         Logger::log(
           "No match while parsing common name out of the domain: " + domain, Logger::LOG_LEVEL::FATAL

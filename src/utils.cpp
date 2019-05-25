@@ -5,7 +5,7 @@
 
 int Utils::parse_domain(const std::string& message, std::string& domain)
 {
-    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
+    std::regex re("^.+?[ \\t]+(?:ftp|https?)?(?:[:][/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
     std::smatch match;
     std::regex_search(message, match, re);
 
@@ -81,7 +81,7 @@ std::string Utils::generate_absolute_uri_request(const std::string& message, con
     return http_method + host[1].str() + "/" + full_message[2].str();
 }
 
-int Utils::split_domain(const std::string& domain, std::string& common_name)
+int Utils::fetch_common_name(const std::string& domain, std::string& common_name)
 {
     /*  Last part is two characters long
         ------------------------------------------------------------------
