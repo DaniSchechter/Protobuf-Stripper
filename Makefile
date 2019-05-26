@@ -5,7 +5,7 @@ BIN		:= bin
 SRC		:= src
 INCLUDE	:= /usr/lib -L /usr/lib
 
-LIBRARIES	:= -lboost_system -lpthread -lboost_thread -lboost_regex 
+LIBRARIES	:= -lboost_system -lpthread -lboost_thread -lboost_regex -lcrypto -lssl
 
 EXECUTABLE	:= protobuf_stripper
 
