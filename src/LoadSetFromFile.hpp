@@ -7,7 +7,8 @@
 class FileImportSet
 {
 private:
-	 std::set<std::string> set;
+	 std::set<std::string> port;
+	 std::set<std::string> IP;
 	 static FileImportSet *s_instance;
 public:
 	FileImportSet(){}
@@ -31,7 +32,7 @@ public:
 				while (std::getline(words, word, ',')) {
 					rowvec.push_back(word);
 				}
-				set.insert(rowvec[2]);
+				IP.insert(rowvec[2]);
 			}
 			file.close();
 			return;
@@ -48,17 +49,21 @@ public:
 		while (!file.eof())
 		{
 			getline(file, line);
-			set.insert(line);
+			port.insert(line);
 		}
 		file.close();
 	}
-	std::set<std::string> get_set()
+	std::set<std::string> get_set(const std::string& Name)
 	{
-		return set;
+		if (Name == "port") return port;
+		if (Name == "IP") return IP;
+		return NULL;
 	}
 	std::set<std::string>* get_value()
 	{
-		return &set;
+		if (Name == "port") return &port;
+		if (Name == "IP") return &IP;
+		return NULL;
 	}
 	static FileImportSet* instance()
 	{

@@ -11,11 +11,11 @@ bool request_density(const std::string& srcIP, const std::string& dstIP, const s
 	{
 		// may be malicious, this is the first request from the network to this destination ip
 		static FileImportSet IpBlackList;
-		if (IpBlackList.get_set()->empty())
+		if (IpBlackList.get_set("IP")->empty())
 		{
 			IpBlackList = FileImportSet(test_config("IP_BLACKLIST_CSV"));
 		}
-		if (IpBlackList.get_set()->find(dstIP) != IpBlackList.get_set()->end()) {
+		if (IpBlackList.get_set("IP")->find(dstIP) != IpBlackList.get_set("IP")->end()) {
 			map[dstIP].insert(test_config("BLACK_LIST_IP_IDENTIFIER"));
 			return true;
 		}

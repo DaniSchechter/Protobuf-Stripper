@@ -16,10 +16,10 @@ bool port_density(const std::string& srcIP, const std::string& dstIP, const std:
 	}
 	if (port_map[dstPort].size() >= std::stoi(test_config("PORTS_MIN_COUNT")))
 	{ 
-		if (FileImportSet::instance()->get_set()->empty())
+		if (FileImportSet::instance()->get_set("port")->empty())
 			Ports= FileImportSet(test_config("PORTS_FILE"));
 
-		return Ports.get_set().find(dstPort)== Ports.get_set().end(); //Check if known port or Unknown port, High Usage 
+		return Ports.get_set("port").find(dstPort)== Ports.get_set("port").end(); //Check if known port or Unknown port, High Usage 
 
 	}
 	return false; 

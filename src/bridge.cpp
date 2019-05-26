@@ -8,6 +8,8 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
+#include "checkPacket.hpp"
+
 
 template <class BridgeType, typename SocketType>
 Bridge<BridgeType, SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
@@ -127,7 +129,18 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     int parsing_error = Utils::parse_domain(
         boost::lexical_cast<std::string>(client_buffer_), domain
     );
-    
+
+    // Do tests on the request to check if Valid or Forbidden
+	std::vector<std::string> src;
+	std::vector<std::string> dst;
+	boost::split(src,client_host_, boost::is_any_of(":"));
+	boost::split(dst, server_host, boost::is_any_of(":"));
+	if (isForbidden(src[0], dst[0], src[1], dst[1], client_buffer_))
+	{
+		strand_.post(boost::bind(&Bridge::close, this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, server_host, error.message()));
+		return;
+	}
+
     // No new Host was provided in the message - use the current one (In case of a regex error)
     if(parsing_error)
     {
@@ -326,7 +339,8 @@ void Bridge<BridgeType, SocketType>::close(std::shared_ptr<SocketType> server_so
 
     // If the error is in the client socket, close it as well as all server sockets
     if( error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR || 
-        error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR )
+        error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR ||
+		error_source == Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST )
     {
         if (client_socket_->lowest_layer().is_open())
         {
@@ -400,7 +414,12 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
         {
             Logger::log("SERVER_WRITE_ERROR", Logger::LOG_LEVEL::WARNING);
             break; 
-        }   
+        }
+		case Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST:
+		{
+			Logger::log("FORBIDDEN_REQUEST", Logger::LOG_LEVEL::FATAL);
+			break;
+		}
     }
     Logger::log("ERROR: " + error_message + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
 }
