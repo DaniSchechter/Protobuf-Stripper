@@ -29,7 +29,6 @@ public:
 private:
    
     static std::mutex output_stream_lock_ ;
-    //ostream& log_stream_;
 
 };
 

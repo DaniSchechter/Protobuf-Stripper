@@ -55,12 +55,8 @@ bin/*
 # Configuratio files
 *config.json
 
-#Visual Studio 2017 Automatically Created Files
-*.db
-*.opendb
-*.json
-*.sqlite
-*.sqlite-journal
-*.suo
-*.ipch
-/.vs
+# SSL Keys
+.sslkeys/*
+
+# Generated while CA signing certificates and incremented each time CA sign a new certificate
+.srl

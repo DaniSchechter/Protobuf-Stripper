@@ -5,20 +5,29 @@
 #include <boost/asio/ip/tcp.hpp>
 
 #define ENDPOINT_ADDRESS_ERROR "0.0.0.0:0"
-#define EMPTY_DOMAIN "1"
+#define DEFAULT_HTTP_METHOD "Get "
 
 // Parser for incoming requests.
 struct Utils
 { 
+    enum HTTP_MESSAGE_ERROR
+    {
+        EMPTY_DOMAIN = 1, EMPTY_ABSOLUTE_URI, COMMON_NAME_ERROR
+    };
     
     Utils() = delete;
 
     // Get the host from http message
-    static std::string parse_domain(const std::string& message);
+    static int parse_domain(const std::string& message, std::string& domain);
 
     // Resolve the host to endpoint
     static boost::asio::ip::tcp::endpoint resolve_endpoint(std::string domain,
-                                                           std::shared_ptr<boost::asio::io_context> io_context);
+                                                           boost::asio::io_context& io_context);
+
+    // If the requested domain is empty (GET / http...) return a new request with the host as the domain
+    static std::string generate_absolute_uri_request(const std::string& message, const std::string& http_type);
+
+    static int split_domain(const std::string& domain, std::string& common_name);
 };
 
 #endif // UTILS_HPP_

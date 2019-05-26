@@ -1,5 +1,3 @@
-
-
 #include "server.hpp"
 #include "logger.hpp"
 
@@ -33,15 +31,15 @@ Server::Server(std::unique_ptr<Config> config)
     acceptor_.bind(endpoint);
     acceptor_.listen();
 
-    std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
+    std::shared_ptr<BridgeConnector> next_bridge_connector = std::make_shared<BridgeConnector>(io_context_);
   
     // Start accepting from client's socket associated with the bridhe
     try{
       acceptor_.async_accept(
-            next_connection_bridge->client_socket(),
+            next_bridge_connector->client_socket(),
             [=](auto error)
             {
-              handle_accept(error, next_connection_bridge);
+              handle_accept(error, next_bridge_connector);
             }
           );
     }
@@ -72,6 +70,8 @@ void Server::run()
 
 void Server::WorkerThread( )
 {
+  while( true )
+  {
 		try
 		{
 			boost::system::error_code ec;
@@ -80,33 +80,36 @@ void Server::WorkerThread( )
 			{
 				Logger::log("Error !, code: " + boost::lexical_cast<std::string>(ec), Logger::LOG_LEVEL::FATAL);
 			}
+      break;
 		}
 		catch( std::exception & ex )
 		{
 			Logger::log("Exception: " + boost::lexical_cast<std::string>(ex.what()), Logger::LOG_LEVEL::FATAL);
 		}
+  } 
 }
 
 
-void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<Bridge> connection_bridge)
+void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<BridgeConnector> bridge_connector)
 {
   if(error)
   {
     //TODO modify
     return;
   }
-  else{
-    connection_bridge->start();
-    std::shared_ptr<Bridge> next_connection_bridge = std::make_shared<Bridge>(io_context_);
-    Logger::log("Accepting: ",Logger::LOG_LEVEL::FATAL);
-    // boost::lexical_cast<std::string>(next_connection_bridge->client_socket().remote_endpoint()),Logger::LOG_LEVEL::FATAL);
-    
-    // Start accepting from client's socket associated with the bridhe
+  else
+  {
+    // Start serving the client
+    bridge_connector->start();
+
+    // Prepare for next client's connection
+    std::shared_ptr<BridgeConnector> next_bridge_connector = std::make_shared<BridgeConnector>(io_context_);
+  
     acceptor_.async_accept(
-      next_connection_bridge->client_socket(),
+      next_bridge_connector->client_socket(),
       [=](auto error)
       {
-        handle_accept(error, next_connection_bridge);
+        handle_accept(error, next_bridge_connector);
       }
     );
   }
