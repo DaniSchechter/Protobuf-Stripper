@@ -1,11 +1,16 @@
 #include "confientialDataRule.hpp"
 #include "filesHandler.hpp"
 #include "TestsConfig.hpp"
+#include <vector>
+#include <sstream>
+#include <cstdlib>
+#include <iostream> 
+
 
 bool checkIfMaliciousIp(const std::string& dstIp)
 {
 	//check if the destination IP exists in the malicious IPs file
-	return (isStrExistsInFile(maliciousIpsFile, dstIp) != "error");
+	return (isStrExistsInFile(MALICIOUS_IP_FILE, dstIp) == BAD_IP);
 }
 
 bool checkIfDataConfidential(const std::string& data)
@@ -28,20 +33,18 @@ bool checkIfDataConfidential(const std::string& data)
 	//loop through all the words
 	for(const std::string& str : tokens)
 	{
-		//checks if the word is forbidden and if it is then return it's value
-		std::string temp = isStrExistsInFile(maliciousWordsFile, str);
-		
-		countBadWords += atoi(temp.c_str());
+		//checks if the word is forbidden and if it is then return it's value		
+		countBadWords += isStrExistsInFile(MALICIOUS_WORDS_FILE, str);
 		
 		
 		//checks if the word exists in the list of words the user doesn't allow
-		if (isStrExistsInFile(blockWordsFile, str) == "")
+		if (isStrExistsInFile(BLOCK_WORDS_FILE, str) == BLOCK_WORD)
 			return true;
 		countTotalWords++;
 	}
 
 	//if the frequanty of bad words is too much bigger then the function will return true
-	if (((double)countBadWords / countTotalWords) >= atoi(test_config("FREQ_BAD_WORDS").c_str()))
+	if (((double)countBadWords / countTotalWords) >= std::stoi(test_config("FREQ_BAD_WORDS")))
 		return true;
 	
 	

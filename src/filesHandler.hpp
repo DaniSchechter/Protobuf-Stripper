@@ -1,30 +1,34 @@
-#ifndef filesHandler.hpp
+#ifndef FILES_HANDLER_HPP_
 
+#define FILES_HANDLER_HPP_
 
-
-
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <set>
-#include <vector>
-#include <sstream>
+
 
 //The file contains the malicious words with the format: virus-3  
-#define maliciousWordsFile "maliciousWords.csv"
+//#define MALICIOUS_WORDS_FILE "maliciousWords.csv"
 
-//The file contains the words that the user wants to block 
-#define blockWordsFile "blockWordsFile.csv"
+//The file contains the words that the user wants to block
+//#define BLOCK_WORDS_FILE "blockWordsFile.csv"
 
 //The file contains the malicious IPs that need to be blocked
-#define maliciousIpsFile "maliciousIps.csv"
+//#define MALICIOUS_IP_FILE "maliciousIps.csv"
 
 //The file contains all the requests that were blocked
-#define maliciousRequestsFile "maliciousRequest.csv"
+//#define MALICIOUS_REQUESTS_FILE "maliciousRequest.csv"
+
+#define ERROR_MESSAGE "error opening the file"
+
+#define BLOCK_WORD -1
+
+#define BAD_IP -1
+
+
 
 
 //The function checks if a word exists in a file and if it is then the function return the value
-std::string isStrExistsInFile(const std::string& fileName, const std::string& word);
+int isStrExistsInFile(const std::string& fileName, const std::string& word);
 
 //The fucntion prints the file
 void printFile(const std::string& fileName);

@@ -1,15 +1,12 @@
-#ifndef intervalRule.hpp
+#ifndef INTERVAL_RULE_HPP_	
 
-#include "requestInterval.hpp"
-#include "hashOverride.hpp"
-#include <iostream>
-#include <unordered_map> 
-#include <ctime>
-#include <chrono>
+#define INTERVAL_RULE_HPP_
+
+
 #include <string>
 
 
-#define intervalError 500
+#define INTERVAL_ERROR 500
 
 //The function returns the number of miliseconds since epoch time
 long calculateDuration();

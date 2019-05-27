@@ -3,6 +3,10 @@
 #include"LoadSetFromFile.hpp"
 #include <unordered_map>
 #include <set>
+
+
+FileImportSet *FileImportSet::s_instance = 0;
+
 //Checks how much requests there sent to the destination Ip from different source Ips, if its the first time this ip is accessed, verify it's a legitimate site Ip by scanning the csv file for this IP address, return true if it's not legitimate and false if it is.
 bool request_density(const std::string& srcIP, const std::string& dstIP, const std::string& rawdata) {
 	// store the data in map as [destination ip, set of source ip's that accessed him]
@@ -10,12 +14,9 @@ bool request_density(const std::string& srcIP, const std::string& dstIP, const s
 	if (map.find(dstIP) == map.end())
 	{
 		// may be malicious, this is the first request from the network to this destination ip
-		static FileImportSet IpBlackList;
-		if (IpBlackList.get_set("IP")->empty())
+		
+		if (FileImportSet::instance()->get_value("IP")->find(dstIP) != FileImportSet::instance()->get_value("IP")->->end())
 		{
-			IpBlackList = FileImportSet(test_config("IP_BLACKLIST_CSV"));
-		}
-		if (IpBlackList.get_set("IP")->find(dstIP) != IpBlackList.get_set("IP")->end()) {
 			map[dstIP].insert(test_config("BLACK_LIST_IP_IDENTIFIER"));
 			return true;
 		}

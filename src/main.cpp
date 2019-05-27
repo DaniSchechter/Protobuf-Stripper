@@ -1,40 +1,28 @@
-#include "server.hpp"
-#include "config.hpp"
-#include "logger.hpp"
+#include "intervalRule.hpp"
+#include "menu.hpp"
+#include <chrono>
+#include <thread>
+#include <iostream>
+#include "checkPacket.hpp"
 
-#include <string>
-#include <boost/bind.hpp>
 
-int main(int argc, char* argv[])
+
+
+int main()
 {
-#ifdef DEBUG_MODE
-	std::cout << "Running in Debug mode" << std::endl;
-#endif
 
-	std::unique_ptr<Config> config;
+	auto start = std::chrono::high_resolution_clock::now();
+	isForbidden("5.5.5.55", "1.1.1.11", "this is good");
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-	try
-	{
-		std::vector <std::string> compilation_flags;
-		if (argc > 1)
-		{
-			config = std::make_unique<Config>(Config::get_config(argv[1]));
-		}
-		else
-		{
-			config = std::make_unique<Config>(Config::get_config());
-		}
+	std::cout << duration.count() << "\n";
 
-		// Initialize the server.
-		// TODO changr to normal cast from std
-		Server server(std::move(config));
 
-		// Run the server until stopped.
-		server.run();
-	}
-	catch (std::exception & e)
-	{
-		Logger::log(e.what(), Logger::LOG_LEVEL::FATAL);
-	}
+	
+
+	getchar();
+	
+
 	return 0;
 }

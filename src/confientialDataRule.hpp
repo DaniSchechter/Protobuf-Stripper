@@ -1,9 +1,10 @@
-#ifndef confientialDataRule.hpp
-#include <iostream> 
+#ifndef CONFIDENTIAL_DATA_RULE_HPP_
+#define CONFIDENTIAL_DATA_RULE_HPP_
+
+
 #include <string>
-#include <vector>
-#include <sstream>
-#include <cstdlib>
+
+
 
 
 //The function checks if the IP is defined as a malicious

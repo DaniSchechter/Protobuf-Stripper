@@ -1,58 +1,49 @@
 #include "filesHandler.hpp"
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <set>
+#include"LoadSetFromFile.hpp"
+#include "BadWordsMap.hpp"
+
+
+
+BadWordsMap *BadWordsMap::s_instance = 0;
+FileImportSet *FileImportSet::s_instance = 0;
 
 //To open the files before the functions and to pass the text in a string variable.
 //To call data from disk as little as possible.(efficiency)
 
-std::string isStrExistsInFile(const std::string& fileName, const std::string& word)
+int isStrExistsInFile(const std::string& fileName, const std::string& word)
 {
+	
 
-	std::fstream file;
-
-	file.open(fileName, std::ios::in);
-	std::vector<std::string> tokens;
-	//checks if the file opened properlly
-	if (!file.is_open())
-		return "error";
-	std::string line;
-	char* parseLine;
-
-	while (!file.eof())
+	if (fileName.compare(test_config("MALICIOUS_WORDS_FILE")) == 0)
 	{
-		//get a line from the file
-		getline(file, line);
+		//std::unordered_map<std::string, int> map;
+		//map.insert(BadWordsMap::instance()->get_value().begin(), BadWordsMap::instance()->get_value().end());
+		
+		if (BadWordsMap::instance()->get_value()->find(word) == BadWordsMap::instance()->get_value()->end())
+			return 0;
+		return (*BadWordsMap::instance()->get_value())[word];
 
-		if (strcmp(line.c_str(), "") != 0)
-		{
-
-
-
-
-			std::stringstream split(line);
-
-			std::string intermediate;
-
-			//split the line from the value (ex.   virus-3)
-			while (getline(split, intermediate, '-'))
-			{
-				tokens.push_back(intermediate);
-			}
-
-			//if the word from the file is the same as the checked word
-			if (strcmp(tokens[0].c_str(), word.c_str()) == 0)
-			{
-				file.close();
-
-				// if the size if 2 then there is a value in the file (the function will call with two types of files)
-				if (tokens.size() == 2)
-					return tokens[1];
-				else
-					return "";
-			}
-			std::vector<std::string> tokens;
-		}
-		std::vector<std::string> tokens;
 	}
-	file.close();
+	else
+	{
+		/*FileImportSet* set = new FileImportSet(fileName);*/
+		if (fileName== test_config("BLOCK_WORDS_FILE"))
+			if (FileImportSet::instance()->get_value("word")->find(word) == FileImportSet::instance()->get_value("word")->end())
+				return 0;
+			return BLOCK_WORD;
+		if (FileImportSet::instance()->get_value("IP")->find(word) == FileImportSet::instance()->get_value("IP")->end())
+			return 0;
+		return BLOCK_WORD;
+		
+		
+
+	}
+	
 
 }
 
@@ -100,7 +91,7 @@ void copyFilesContent(const std::string& srcFile, const std::string& dstFile)
 	{
 					
 		getline(temp, line);
-		if (strcmp(line.c_str(), "\r\n") != 0 && strcmp(line.c_str(), "") != 0)
+		if(line.compare("\r\n") != 0 && line.compare("") != 0)
 			file << line << "\n";
 	}
 	file.close();
@@ -137,7 +128,7 @@ bool deleteLinesFromFile(const std::string& fileName, std::set<std::string> s)
 		getline(file, line);
 			
 		//if the line from the file isn't in the set
-		if (std::find(s.begin(), s.end(), line) == s.end() && strcmp(line.c_str(), "\r\n") != 0)
+		if (std::find(s.begin(), s.end(), line) == s.end() && line.compare("\r\n") != 0)
 			tempFile << line + "\n";
 		else if (line != "")
 			flag = true;
@@ -150,3 +141,4 @@ bool deleteLinesFromFile(const std::string& fileName, std::set<std::string> s)
 	return flag;
 	}
 	
+
