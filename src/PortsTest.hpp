@@ -1,3 +1,3 @@
 #include"TestsConfig.hpp"
 #include "FileChecks.hpp"
-bool ftp_tests(const char[] data)
+bool port_density(const std::string& srcIP, const std::string& dstIP, const std::string& srcPort, const std::string& dstPort);

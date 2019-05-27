@@ -2,7 +2,8 @@
 #include <string>
 #include <set>
 #include"TestsConfig.hpp"
-#include "textExtractor.h"
+#include"textExtractor.hpp"
+#include"ftpTests.hpp"
 bool ftp_tests(const char data[])
 {
 // if pdf
