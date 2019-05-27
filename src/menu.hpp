@@ -1,17 +1,12 @@
-#ifndef  menu.hpp
+#ifndef MENU_HPP_
 
-#include "filesHandler.hpp"
+#define MENU_HPP_
 
-
-
-#include <ctime>
-#include <chrono>
-#include <fstream>
 #include <string>
 #include <set>
 
 
-#define menu_size 8
+#define MENU_SIZE 8
 
 //The function gets a packet and print in to the bad requests file
 void writeRequestToFile(const std::string& srcIP, const std::string& dstIP, const std::string& data);
