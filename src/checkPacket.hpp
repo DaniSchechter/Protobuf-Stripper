@@ -1,9 +1,12 @@
-#ifndef checkPacket.hpp
+#ifndef CHECK_PACKET_HPP_
+
+#define CHECK_PACKET_HPP_
 
 #include "intervalRule.hpp"
 #include "confientialDataRule.hpp"
 #include "menu.hpp"
 #include <string>
+#include <iostream>
 #include "PortsTest.hpp"
 #include "IpBlackList.hpp"
 #include "IsEncryptedRawData.hpp"

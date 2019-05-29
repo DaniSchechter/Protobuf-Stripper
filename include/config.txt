@@ -1,0 +1,13 @@
+MAX_SIZE=100000000
+CHECK_SIZE=5
+PORTS_MIN_COUNT=2
+PORTS_FILE=include/known_ports.txt
+MALICIOUS_IP_FILE=include/maliciousIps.csv
+BLOCK_WORDS_FILE=include/blockWordsFile.csv
+MALICIOUS_WORDS_FILE=include/maliciousWords.csv
+MALICIOUS_REQUESTS_FILE=include/maliciousRequest.csv
+IP_BLACKLIST_CSV=include/ip_blacklist.csv
+FREQ_BAD_WORDS=0.0005
+BLACK_LIST_IP_IDENTIFIER=IP_BLACK_LIST
+Min_Entropy=10
+ENCRYPTED_RAW_DATA_MIN_SIZE=100

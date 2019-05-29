@@ -3,7 +3,6 @@
 #include <set>
 #include"LoadSetFromFile.hpp"
 
-FileImportSet *FileImportSet::s_instance = 0;
 
 bool port_density(const std::string& srcIP, const std::string& dstIP, const std::string& srcPort, const std::string& dstPort)
 {

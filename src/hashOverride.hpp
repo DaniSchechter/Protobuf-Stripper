@@ -4,6 +4,8 @@
 
 
 #include <ctime>
+#include <utility>
+#include <string>
 
 //Hash class for the unordered map with the key field requestID
 class my_string_hash
@@ -11,7 +13,7 @@ class my_string_hash
 public:
 	
 	//overide of the hash function for the requestID class
-	size_t calculateHash(const std::pair<std::string, std::string>& key) const
+	size_t calculateHash(const std::pair<std::string,std::string>& key) const
 	{
 		size_t hashVal = 0;
 		for (char ch : key.first)

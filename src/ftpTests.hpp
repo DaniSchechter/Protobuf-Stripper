@@ -1,1 +1,1 @@
-bool ftp_tests(const char[] data);
+bool ftp_tests(const char* data);

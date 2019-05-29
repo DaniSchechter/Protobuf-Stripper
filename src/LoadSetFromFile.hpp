@@ -1,9 +1,13 @@
 #include"TestsConfig.hpp"
+#include "BadWordsMap.hpp"
 #include<set>
 #include<iostream>
 #include<fstream>
 #include<sstream>
 #include<vector>
+
+
+
 class FileImportSet
 {
 private:
@@ -39,8 +43,6 @@ public:
 			return;
 		//}
 		//else
-		std::string line;
-		std::ifstream file;
 		file.open(test_config("PORTS_FILE"));
 		if (!file.is_open())
 		{
@@ -90,7 +92,7 @@ public:
 		if (Name == "IP" ) return IP;
 		if (Name == "word") return blockWordsSet;
 	}
-	std::set<std::string>* get_value()
+	std::set<std::string>* get_value(const std::string& Name)
 	{
 		if (Name == "port") return &port;
 		if (Name == "IP") return &IP;

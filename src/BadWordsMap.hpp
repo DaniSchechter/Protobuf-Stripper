@@ -9,6 +9,7 @@
 #include <sstream>
 #include "filesHandler.hpp"
 #include <iostream>
+#include "TestsConfig.hpp"
 
 
 class BadWordsMap
@@ -26,7 +27,7 @@ class BadWordsMap
 
 		std::fstream file;
 
-		file.open(MALICIOUS_WORDS_FILE, std::ios::in);
+		file.open(test_config("MALICIOUS_WORDS_FILE"), std::ios::in);
 		std::vector<std::string> splitLine;
 		//checks if the file opened properlly
 		if (!file.is_open())

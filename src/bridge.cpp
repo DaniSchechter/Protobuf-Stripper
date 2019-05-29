@@ -3,6 +3,7 @@
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
 #include "ftpBridge.hpp"
+#include <regex>
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
@@ -131,11 +132,12 @@ void Bridge<BridgeType, SocketType>::handle_client_read(std::shared_ptr<SocketTy
     );
 
     // Do tests on the request to check if Valid or Forbidden
-	std::vector<std::string> src;
-	std::vector<std::string> dst;
-	boost::split(src,client_host_, boost::is_any_of(":"));
-	boost::split(dst, server_host, boost::is_any_of(":"));
-	if (isForbidden(src[0], dst[0], src[1], dst[1], client_buffer_))
+    std::regex re("((\\d+[.]){3}\\d+)[:](\\d+)");
+    std::smatch cl_info,server_info; 
+    std::regex_search(client_host_, cl_info, re);
+    std::regex_search(server_host, server_info, re);
+
+	if (isForbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], client_buffer_))
 	{
 		strand_.post(boost::bind(&Bridge::close, this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, server_host, error.message()));
 		return;
@@ -415,11 +417,11 @@ void Bridge<BridgeType, SocketType>::print_error_source(SOCKET_ERROR_SOURCE erro
             Logger::log("SERVER_WRITE_ERROR", Logger::LOG_LEVEL::WARNING);
             break; 
         }
-		case Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST:
-		{
-			Logger::log("FORBIDDEN_REQUEST", Logger::LOG_LEVEL::FATAL);
-			break;
-		}
+        case Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST:
+        {
+            Logger::log("FORBIDDEN_REQUEST", Logger::LOG_LEVEL::FATAL);
+            break;
+        }
     }
     Logger::log("ERROR: " + error_message + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
 }

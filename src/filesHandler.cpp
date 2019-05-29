@@ -8,9 +8,8 @@
 #include "BadWordsMap.hpp"
 
 
-
-BadWordsMap *BadWordsMap::s_instance = 0;
 FileImportSet *FileImportSet::s_instance = 0;
+BadWordsMap *BadWordsMap::s_instance = 0;
 
 //To open the files before the functions and to pass the text in a string variable.
 //To call data from disk as little as possible.(efficiency)
@@ -32,10 +31,12 @@ int isStrExistsInFile(const std::string& fileName, const std::string& word)
 	else
 	{
 		/*FileImportSet* set = new FileImportSet(fileName);*/
-		if (fileName== test_config("BLOCK_WORDS_FILE"))
+		if (fileName == test_config("BLOCK_WORDS_FILE"))
+		{
 			if (FileImportSet::instance()->get_value("word")->find(word) == FileImportSet::instance()->get_value("word")->end())
 				return 0;
 			return BLOCK_WORD;
+		}
 		if (FileImportSet::instance()->get_value("IP")->find(word) == FileImportSet::instance()->get_value("IP")->end())
 			return 0;
 		return BLOCK_WORD;
@@ -128,7 +129,7 @@ bool deleteLinesFromFile(const std::string& fileName, std::set<std::string> s)
 		getline(file, line);
 			
 		//if the line from the file isn't in the set
-		if (std::find(s.begin(), s.end(), line) == s.end() && line.compare("\r\n") != 0)
+		if (s.find(line) == s.end() && line.compare("\r\n") != 0)
 			tempFile << line + "\n";
 		else if (line != "")
 			flag = true;

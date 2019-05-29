@@ -1,10 +1,13 @@
 #include "menu.hpp"
 #include "filesHandler.hpp"
-
-#include <ctime>
+#include "TestsConfig.hpp"
+#include <time.h>
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 
 const std::string currentDateTime()
@@ -13,7 +16,7 @@ const std::string currentDateTime()
 	struct tm  tstruct;
 	char       buf[80];
 
-	localtime_s(&tstruct, &now);
+	localtime(&now);
 	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
 	return buf;
@@ -33,9 +36,8 @@ bool isValidIp(const std::string& ip)
 	{
 		
 		int digitsAmount = 0;
-		strcpy_s(charIp, ip.length() + 1, ip.c_str());
-		char* context = NULL;
-		char* words = strtok_s(charIp, ".", &context);
+		strncpy(charIp, ip.c_str(), ip.length() + 1);
+		char* words = strtok(charIp, ".");
 		int count = 0;
 		
 		//parsing the segments of the IP
@@ -61,7 +63,7 @@ bool isValidIp(const std::string& ip)
 				return false;
 			}
 			count++;
-			words = strtok_s(NULL, ".", &context);
+			words = strtok(NULL, ".");
 		}
 		//check if there is 4 segments and 3 dots.
 		if (count == 4 && ip.length() - digitsAmount == 3)
@@ -87,7 +89,7 @@ void setMaliciousIp()
 
 	std::string ip;
 	std::ofstream file;
-	file.open(MALICIOUS_IP_FILE, std::ios::out | std::ios::app);
+	file.open(test_config("MALICIOUS_IP_FILE"), std::ios::out | std::ios::app);
 	do
 	{
 		std::cin >> ip;
@@ -125,7 +127,7 @@ void setBadWords()
 
 	std::string word;
 	std::ofstream file;
-	file.open(BLOCK_WORDS_FILE, std::ios::out | std::ios::app);
+	file.open(test_config("BLOCK_WORDS_FILE"), std::ios::out | std::ios::app);
 	do
 	{
 		std::cin >> word;
@@ -142,8 +144,8 @@ void setBadWords()
 void viewBadRequests()
 {
 	std::fstream file;
-	file.open(MALICIOUS_REQUESTS_FILE, std::ios::in);
-	std::ifstream f(MALICIOUS_REQUESTS_FILE);
+	file.open(test_config("MALICIOUS_REQUESTS_FILE"), std::ios::in);
+	std::ifstream f(test_config("MALICIOUS_REQUESTS_FILE"));
 	std::string line;
 	std::cout << "\n\n";
 	
@@ -269,7 +271,7 @@ void showBadWordsList()
 {
 	std::cout << "\n\nThe Bad Words Are:" << '\n';
 
-	printFile(BLOCK_WORDS_FILE);
+	printFile(test_config("BLOCK_WORDS_FILE"));
 
 }
 
@@ -277,7 +279,7 @@ void showBadIpsList()
 {
 	std::cout << "\n\nThe Bad IPs Are:" << '\n';
 
-	printFile(MALICIOUS_IP_FILE);
+	printFile(test_config("MALICIOUS_IP_FILE"));
 
 }
 
@@ -285,7 +287,7 @@ void showBadIpsList()
 void writeRequestToFile(const std::string& srcIP, const std::string& dstIP, const std::string& data)
 {
 	std::ofstream file;
-	file.open(MALICIOUS_REQUESTS_FILE, std::ios::out | std::ios::app);
+	file.open(test_config("MALICIOUS_REQUESTS_FILE"), std::ios::out | std::ios::app);
 
 	file << "---------------------------------\n\n";
 	file << srcIP << ", " << dstIP << '\n';
@@ -319,7 +321,7 @@ void changeBadWordsList()
 {
 	showBadWordsList();
 
-	if (deleteLinesFromFile(BLOCK_WORDS_FILE, chooseDelete()))
+	if (deleteLinesFromFile(test_config("BLOCK_WORDS_FILE"), chooseDelete()))
 		std::cout << "\nThe list was updated\n";
 	else
 		std::cout << "\nThere were noting to update\n";
@@ -328,7 +330,7 @@ void changeBadWordsList()
 void changeBadIpsList()
 {
 	showBadIpsList();
-	if (deleteLinesFromFile(MALICIOUS_IP_FILE, chooseDelete()))
+	if (deleteLinesFromFile(test_config("MALICIOUS_IP_FILE"), chooseDelete()))
 		std::cout << "\nThe list was updated\n";
 	else
 		std::cout << "\nThere were noting to update\n";

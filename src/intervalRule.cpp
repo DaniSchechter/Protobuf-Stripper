@@ -23,7 +23,7 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 	
 	//the map saves the data about the packets (source ip, destination ip, send time, interval)
 	
-
+	/*
 	static std::unordered_map<std::pair <std::string, std::string>, std::pair <std::time_t, std::time_t>, my_string_hash> map; // maybe to open a class with the map
 
 	//requestID key(srcIP, dstIP);
@@ -67,5 +67,6 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 				return false;
 			}
 		}
-	}
+	}*/
+	return false;
 }
