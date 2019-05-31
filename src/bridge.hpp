@@ -28,7 +28,7 @@ public:
 
   enum { max_data_length = 32768 }; //8KB
 
-  // Construct a connection with the given io_context.
+  // Constructs a connection with the given io_context.
   explicit Bridge(std::shared_ptr<boost::asio::io_context> io_context);
 
   // Start to handle the request

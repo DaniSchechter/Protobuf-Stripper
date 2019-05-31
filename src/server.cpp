@@ -52,7 +52,6 @@ Server::Server(std::unique_ptr<Config> config)
 
 void Server::run()
 {
-  // TODO log
   boost::thread_group worker_threads;
 
   // Create a pool of threads to run all of the io_contexts.
@@ -92,11 +91,7 @@ void Server::WorkerThread( )
 
 void Server::handle_accept(const boost::system::error_code& error, std::shared_ptr<BridgeConnector> bridge_connector)
 {
-  if(error)
-  {
-    //TODO modify
-    return;
-  }
+  if(error) return;
   else
   {
     // Start serving the client
@@ -117,7 +112,6 @@ void Server::handle_accept(const boost::system::error_code& error, std::shared_p
 
 void Server::handle_stop()
 {
-  //TODO - getting - 32514 segmentation fault when stopping io_context, check for solution
   Logger::log("Server exits..." , Logger::LOG_LEVEL::WARNING);
   io_context_->stop();
   io_context_.reset();

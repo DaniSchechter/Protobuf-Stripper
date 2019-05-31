@@ -21,7 +21,6 @@ Config::Config(const std::string& file_path)
     catch(std::exception & e)
     {
         Logger::log(e.what(), Logger::LOG_LEVEL::FATAL);
-        //TODO add exception handling
     }
 }
 

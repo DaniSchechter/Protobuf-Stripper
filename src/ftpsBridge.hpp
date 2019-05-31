@@ -45,8 +45,7 @@ public:
     // Enables secure bridges to perform handshake
     virtual void close_socket(std::shared_ptr<SslStreamType> socket);
 
-    // Maps < data channel port, SSL_SESSION* > for session reuse 
-    static std::unordered_map<std::string, SSL_SESSION*> session_cache_;
+    static bool check_if_session_is_cached(const unsigned short port);
 
 private:
 
@@ -54,12 +53,16 @@ private:
     // E.g: "229 Entering Extended Passive Mode (|||47084|)" - fetches 47084
     bool fetch_data_channel_ports(const std::string& message, std::string& port);
 
+    // Maps < data channel port, SSL_SESSION* > for session reuse 
+    static std::unordered_map<std::string, SSL_SESSION*> session_cache_;
+
     // Guards session_cache_
     static std::mutex session_cache_lock_; 
 
     std::shared_ptr<SslStreamType> secure_server_socket_;
 
     boost::asio::ssl::context ctx_;
+
 };
 
 #endif // FTPS_BRIDGE_HPP_

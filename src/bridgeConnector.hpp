@@ -32,6 +32,8 @@ public:
 
 private:
 
+    void handle_connect_request(const std::string& client_remote_endpoint);
+
     std::shared_ptr<boost::asio::io_context> io_context_;
     boost::asio::ip::tcp::socket client_socket_;
 

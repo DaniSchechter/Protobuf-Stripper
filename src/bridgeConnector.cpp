@@ -6,7 +6,6 @@
 #include <boost/bind.hpp> 
 #include <boost/asio/placeholders.hpp> 
 
-// std::unordered_map<int, std::shared_ptr<boost::asio::ssl::context>> FtpsBridge::data_channel_ports_set_;
 
 BridgeConnector::BridgeConnector(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
@@ -29,7 +28,7 @@ void BridgeConnector::start()
 void BridgeConnector::handle_client_read(const boost::system::error_code& error,
                                          std::size_t bytes_transferred)
 {
-  if(error) { return; }
+  if(error) return; 
   std::string client_remote_endpoint = boost::lexical_cast<std::string>(client_socket_.remote_endpoint());
 
   Logger::log(
@@ -37,10 +36,9 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       " [Prev S] First read from this client" ,
       Logger::LOG_LEVEL::INFO
   );
-
   Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
   
-  // Resolve the remote host (If appeared in the message)
+  // Resolve the remote host (If it appeared in the message)
   std::string domain; 
   int parsing_error = Utils::parse_domain(
       boost::lexical_cast<std::string>(client_buffer_), domain
@@ -60,7 +58,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
 
   std::string server_host = boost::lexical_cast<std::string>(endpoint);
 
-  // Could not resolve the correct endpoint fir the domain
+  // Could not resolve the correct endpoint for the domain
   if( server_host == ENDPOINT_ADDRESS_ERROR) 
   {
     Logger::log("Could not resolve the domain to an endpoint", Logger::LOG_LEVEL::WARNING); 
@@ -78,13 +76,7 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
     }
     case HTTPS:
     {
-      std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
-      client_socket_.write_some(boost::asio::buffer(str, str.length()));
-
-      Logger::log(
-        "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
-        Logger::LOG_LEVEL::INFO
-      );
+      handle_connect_request(client_remote_endpoint);
 
       // Generate the context for the ssl
       std::unique_ptr<boost::asio::ssl::context> ctx = SecureContextFactory::create_context(domain);
@@ -102,20 +94,16 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       // Send confirmation about tunnel creation, if needed
       if(strstr(client_buffer_, "CONNECT"))
       {
-        std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
-        client_socket_.write_some(boost::asio::buffer(str, str.length()));
-
-        Logger::log(
-          "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
-          Logger::LOG_LEVEL::INFO
-        );
+        handle_connect_request(client_remote_endpoint);
       }
 
-      if(FtpsBridge::session_cache_.find(std::to_string(endpoint.port())) != FtpsBridge::session_cache_.end())
+      // Check if a random port is associated with ftp connection channel 
+      if(FtpsBridge::check_if_session_is_cached(endpoint.port()))
       {
         // Instantiate a new secure FTPS bridge
         std::unique_ptr<boost::asio::ssl::context> ctx = SecureContextFactory::create_context(domain);
-        if( !ctx ) return;
+        if(!ctx) return;
+
         std::shared_ptr<FtpsBridge> bridge = std::make_shared<FtpsBridge>(
           io_context_, std::make_shared<HttpSocketType>(std::move(client_socket_)), endpoint, std::move(*ctx), server_host
         );
@@ -130,4 +118,15 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       }
 
   }
+}
+
+void BridgeConnector::handle_connect_request(const std::string& client_remote_endpoint)
+{
+  std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
+  client_socket_.write_some(boost::asio::buffer(str, str.length()));
+
+  Logger::log(
+    "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
+    Logger::LOG_LEVEL::INFO
+  );
 }

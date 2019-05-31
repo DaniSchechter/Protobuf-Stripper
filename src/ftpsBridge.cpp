@@ -21,12 +21,10 @@ FtpsBridge::FtpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
     set_client_socket(std::make_shared<SslStreamType>(std::move(*unsecure_client_socket), ctx_));
 
     // Wrap the unsecure server socket with a secure ssl stream
-    std::shared_ptr<SslStreamType> secure_server_socket = std::make_shared<SslStreamType>(std::move(*unsecure_server_socket), ctx_);
+    secure_server_socket_ = std::make_shared<SslStreamType>(std::move(*unsecure_server_socket), ctx_);
 
     // Save the socket into bridge's server sockets map
-    server_socket_map_[unsecure_server_host] = secure_server_socket;
-
-    secure_server_socket_ = secure_server_socket;
+    server_socket_map_[unsecure_server_host] = secure_server_socket_;
 
     client_host_ = boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint());
 }
@@ -52,15 +50,13 @@ FtpsBridge::FtpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
     }
 
     // Create a secure server socket and resuse the previous session
-    std::shared_ptr<SslStreamType> secure_server_socket = std::make_shared<SslStreamType>(*io_context_, ctx_);
-    SSL_set_session(secure_server_socket->native_handle(), reusable_session->second);
+    secure_server_socket_ = std::make_shared<SslStreamType>(*io_context_, ctx_);
+    SSL_set_session(secure_server_socket_->native_handle(), reusable_session->second);
 
-    secure_server_socket->lowest_layer().connect(endpoint); 
+    secure_server_socket_->lowest_layer().connect(endpoint); 
 
     // Save the socket into bridge's server sockets map
-    server_socket_map_[unsecure_server_host] = secure_server_socket;
-
-    secure_server_socket_ = secure_server_socket;
+    server_socket_map_[unsecure_server_host] = secure_server_socket_;
 
     client_host_ = boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint());
 }
@@ -167,6 +163,14 @@ bool FtpsBridge::fetch_data_channel_ports(const std::string& message, std::strin
     }
     port.assign(match[1].str(), 0, match[1].str().length());
     return true;
+}
+
+bool FtpsBridge::check_if_session_is_cached(const unsigned short port)
+{
+    FtpsBridge::session_cache_lock_.lock();
+    bool exist = FtpsBridge::session_cache_.find(std::to_string(port)) != FtpsBridge::session_cache_.end();
+    FtpsBridge::session_cache_lock_.unlock();
+    return exist;
 }
 
 void FtpsBridge::close_socket(std::shared_ptr<SslStreamType> socket)

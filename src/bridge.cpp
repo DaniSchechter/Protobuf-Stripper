@@ -18,7 +18,6 @@ void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
                                           const std::string& domain)
 {
     if(error) return;
-    
 
     client_host_ = boost::lexical_cast<std::string>(client_socket_->lowest_layer().remote_endpoint());
 
@@ -56,7 +55,6 @@ void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> serve
 {
     if(error)
     {
-        // TODO think of edge cases
         strand_.post(
             boost::bind(
                 &Bridge::close,
@@ -93,7 +91,6 @@ void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> serve
     // Send the first messaage to the server
     // Only if got a message to forward - e.g Https first message that we get is CONNECT 
     // We dont want to forward it so we are not saving it in client_buffer_
-
     if(strlen(client_buffer_) > 0)
     {
         async_write(
@@ -108,7 +105,7 @@ void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> serve
             )
         );
     }
-    // This is an https bridge so no need to send to the server the first message
+    // In case that derived bridge hasnt saved the first message, don't forward it
     else
     {
         client_socket_->async_read_some(
@@ -154,7 +151,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
-    // Resolve the remote host (If appeared in the message)
+    // Resolve the remote host (If it appeared in the message)
     std::string domain;
     int parsing_error = Utils::parse_domain(
         boost::lexical_cast<std::string>(client_buffer_), domain
@@ -231,20 +228,20 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
         // If there is a socket, continue in the cycle
         else
         {
-                async_write(
-                    *(cached_server_socket->second),
-                    boost::asio::buffer(client_buffer_,bytes_transferred),
-                    boost::bind(
-                        &Bridge::handle_server_write,
-                        this->shared_from_this(),
-                        cached_server_socket->second,
-                        boost::asio::placeholders::error,
-                        server_host
-                    )
-                );
-            }
+            async_write(
+                *(cached_server_socket->second),
+                boost::asio::buffer(client_buffer_,bytes_transferred),
+                boost::bind(
+                    &Bridge::handle_server_write,
+                    this->shared_from_this(),
+                    cached_server_socket->second,
+                    boost::asio::placeholders::error,
+                    server_host
+                )
+            );
         }
     }
+}
 
 // Write to remote server complete, Async read from client
 template <typename SocketType>
@@ -384,11 +381,10 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
 
     // If the error is in the client socket, close it as well as all server sockets
     if( (error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR || 
-         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR) &&
-         error.value() != boost::system::errc::operation_canceled
+         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR)
     )
     {
-        if (client_socket_->lowest_layer().is_open())
+        if(client_socket_->lowest_layer().is_open())
         {
             close_socket(client_socket_);
         }
@@ -421,7 +417,7 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
         close_socket(server_socket);
 
         // if it is the last server socket for this bridge, clear the client socket and close the bridge
-        if(server_socket_map_.size() == 0 && error.value() != boost::system::errc::operation_canceled)
+        if(server_socket_map_.size() == 0)
         {
             Logger::log(
                 "All servers are gone, clearing up this bridge [C] " +
@@ -469,7 +465,7 @@ void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source,
         case Bridge::SOCKET_ERROR_SOURCE::BRIDGE_UPGRADED:
         {
             Logger::log("BRIDGE_UPGRADED_TO_SECURE_BRIDGE", Logger::LOG_LEVEL::WARNING);
-            break; 
+            return; 
         }
     }
     Logger::log("ERROR: " + error.message() + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
