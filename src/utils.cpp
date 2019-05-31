@@ -107,7 +107,7 @@ int Utils::fetch_common_name(const std::string& domain, std::string& common_name
         (?:[:]\\d+)?$ - if there is a port, e.g youtube.com:443, ignore the port till the end
     */
         
-    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){3,}[^.:]+)(?:[:]\\d+)?$|([^.]+[.][^.:]+)(?:[:]\\d+)?$");
+    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){3,}[^.:]+)(?:[:]\\d+)?$|([^.]+[.][^.:]+)(?:[:]\\d+)?$|((\\d+[.]){3}\\d+)[:]\\d+$");
     std::smatch match;
     std::regex_search(domain, match, re);
 

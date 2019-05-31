@@ -4,8 +4,7 @@
 #include "httpBridge.hpp"
 #include "httpsBridge.hpp"
 #include "ftpBridge.hpp"
-#include <mutex>
-#include <unordered_set>
+#include "ftpsBridge.hpp"
 
 class BridgeConnector
     : public std::enable_shared_from_this<BridgeConnector>
@@ -29,20 +28,12 @@ public:
     // Handle the completion of the first client read operation.
     // Initializes the correct Bridge (http / https) to hande the request
     void handle_client_read(const boost::system::error_code& error,
-                            std::size_t bytes_transferred);
-
-    std::string get_password() const
-    {
-    return "test";
-    }
+                            std::size_t bytes_transferred);    
 
 private:
 
     std::shared_ptr<boost::asio::io_context> io_context_;
     boost::asio::ip::tcp::socket client_socket_;
-
-    static std::unordered_set< std::string > host_certificate_set_;
-    static std::mutex certificate_map_lock_;
 
     enum { max_data_length = 8192 }; //8KB
     char client_buffer_ [max_data_length];

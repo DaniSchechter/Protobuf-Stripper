@@ -1,50 +1,65 @@
-#ifndef GTPD_BRIDGE_HPP_
-#define GTPD_BRIDGE_HPP_
+#ifndef FTPS_BRIDGE_HPP_
+#define FTPS_BRIDGE_HPP_
+
+#define DATA_CONNECTION_PORT_MESSAGE "229 Entering Extended Passive Mode"
+#define ERROR "error"
 
 #include "bridge.hpp"
-#include <boost/asio/ssl/stream.hpp>
 #include <boost/asio/ssl/context.hpp>
 
-using SslStreamType = boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ;
-using BasicSocketType = boost::asio::basic_socket<boost::asio::ip::tcp>;
-
-class FtpsBridge: public std::enable_shared_from_this<FtpsBridge>
+class FtpsBridge: public Bridge<SslStreamType>
 {
 public:
 
-    enum { max_data_length = 32768 }; //8KB
-
+    // C'tor for Connection chanel ( Port 21 )
     explicit FtpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
-                        HttpSocketType& client_socket,
-                        std::shared_ptr<boost::asio::ssl::context> context);
+                        std::shared_ptr<HttpSocketType> unsecure_client_socket,
+                        std::shared_ptr<HttpSocketType> unsecure_server_socket,
+                        boost::asio::ssl::context context,
+                        const std::string& unsecure_server_host);
 
-    // Start to handle the request
-    // Connects to the requested remote server, and forwards the message it got from bridge connector
-    void start_by_connect(char client_buffer [max_data_length],
-                          const boost::system::error_code& error,
-                          std::size_t bytes_transferred,
-                          endpoint_type endpoint,
-                          const std::string& domain);
+    /* C'tor for Data chanel ( Random Port )
+     * @param io_context             - initialize the base class Bridge with it
+     * @param unsecure_client_socket - the socket on which the server accepted connection
+     * @param endpoint               - the endpoint the server socket should connect to ( on the random port )
+     * @param context                - new context to initialize the SSL stream wrapper for client socket
+     * @param unsecure_server_host   - save the server socket into server_socket_map_ 
+     */
+    explicit FtpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
+                        std::shared_ptr<HttpSocketType> unsecure_client_socket,
+                        endpoint_type endpoint,
+                        boost::asio::ssl::context context,
+                        const std::string& unsecure_server_host);
 
-    void do_client_ssl_handshake(const boost::system::error_code& error,
-                                 size_t bytes_transferred,
-                                 endpoint_type endpoint,
-                                 const std::string& domain);
-    
+    // Performs handshake with both sides and starts the event loop
+    void run(const std::string& unsecure_server_host);
+
     /* Override functions */
-    
-    // Start to handle the ssl handshake
-    void do_handshake(std::shared_ptr<SslStreamType>& socket,
-                      boost::asio::ssl::stream_base::handshake_type handshake_type);
+    virtual void handle_server_read(std::shared_ptr<SslStreamType> server_socket, 
+                                    const boost::system::error_code& error,
+                                    const size_t& bytes_transferred,
+                                    const std::string& server_host);
+                                  
+    virtual std::shared_ptr<SslStreamType> create_new_server_socket();
 
-    BasicSocketType& get_actual_socket(SslStreamType& socket);
-    std::shared_ptr<SslStreamType> create_new_server_socket();
+    // Enables secure bridges to perform handshake
+    virtual void close_socket(std::shared_ptr<SslStreamType> socket);
+
+    // Maps < data channel port, SSL_SESSION* > for session reuse 
+    static std::unordered_map<std::string, SSL_SESSION*> session_cache_;
 
 private:
 
-    std::shared_ptr<boost::asio::ssl::context> ctx_;
-    std::shared_ptr<SslStreamType> ssl_stream_; 
-    std::shared_ptr<HttpSocketType> client_socket_;
+    // Fetches the optional port number list that the client can choose from to establish data connection channel
+    // E.g: "229 Entering Extended Passive Mode (|||47084|)" - fetches 47084
+    bool fetch_data_channel_ports(const std::string& message, std::string& port);
+
+    // Guards session_cache_
+    static std::mutex session_cache_lock_; 
+
+    std::shared_ptr<SslStreamType> secure_server_socket_;
+
+    boost::asio::ssl::context ctx_;
 };
 
-#endif // GTPD_BRIDGE_HPP_
+#endif // FTPS_BRIDGE_HPP_

@@ -1,15 +1,12 @@
-#define SSL_KEYS_DIRECOTRY "./.sslkeys"
-#define LEAF_CERTIFICATE_SCRIPT "./scripts/generate_certificate.sh " SSL_KEYS_DIRECOTRY " "
-
 #include "bridgeConnector.hpp"
+#include "secureContextFactory.hpp"
 #include "utils.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp> 
 #include <boost/asio/placeholders.hpp> 
 
-std::unordered_set< std::string > BridgeConnector::host_certificate_set_;
-std::mutex BridgeConnector::certificate_map_lock_;
+// std::unordered_map<int, std::shared_ptr<boost::asio::ssl::context>> FtpsBridge::data_channel_ports_set_;
 
 BridgeConnector::BridgeConnector(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
@@ -61,8 +58,10 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       domain, *io_context_
   );
 
+  std::string server_host = boost::lexical_cast<std::string>(endpoint);
+
   // Could not resolve the correct endpoint fir the domain
-  if(boost::lexical_cast<std::string>(endpoint) == ENDPOINT_ADDRESS_ERROR) 
+  if( server_host == ENDPOINT_ADDRESS_ERROR) 
   {
     Logger::log("Could not resolve the domain to an endpoint", Logger::LOG_LEVEL::WARNING); 
     return; 
@@ -87,49 +86,14 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
         Logger::LOG_LEVEL::INFO
       );
 
-      std::string common_name;
-      if( Utils::fetch_common_name(domain, common_name) == Utils::COMMON_NAME_ERROR )
-      {
-        Logger::log(
-          "No match while parsing common name out of the domain: " + domain, Logger::LOG_LEVEL::FATAL
-        );
-        return;
-      }
+      // Generate the context for the ssl
+      std::unique_ptr<boost::asio::ssl::context> ctx = SecureContextFactory::create_context(domain);
+      if(!ctx) return;
 
-      // If this is a new domain
-      BridgeConnector::certificate_map_lock_.lock();
-      if (host_certificate_set_.find(common_name) == host_certificate_set_.end())
-      {
-        Logger::log(
-            "Generating a new certificate for\nFull domain: " + domain +
-            "\nCommon name: " + common_name, Logger::LOG_LEVEL::INFO
-        );
-        // Set the new certificate file for the requested domain
-        std::string script_command = boost::lexical_cast<std::string>(LEAF_CERTIFICATE_SCRIPT) + common_name;
-        if(system(script_command.c_str()) != 0)
-        {
-          Logger::log(
-            "Error generating a new certificate for" + common_name, Logger::LOG_LEVEL::FATAL
-          );
-          return;
-        }
-        BridgeConnector::host_certificate_set_.insert(common_name);
-      }      
-      BridgeConnector::certificate_map_lock_.unlock();
+      std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(
+        io_context_, client_socket_, std::move(*ctx)
+      );
 
-      // Initialize the context
-
-      std::shared_ptr<boost::asio::ssl::context> ctx = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
-      ctx->set_options(
-        boost::asio::ssl::context::default_workarounds
-        | boost::asio::ssl::context::no_sslv2
-        | boost::asio::ssl::context::no_sslv3);
-      ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
-
-      ctx->use_certificate_chain_file(SSL_KEYS_DIRECOTRY + ("/" + common_name) + "/" + common_name + ".crt");
-      ctx->use_private_key_file(SSL_KEYS_DIRECOTRY  + ("/" + common_name) + "/" + common_name + ".key", boost::asio::ssl::context::pem);
-
-      std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
@@ -146,53 +110,24 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
           Logger::LOG_LEVEL::INFO
         );
       }
-      std::string common_name;
-      if( Utils::fetch_common_name(domain, common_name) == Utils::COMMON_NAME_ERROR )
+
+      if(FtpsBridge::session_cache_.find(std::to_string(endpoint.port())) != FtpsBridge::session_cache_.end())
       {
-        Logger::log(
-          "No match while parsing common name out of the domain: " + domain, Logger::LOG_LEVEL::FATAL
+        // Instantiate a new secure FTPS bridge
+        std::unique_ptr<boost::asio::ssl::context> ctx = SecureContextFactory::create_context(domain);
+        if( !ctx ) return;
+        std::shared_ptr<FtpsBridge> bridge = std::make_shared<FtpsBridge>(
+          io_context_, std::make_shared<HttpSocketType>(std::move(client_socket_)), endpoint, std::move(*ctx), server_host
         );
+
+        bridge->run(server_host);
         return;
       }
-
-      // If this is a new domain
-      BridgeConnector::certificate_map_lock_.lock();
-      if (host_certificate_set_.find(common_name) == host_certificate_set_.end())
+      else
       {
-        Logger::log(
-            "Generating a new certificate for\nFull domain: " + domain +
-            "\nCommon name: " + common_name, Logger::LOG_LEVEL::INFO
-        );
-        // Set the new certificate file for the requested domain
-        std::string script_command = boost::lexical_cast<std::string>(LEAF_CERTIFICATE_SCRIPT) + common_name;
-        if(system(script_command.c_str()) != 0)
-        {
-          Logger::log(
-            "Error generating a new certificate for" + common_name, Logger::LOG_LEVEL::FATAL
-          );
-          return;
-        }
-        BridgeConnector::host_certificate_set_.insert(common_name);
-      }      
-      BridgeConnector::certificate_map_lock_.unlock();
+        std::shared_ptr<FtpBridge> bridge = std::make_shared<FtpBridge>(io_context_, client_socket_, domain);
+        bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
+      }
 
-      // Initialize the context
-
-      std::shared_ptr<boost::asio::ssl::context> ctx = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
-      ctx->set_options(
-        boost::asio::ssl::context::default_workarounds
-        | boost::asio::ssl::context::no_sslv2
-        | boost::asio::ssl::context::no_sslv3);
-      ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
-
-      ctx->use_certificate_chain_file(SSL_KEYS_DIRECOTRY + ("/" + common_name) + "/" + common_name + ".crt");
-      std::cout<<"((((((((((((((((((((((((((\n";
-      std::cout << client_socket_.remote_endpoint().address().to_string() << std::endl;
-      ctx->use_private_key_file(SSL_KEYS_DIRECOTRY  + ("/" + common_name) + "/" + common_name + ".key", boost::asio::ssl::context::pem);
-      std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
-      std::shared_ptr<FtpsBridge> bridge = std::make_shared<FtpsBridge>(io_context_, client_socket_, ctx);
-      std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-      bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
-      break;
   }
 }
