@@ -26,7 +26,6 @@ int main(int argc, char* argv[])
     }
 
     // Initialize the server.
-    // TODO changr to normal cast from std
     Server server(std::move(config));
 
     // Run the server until stopped.
