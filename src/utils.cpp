@@ -5,14 +5,14 @@
 
 int Utils::parse_domain(const std::string& message, std::string& domain)
 {
-    std::regex re("^.+?[ \\t]+(?:https?:[/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
+    std::regex re("^.+?[ \\t]+(ftp|https?)?(?:[:][/]{2})?([^/ :\\t\\n]+|/)(?:.*?:(\\d+))?.*?[ \\t]+");
     std::smatch match;
     std::regex_search(message, match, re);
 
     std::string port = "80";
 
     // If there is no valid URI
-    if(!match[1].matched)
+    if(!match[2].matched)
     {
         return EMPTY_DOMAIN;
     }
@@ -23,12 +23,16 @@ int Utils::parse_domain(const std::string& message, std::string& domain)
         return EMPTY_ABSOLUTE_URI;
     }
 
-    std::string host = match[1].str(); 
+    std::string host = match[2].str(); 
 
-    if(match[2].matched)
+    if(match[3].matched)
     {
-        port = match[2].str();
+        port = match[3].str();
     } 
+    else if(match[1].matched && match[1].str() == "ftp")
+    {
+        port = "21";
+    }
 
     std::string new_domain = host + ":" + port;
 
@@ -81,7 +85,7 @@ std::string Utils::generate_absolute_uri_request(const std::string& message, con
     return http_method + host[1].str() + "/" + full_message[2].str();
 }
 
-int Utils::split_domain(const std::string& domain, std::string& common_name)
+int Utils::fetch_common_name(const std::string& domain, std::string& common_name)
 {
     /*  Last part is two characters long
         ------------------------------------------------------------------
@@ -103,7 +107,7 @@ int Utils::split_domain(const std::string& domain, std::string& common_name)
         (?:[:]\\d+)?$ - if there is a port, e.g youtube.com:443, ignore the port till the end
     */
         
-    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){3,}[^.:]+)(?:[:]\\d+)?$|([^.]+[.][^.:]+)(?:[:]\\d+)?$");
+    std::regex re("([^.]+?[.][^.:]+[.:][^.]{2})(?:[:]\\d+)?$|(?:[^.]+[.])((?:[^.:]+[.]?){3,}[^.:]+)(?:[:]\\d+)?$|([^.]+[.][^.:]+)(?:[:]\\d+)?$|((\\d+[.]){3}\\d+)[:]\\d+$");
     std::smatch match;
     std::regex_search(domain, match, re);
 

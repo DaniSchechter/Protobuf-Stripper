@@ -1,53 +1,17 @@
 #include "httpsBridge.hpp"
+#include <boost/lexical_cast.hpp>
+
 
 HttpsBridge::HttpsBridge(std::shared_ptr<boost::asio::io_context> io_context,
                          HttpSocketType& client_socket,
-                         std::shared_ptr< boost::asio::ssl::context> context)
+                         boost::asio::ssl::context context)
   : Bridge(io_context),
-    client_ctx_(context),
-    server_ctx_(std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23)),
-    ssl_stream_(std::make_shared<SslStreamType>(std::move(client_socket), *context))
+    ctx_(std::move(context))
 { 
-    set_client_socket(ssl_stream_);
+    set_client_socket(std::make_shared<SslStreamType>(std::move(client_socket), ctx_));
 }
 
-void HttpsBridge::start_by_connect(char client_buffer [max_data_length],
-                                   const boost::system::error_code& error,
-                                   std::size_t bytes_transferred,
-                                   endpoint_type endpoint,
-                                   const std::string& domain)
-{
-    client_host_ = boost::lexical_cast<std::string>( ssl_stream_->lowest_layer().remote_endpoint());
-
-    // TODO add error message
-    if(error)
-    {
-        return;
-    }
-
-    // Preform the handshake with the client
-    do_handshake(client_socket_, boost::asio::ssl::stream_base::server);    
-
-    // Create a new server socket 
-    std::shared_ptr<SslStreamType> new_server_socket = std::make_shared<SslStreamType>(*io_context_, *server_ctx_);
-    server_socket_map_[boost::lexical_cast<std::string>(endpoint)] = new_server_socket;
-    
-    new_server_socket->lowest_layer().async_connect(
-        endpoint,
-        boost::bind(
-            &Bridge::handle_server_connect,
-            shared_from_this(),
-            new_server_socket,
-            boost::asio::placeholders::error,
-            bytes_transferred,
-            boost::lexical_cast<std::string>(endpoint)
-        )
-    ); 
-}
-
-
-
-void HttpsBridge::do_handshake(std::shared_ptr<SslStreamType>& socket,
+void HttpsBridge::do_handshake(std::shared_ptr<SslStreamType> socket,
                                boost::asio::ssl::stream_base::handshake_type handshake_type)
 {
     std::string endpoint = boost::lexical_cast<std::string>(socket->lowest_layer().remote_endpoint());
@@ -64,13 +28,15 @@ void HttpsBridge::do_handshake(std::shared_ptr<SslStreamType>& socket,
     );
 }
 
-BasicSocketType& HttpsBridge::get_actual_socket(SslStreamType& socket)
-{
-    return socket.lowest_layer();
-}
-
 std::shared_ptr<SslStreamType> HttpsBridge::create_new_server_socket() 
 {
-    return std::make_shared<SslStreamType>(*io_context_, *server_ctx_);
-    // return std::make_shared<SslStreamType>(*io_context_, *client_ctx_);
+    return std::make_shared<SslStreamType>(*io_context_, ctx_);
+}
+
+void HttpsBridge::close_socket(std::shared_ptr<SslStreamType> socket)
+{
+    boost::system::error_code ignored_ec;
+    socket->shutdown(ignored_ec);
+    socket->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+    socket.reset();
 }

@@ -1,15 +1,11 @@
-#define SSL_KEYS_DIRECOTRY "./.sslkeys"
-#define LEAF_CERTIFICATE_SCRIPT "./scripts/generate_certificate.sh " SSL_KEYS_DIRECOTRY " "
-
 #include "bridgeConnector.hpp"
+#include "secureContextFactory.hpp"
 #include "utils.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp> 
 #include <boost/asio/placeholders.hpp> 
 
-std::unordered_set< std::string > BridgeConnector::host_certificate_set_;
-std::mutex BridgeConnector::certificate_map_lock_;
 
 BridgeConnector::BridgeConnector(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
@@ -32,7 +28,7 @@ void BridgeConnector::start()
 void BridgeConnector::handle_client_read(const boost::system::error_code& error,
                                          std::size_t bytes_transferred)
 {
-  if(error) { return; }
+  if(error) return; 
   std::string client_remote_endpoint = boost::lexical_cast<std::string>(client_socket_.remote_endpoint());
 
   Logger::log(
@@ -40,10 +36,9 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       " [Prev S] First read from this client" ,
       Logger::LOG_LEVEL::INFO
   );
-
   Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
   
-  // Resolve the remote host (If appeared in the message)
+  // Resolve the remote host (If it appeared in the message)
   std::string domain; 
   int parsing_error = Utils::parse_domain(
       boost::lexical_cast<std::string>(client_buffer_), domain
@@ -61,8 +56,10 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       domain, *io_context_
   );
 
-  // Could not resolve the correct endpoint fir the domain
-  if(endpoint.address().to_string() == ENDPOINT_ADDRESS_ERROR) 
+  std::string server_host = boost::lexical_cast<std::string>(endpoint);
+
+  // Could not resolve the correct endpoint for the domain
+  if( server_host == ENDPOINT_ADDRESS_ERROR) 
   {
     Logger::log("Could not resolve the domain to an endpoint", Logger::LOG_LEVEL::WARNING); 
     return; 
@@ -79,57 +76,16 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
     }
     case HTTPS:
     {
-      std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
-      client_socket_.write_some(boost::asio::buffer(str, str.length()));
+      handle_connect_request(client_remote_endpoint);
 
-      Logger::log(
-        "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
-        Logger::LOG_LEVEL::INFO
+      // Generate the context for the ssl
+      std::unique_ptr<boost::asio::ssl::context> ctx = SecureContextFactory::create_context(domain);
+      if(!ctx) return;
+
+      std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(
+        io_context_, client_socket_, std::move(*ctx)
       );
 
-      std::string common_name;
-      if( Utils::split_domain(domain, common_name) == Utils::COMMON_NAME_ERROR )
-      {
-        Logger::log(
-          "No match while parsing common name out of the domain: " + domain, Logger::LOG_LEVEL::FATAL
-        );
-        return;
-      }
-
-      // If this is a new domain
-      BridgeConnector::certificate_map_lock_.lock();
-      if (host_certificate_set_.find(common_name) == host_certificate_set_.end())
-      {
-        Logger::log(
-            "Generating a new certificate for\nFull domain: " + domain +
-            "\nCommon name: " + common_name, Logger::LOG_LEVEL::INFO
-        );
-        // Set the new certificate file for the requested domain
-        std::string script_command = boost::lexical_cast<std::string>(LEAF_CERTIFICATE_SCRIPT) + common_name;
-        if(system(script_command.c_str()) != 0)
-        {
-          Logger::log(
-            "Error generating a new certificate for" + common_name, Logger::LOG_LEVEL::FATAL
-          );
-          return;
-        }
-        BridgeConnector::host_certificate_set_.insert(common_name);
-      }      
-      BridgeConnector::certificate_map_lock_.unlock();
-
-      // Initialize the context
-
-      std::shared_ptr<boost::asio::ssl::context> ctx = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
-      ctx->set_options(
-        boost::asio::ssl::context::default_workarounds
-        | boost::asio::ssl::context::no_sslv2
-        | boost::asio::ssl::context::no_sslv3);
-      ctx->set_password_callback(boost::bind(&BridgeConnector::get_password, this));
-
-      ctx->use_certificate_chain_file(SSL_KEYS_DIRECOTRY + ("/" + common_name) + "/" + common_name + ".crt");
-      ctx->use_private_key_file(SSL_KEYS_DIRECOTRY  + ("/" + common_name) + "/" + common_name + ".key", boost::asio::ssl::context::pem);
-
-      std::shared_ptr<HttpsBridge> bridge = std::make_shared<HttpsBridge>(io_context_, client_socket_, ctx);
       bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
       break;
     }
@@ -138,16 +94,39 @@ void BridgeConnector::handle_client_read(const boost::system::error_code& error,
       // Send confirmation about tunnel creation, if needed
       if(strstr(client_buffer_, "CONNECT"))
       {
-        std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
-        client_socket_.write_some(boost::asio::buffer(str, str.length()));
-
-        Logger::log(
-          "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
-          Logger::LOG_LEVEL::INFO
-        );
+        handle_connect_request(client_remote_endpoint);
       }
-      std::shared_ptr<FtpBridge> bridge = std::make_shared<FtpBridge>(io_context_, client_socket_);
-      bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
-      break;
+
+      // Check if a random port is associated with ftp connection channel 
+      if(FtpsBridge::check_if_session_is_cached(endpoint.port()))
+      {
+        // Instantiate a new secure FTPS bridge
+        std::unique_ptr<boost::asio::ssl::context> ctx = SecureContextFactory::create_context(domain);
+        if(!ctx) return;
+
+        std::shared_ptr<FtpsBridge> bridge = std::make_shared<FtpsBridge>(
+          io_context_, std::make_shared<HttpSocketType>(std::move(client_socket_)), endpoint, std::move(*ctx), server_host
+        );
+
+        bridge->run(server_host);
+        return;
+      }
+      else
+      {
+        std::shared_ptr<FtpBridge> bridge = std::make_shared<FtpBridge>(io_context_, client_socket_, domain);
+        bridge->start_by_connect(client_buffer_, error, bytes_transferred, endpoint, domain);
+      }
+
   }
+}
+
+void BridgeConnector::handle_connect_request(const std::string& client_remote_endpoint)
+{
+  std::string str = "HTTP/1.1 200 connection established\r\n\r\n";
+  client_socket_.write_some(boost::asio::buffer(str, str.length()));
+
+  Logger::log(
+    "Client <-- Proxy     Server.   [C] " + client_remote_endpoint + "\n" + str,
+    Logger::LOG_LEVEL::INFO
+  );
 }
