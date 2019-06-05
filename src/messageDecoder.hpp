@@ -12,11 +12,11 @@ class MessageDecoder
 public:
 MessageDecoder();
 std::vector<std::string> get_decoded_messages(const std::string& data);
-bool isProtoMessage(const std::string& data);
+bool is_proto_message(const std::string& data);
 
 private:
-google::protobuf::compiler::DiskSourceTree _discSourceTree;
-google::protobuf::DynamicMessageFactory _factory;
+google::protobuf::compiler::DiskSourceTree discSourceTree_;
+google::protobuf::DynamicMessageFactory factory_;
 };
 
 #endif 
