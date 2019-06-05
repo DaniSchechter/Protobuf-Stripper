@@ -32,7 +32,7 @@ bool read_csv_ip_blacklist(const std::string& file_name, const std::string& IP)
 	file.open(file_name);
 	if (!file.is_open())
 	{
-		std::cout << "Unable to open the file." << std::endl;
+		Logger::log( "OPEN_FILE_ERROR, unable to open file " + file_name, Logger::LOG_LEVEL::FATAL);
 		return true;
 	}
 	std::vector<std::string> rowvec;

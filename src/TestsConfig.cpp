@@ -14,9 +14,9 @@ std::string test_config(const std::string& cname)
 		while (getline(cFile, line)) {
 			if (line[0] == '#' || line.empty())
 				continue;
-			auto Pos = line.find("=");
-			std::string name = line.substr(0, Pos);
-			std::string value = line.substr(Pos + 1);
+			auto pos = line.find("=");
+			std::string name = line.substr(0, pos);
+			std::string value = line.substr(pos + 1);
 			if (cname.compare(name) == 0)
 				return value;
 		}
