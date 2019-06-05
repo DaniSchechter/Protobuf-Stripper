@@ -12,14 +12,12 @@ std::string test_config(const std::string& cname)
 
 		std::string line;
 		while (getline(cFile, line)) {
-			// line.erase(std::remove_if(line.begin(), line.end(), isspace),
-			// 	line.end());
 			if (line[0] == '#' || line.empty())
 				continue;
 			auto Pos = line.find("=");
-			auto name = line.substr(0, Pos);
-			auto value = line.substr(Pos + 1);
-			if (strcmp(cname.c_str(), name.c_str()) == 0)
+			std::string name = line.substr(0, Pos);
+			std::string value = line.substr(Pos + 1);
+			if (cname.compare(name) == 0)
 				return value;
 		}
 

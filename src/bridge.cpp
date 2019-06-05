@@ -157,7 +157,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     std::regex_search(client_host_, cl_info, re);
     std::regex_search(server_host, server_info, re);
 
-	if (isForbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], client_buffer_))
+	if (is_forbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], client_buffer_))
 	{
 		strand_.post(boost::bind(&Bridge::close, this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, server_host, error.message()));
 		return;

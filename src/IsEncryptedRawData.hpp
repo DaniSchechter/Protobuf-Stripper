@@ -1,3 +1,3 @@
 #include "EncryptedData.hpp"
 #include"TestsConfig.hpp"
-bool Is_Encrypted(const std::string& rawdata);
+bool is_encrypted(const std::string& rawdata);

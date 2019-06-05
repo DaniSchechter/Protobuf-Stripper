@@ -44,11 +44,6 @@ bool checkIfDataConfidential(const std::string& data)
 
 	//if the frequanty of bad words is too much bigger then the function will return true
 	double freq_bad_words = std::stod(test_config("FREQ_BAD_WORDS"));
-	if (((double)countBadWords / countTotalWords) >= freq_bad_words)
-		return true;
-	
-	
-	return false;
-
+	return ((double)countBadWords / countTotalWords) >= freq_bad_words;		
 }
 

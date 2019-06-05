@@ -68,8 +68,6 @@ void printFile(const std::string& fileName)
 		std::cout << line << '\n';
 	}
 	file.close();
-	
-
 }
 
 void copyFilesContent(const std::string& srcFile, const std::string& dstFile)

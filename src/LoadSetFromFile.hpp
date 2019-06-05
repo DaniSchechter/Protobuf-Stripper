@@ -1,31 +1,26 @@
 #include"TestsConfig.hpp"
 #include "BadWordsMap.hpp"
-#include<set>
-#include<iostream>
-#include<fstream>
-#include<sstream>
-#include<vector>
-
-
+#include <set>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include "logger.hpp"
 
 class FileImportSet
 {
-private:
 	std::set<std::string> port;
 	std::set<std::string> IP;
 	std::set<std::string> blockWordsSet;
 	static FileImportSet *s_instance;
-
 public:
 	FileImportSet()
 	{
-		//if (fileName == test_config("IP_BLACKLIST_CSV"))
-		//{
 			std::ifstream file;
 			file.open(test_config("IP_BLACKLIST_CSV"));
 			if (!file.is_open())
 			{
-				std::cout << "Unable to open the file." << std::endl;
+				Logger::log( "OPEN_FILE_ERROR, unable to open file " + test_config("IP_BLACKLIST_CSV"), Logger::LOG_LEVEL::FATAL);
 				return;
 			}
 			std::string line, word;
@@ -41,12 +36,10 @@ public:
 			}
 			file.close();
 			return;
-		//}
-		//else
 		file.open(test_config("PORTS_FILE"));
 		if (!file.is_open())
 		{
-			std::cout << "Unable to open the file." << std::endl;
+			Logger::log( "OPEN_FILE_ERROR, unable to open file " + test_config("PORTS_FILE"), Logger::LOG_LEVEL::FATAL);
 			return;
 		}
 		while (!file.eof())
@@ -60,7 +53,7 @@ public:
 		file.open(test_config("MALICIOUS_IP_FILE"));
 		if (!file.is_open())
 		{
-			std::cout << "Unable to open the file." << std::endl;
+			Logger::log( "OPEN_FILE_ERROR, unable to open file " + test_config("MALICIOUS_IP_FILE"), Logger::LOG_LEVEL::FATAL);
 			return;
 		}
 		while (!file.eof())
@@ -75,7 +68,7 @@ public:
 		file.open(test_config("BLOCK_WORDS_FILE"));
 		if (!file.is_open())
 		{
-			std::cout << "Unable to open the file." << std::endl;
+			Logger::log( "OPEN_FILE_ERROR, unable to open file " + test_config("BLOCK_WORDS_FILE"), Logger::LOG_LEVEL::FATAL);
 			return;
 		}
 		while (!file.eof())

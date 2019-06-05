@@ -1,12 +1,6 @@
 #ifndef CONFIDENTIAL_DATA_RULE_HPP_
 #define CONFIDENTIAL_DATA_RULE_HPP_
-
-
 #include <string>
-
-
-
-
 //The function checks if the IP is defined as a malicious
 bool checkIfMaliciousIp(const std::string& dstIp);
 

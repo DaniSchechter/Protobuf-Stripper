@@ -3,14 +3,15 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-bool find_str_in_file(const std::string& fileName, const std::string& word)
+#include "logger.hpp"
+bool find_str_in_file(const std::string& file_name, const std::string& word)
 {
 	std::string line;
 	std::ifstream file;
-	file.open(fileName);
+	file.open(file_name);
 	if (!file.is_open())
 	{
-		std::cout << "Unable to open the file." << std::endl;
+		Logger::log( "OPEN_FILE_ERROR, unable to open file " + file_name, Logger::LOG_LEVEL::FATAL);
 		return true;
 	}
 	while (!file.eof())
@@ -25,10 +26,10 @@ bool find_str_in_file(const std::string& fileName, const std::string& word)
 	file.close();
 	return false;
 }
-bool read_csv_ip_blacklist(const std::string& fileName, const std::string& IP)
+bool read_csv_ip_blacklist(const std::string& file_name, const std::string& IP)
 {
 	std::ifstream file;
-	file.open(fileName);
+	file.open(file_name);
 	if (!file.is_open())
 	{
 		std::cout << "Unable to open the file." << std::endl;

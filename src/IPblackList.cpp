@@ -1,11 +1,13 @@
-#include"TestsConfig.hpp"
+#include "TestsConfig.hpp"
 #include "FileChecks.hpp"
-#include"LoadSetFromFile.hpp"
+#include "LoadSetFromFile.hpp"
 #include <unordered_map>
 #include <set>
 
 
-//Checks how much requests there sent to the destination Ip from different source Ips, if its the first time this ip is accessed, verify it's a legitimate site Ip by scanning the csv file for this IP address, return true if it's not legitimate and false if it is.
+//Checks how much requests there sent to the destination Ip from different source Ips,
+// if its the first time this ip is accessed,
+// verify it's a legitimate site Ip by scanning the csv file for this IP address, return true if it's not legitimate and false if it is.
 bool request_density(const std::string& srcIP, const std::string& dstIP, const std::string& rawdata) {
 	// store the data in map as [destination ip, set of source ip's that accessed him]
 	static std::unordered_map<std::string, std::set<std::string>> map;
