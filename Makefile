@@ -18,7 +18,7 @@ run: all
 	./$(BIN)/$(EXECUTABLE)
 
 debug: $(SRC)/*
-	$(CC) $(C_FLAGS) -D DEBUG_MODE -I $(INCLUDE) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
+	$(CC) $(C_FLAGS) -D DEBUG_MODE -I $(INCLUDE) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES) -g
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
 	$(CC) $(C_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)

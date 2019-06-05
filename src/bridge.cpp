@@ -151,6 +151,19 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     );
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
+    // Do tests on the request to check if Valid or Forbidden
+    std::regex re("((\\d+[.]){3}\\d+)[:](\\d+)");
+    std::smatch cl_info,server_info; 
+    std::regex_search(client_host_, cl_info, re);
+    std::regex_search(server_host, server_info, re);
+
+	if (isForbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], client_buffer_))
+	{
+		strand_.post(boost::bind(&Bridge::close, this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, server_host, error.message()));
+		return;
+	}
+
+
     // Resolve the remote host (If it appeared in the message)
     std::string domain;
     int parsing_error = Utils::parse_domain(
@@ -381,7 +394,8 @@ void Bridge<SocketType>::close(std::shared_ptr<SocketType> server_socket,
 
     // If the error is in the client socket, close it as well as all server sockets
     if( (error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_WRITE_ERROR || 
-         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR)
+         error_source == Bridge::SOCKET_ERROR_SOURCE::CLIENT_READ_ERROR||
+         error_source == Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST)
     )
     {
         if(client_socket_->lowest_layer().is_open())
@@ -466,6 +480,11 @@ void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source,
         {
             Logger::log("BRIDGE_UPGRADED_TO_SECURE_BRIDGE", Logger::LOG_LEVEL::WARNING);
             return; 
+        }
+         case Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST:
+        {
+            Logger::log("FORBIDDEN_REQUEST", Logger::LOG_LEVEL::FATAL);
+            break;
         }
     }
     Logger::log("ERROR: " + error.message() + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
