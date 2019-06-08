@@ -14,7 +14,6 @@
 class Logger
 {
 public:
-    // todo give different streams sfor errors, and info together with warn
     enum class LOG_LEVEL
     {
         INFO, DEBUG, WARNING, FATAL
