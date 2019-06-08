@@ -132,16 +132,15 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
                                             std::size_t bytes_transferred,
                                             const std::string& server_host)
 {
-    bool safe = true;
-    std::string s = "\n\004shay\020\001";
-    std::string message(s);
+    std::string message(client_buffer_);
     if (md_.is_proto_message(message))
     {
         this->md_.get_decoded_messages(message);
     }
-    //call to alon and metchaki function(message)
-    
-    if(error || !safe)
+    //call to alon and metchaki functions
+    //is_forbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], message)
+    // replace with that when rules merged to master only thing that changed in compare to their code is message insteed of client buffer
+    if(error)
     {
         strand_.post(
             boost::bind(
