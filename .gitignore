@@ -54,6 +54,7 @@ bin/*
 
 # Configuratio files
 *config.json
+.messages/*
 
 # SSL Keys
 .sslkeys/*
