@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package demo;
+
+message TaskFlaut{
+repeated float arr = 1[packed=true];
+bool done = 2;
+}
