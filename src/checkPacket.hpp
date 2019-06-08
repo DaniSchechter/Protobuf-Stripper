@@ -10,6 +10,7 @@
 #include "PortsTest.hpp"
 #include "IpBlackList.hpp"
 #include "IsEncryptedRawData.hpp"
+#include "RegexFucntion_finalProject.hpp"
 
 //The function calls all of the rules and return true if the message isn't valid
 bool is_forbidden(const std::string& srcIP, const std::string& dstIP, const std::string& srcPort, const std::string& dstPort, const std::string& data);

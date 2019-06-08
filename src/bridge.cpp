@@ -4,7 +4,8 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/asio/write.hpp>
-
+#include "checkPacket.hpp"
+#include <regex>
 template <typename SocketType>
 Bridge<SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
@@ -159,7 +160,16 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
 
 	if (is_forbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], client_buffer_))
 	{
-		strand_.post(boost::bind(&Bridge::close, this->shared_from_this(), server_socket, Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, server_host, error.message()));
+		strand_.post(
+            boost::bind(
+                &Bridge::close,
+                this->shared_from_this(), 
+                server_socket, 
+                Bridge::SOCKET_ERROR_SOURCE::SERVER_WRITE_ERROR, 
+                server_host, 
+                error
+            )
+        );
 		return;
 	}
 
