@@ -132,7 +132,19 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
                                             std::size_t bytes_transferred,
                                             const std::string& server_host)
 {
-    if(error)
+    bool safe = false;
+    if (md_.is_proto_message(std::string(client_buffer_)))
+    {
+        std::vector<std::string> decoded = this->md_.get_decoded_messages(std::string(client_buffer_));
+
+        for (auto itr = decoded.begin();itr != decoded.end(); itr++)
+        {   
+            /* safe || alon and mechaki rules(*itr) */
+        }   
+    
+    }
+    
+    if(error || !safe)
     {
         strand_.post(
             boost::bind(

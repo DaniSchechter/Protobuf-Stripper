@@ -3,6 +3,7 @@
 
 #include "logger.hpp"
 #include "utils.hpp"
+#include "messageDecoder.hpp"
 
 #include <unordered_map>
 #include <boost/asio/io_context_strand.hpp>
@@ -95,6 +96,8 @@ protected:
 
   // Strand to ensure the connection's handlers are not called concurrently.
   boost::asio::io_context::strand strand_;
+  //class to decode protobuf messages
+  MessageDecoder md_;
 
   // Map saving all server sockets for open server connections
   // Maps server's domain (<Host>:<Port>) to it's socket
