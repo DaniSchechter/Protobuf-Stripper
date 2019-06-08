@@ -9,7 +9,10 @@
 template <typename SocketType>
 Bridge<SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
-    strand_(*io_context){}
+    strand_(*io_context)
+    {
+        memset(client_buffer_, 0, max_data_length);
+    }
 
 template <typename SocketType>
 void Bridge<SocketType>::start_by_connect(char client_buffer [max_data_length],
