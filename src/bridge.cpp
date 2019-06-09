@@ -494,7 +494,7 @@ void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source,
          case Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST:
         {
             Logger::log("FORBIDDEN_REQUEST", Logger::LOG_LEVEL::FATAL);
-            break;
+            return;
         }
     }
     Logger::log("ERROR: " + error.message() + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);

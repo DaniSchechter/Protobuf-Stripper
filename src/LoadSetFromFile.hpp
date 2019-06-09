@@ -79,17 +79,17 @@ public:
 		}
 		file.close();
 	}
-	std::set<std::string> get_set(const std::string& Name)
+	std::set<std::string> get_set(const std::string& name)
 	{
-		if (Name == "port") return port;
-		if (Name == "IP" ) return IP;
-		if (Name == "word") return blockWordsSet;
+		if (name == "port") return port;
+		if (name == "IP" ) return IP;
+		if (name == "word") return blockWordsSet;
 	}
-	std::set<std::string>* get_value(const std::string& Name)
+	std::set<std::string>* get_value(const std::string& name)
 	{
-		if (Name == "port") return &port;
-		if (Name == "IP") return &IP;
-		if (Name == "word") return &blockWordsSet;
+		if (name == "port") return &port;
+		if (name == "IP") return &IP;
+		if (name == "word") return &blockWordsSet;
 		return NULL;
 	}
 	static FileImportSet* instance()
