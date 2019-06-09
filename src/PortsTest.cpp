@@ -4,7 +4,7 @@
 #include"LoadSetFromFile.hpp"
 
 
-bool port_density(const std::string& srcIP, const std::string& dstIP, const std::string& srcPort, const std::string& dstPort)
+bool port_density(const std::string& srcIP,const std::string& dstPort)
 {
 	static std::unordered_map< std::string, std::set<std::string>> port_map;
 
@@ -15,9 +15,9 @@ bool port_density(const std::string& srcIP, const std::string& dstIP, const std:
 		if (port_map[dstPort].find(srcIP) == port_map[dstPort].end())
 			port_map[dstPort].insert(srcIP);
 	}
-	if (port_map[dstPort].size() >= std::stoi(test_config("PORTS_MIN_COUNT")))
-	{ 
-		return FileImportSet::instance()->get_value("IP")->find(dstPort)== FileImportSet::instance()->get_value("IP")->end(); //Check if known port or Unknown port, High Usage 
+	if (port_map[dstPort].size() >= (long unsigned int)std::stoi(test_config("PORTS_MIN_COUNT")))
+	{
+		return FileImportSet::instance()->get_value("port")->find(dstPort)== FileImportSet::instance()->get_value("IP")->end(); //Check if known port or Unknown port, High Usage 
 	}
 	return false; 
 }

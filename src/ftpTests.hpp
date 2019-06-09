@@ -1,1 +1,0 @@
-bool ftp_tests(const char* data);
