@@ -28,8 +28,6 @@ public:
   std::regex mailchimp_api_key;
   std::regex amazon_aws_access_key_id;
 
-
-
 	Regex()
 	{
     google_api_key=std::regex("AIza[0-9A-Za-z-_]{35}");
