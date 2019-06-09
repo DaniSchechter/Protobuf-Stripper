@@ -2,6 +2,7 @@
 #include "FileChecks.hpp"
 #include "LoadSetFromFile.hpp"
 #include <unordered_map>
+#include <regex>
 #include <set>
 
 
@@ -14,8 +15,8 @@ bool request_density(const std::string& src_ip, const std::string& dst_ip, const
 	if (map.find(dst_ip) == map.end())
 	{
 		// may be malicious, this is the first request from the network to this destination ip
-		
-		if (FileImportSet::instance()->get_value("IP")->find(dst_ip) != FileImportSet::instance()->get_value("IP")->end())
+		std::regex r(dst_ip);
+		if (regex_search(FileImportSet::instance()->get_black_list_ip(),r))
 		{
 			map[dst_ip].insert(test_config("BLACK_LIST_IP_IDENTIFIER"));
 			return true;
@@ -29,9 +30,9 @@ bool request_density(const std::string& src_ip, const std::string& dst_ip, const
 		if (first_element == test_config("BLACK_LIST_IP_IDENTIFIER")) return true;
 		map[dst_ip].insert(src_ip);
 		//on destination Ips that there accessed from less than 3 source ips, check that the size of the raw data doesn't exceed the defined limit and return true if exceeded.
-		if (map[dst_ip].size() <= std::stoi(test_config("CHECK_SIZE")))
+		if (map[dst_ip].size() <= (long unsigned int)std::stoi(test_config("CHECK_SIZE")))
 		{
-			if (raw_data.size() > std::stoi(test_config("MAX_SIZE")))
+			if (raw_data.size() > (long unsigned int)std::stoi(test_config("MAX_SIZE")))
 				return true;
 		}
 		

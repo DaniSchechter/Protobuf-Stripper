@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <set>
+#include <regex>
 #include"LoadSetFromFile.hpp"
 #include "BadWordsMap.hpp"
 
@@ -18,7 +19,7 @@ int isStrExistsInFile(const std::string& fileName, const std::string& word)
 {
 	
 
-	if (fileName.compare(test_config("MALICIOUS_WORDS_FILE")) == 0)
+	if (fileName == test_config("MALICIOUS_WORDS_FILE"))
 	{
 		//std::unordered_map<std::string, int> map;
 		//map.insert(BadWordsMap::instance()->get_value().begin(), BadWordsMap::instance()->get_value().end());
@@ -30,16 +31,18 @@ int isStrExistsInFile(const std::string& fileName, const std::string& word)
 	}
 	else
 	{
+		std::regex r(word);
 		/*FileImportSet* set = new FileImportSet(fileName);*/
 		if (fileName == test_config("BLOCK_WORDS_FILE"))
 		{
-			if (FileImportSet::instance()->get_value("word")->find(word) == FileImportSet::instance()->get_value("word")->end())
+			
+			if (!regex_search(FileImportSet::instance()->get_block_words(),r))
 				return 0;
 			return BLOCK_WORD;
 		}
-		if (FileImportSet::instance()->get_value("IP")->find(word) == FileImportSet::instance()->get_value("IP")->end())
+		if (!regex_search(FileImportSet::instance()->get_malicious_ip(),r))
 			return 0;
-		return BLOCK_WORD;
+		return BAD_IP;
 		
 		
 

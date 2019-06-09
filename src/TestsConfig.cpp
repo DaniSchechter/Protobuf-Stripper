@@ -25,4 +25,5 @@ std::string test_config(const std::string& cname)
 	else {
 		std::cerr << "Error opening config file";
 	}
+	return "Error- Not Found";
 }

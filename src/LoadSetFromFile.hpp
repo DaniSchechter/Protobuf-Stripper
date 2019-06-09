@@ -10,8 +10,9 @@
 class FileImportSet
 {
 	std::set<std::string> port;
-	std::set<std::string> IP;
-	std::set<std::string> blockWordsSet;
+	std::string block_words;
+	std::string malicious_ip;
+	std::string black_list_ip;
 	static FileImportSet *s_instance;
 public:
 	FileImportSet()
@@ -32,10 +33,10 @@ public:
 				while (std::getline(words, word, ',')) {
 					rowvec.push_back(word);
 				}
-				IP.insert(rowvec[2]);
+				black_list_ip+=rowvec[2];
+				black_list_ip+="@";
 			}
 			file.close();
-			return;
 		file.open(test_config("PORTS_FILE"));
 		if (!file.is_open())
 		{
@@ -51,6 +52,7 @@ public:
 		file.close();
 
 		file.open(test_config("MALICIOUS_IP_FILE"));
+		malicious_ip="";
 		if (!file.is_open())
 		{
 			Logger::log( "OPEN_FILE_ERROR, unable to open file " + test_config("MALICIOUS_IP_FILE"), Logger::LOG_LEVEL::FATAL);
@@ -59,13 +61,14 @@ public:
 		while (!file.eof())
 		{
 			getline(file, line);
-			IP.insert(line);
-		
+			malicious_ip+=line;
+			malicious_ip+="@";
 		}
 		file.close();
 
 
 		file.open(test_config("BLOCK_WORDS_FILE"));
+		block_words="";
 		if (!file.is_open())
 		{
 			Logger::log( "OPEN_FILE_ERROR, unable to open file " + test_config("BLOCK_WORDS_FILE"), Logger::LOG_LEVEL::FATAL);
@@ -74,22 +77,26 @@ public:
 		while (!file.eof())
 		{
 			getline(file, line);
-			blockWordsSet.insert(line);
-
+			block_words+=line;
+			block_words+="\n";
 		}
 		file.close();
 	}
-	std::set<std::string> get_set(const std::string& name)
+	std::string get_block_words()
 	{
-		if (name == "port") return port;
-		if (name == "IP" ) return IP;
-		if (name == "word") return blockWordsSet;
+		return block_words;
+	}
+	std::string get_malicious_ip()
+	{
+		return malicious_ip;
+	}
+	std::string get_black_list_ip()
+	{
+		return black_list_ip;
 	}
 	std::set<std::string>* get_value(const std::string& name)
 	{
 		if (name == "port") return &port;
-		if (name == "IP") return &IP;
-		if (name == "word") return &blockWordsSet;
 		return NULL;
 	}
 	static FileImportSet* instance()

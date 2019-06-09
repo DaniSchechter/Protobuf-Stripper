@@ -1,9 +1,8 @@
-2009/03/22_00:00,-,205.209.143.94/000f1.htm,-,Trojan,-,33314,0,US
+2009/03/22_00:00,-,212.29.241.201,-,Trojan,-,33314,0,US
 2009/03/22_00:00,-,205.209.143.94/000f2.htm,-,Trojan,-,33314,0,US
 2009/04/27_00:00,-,200.122.168.229/dl/goldvipclub/,-,trojan Casino,-,3790,0,CR
 2009/04/27_00:00,-,200.122.168.229/dl/goldvipclub/TrackDownload.dll?DID=991392,-,trojan Casino,-,3790,0,CR
 2009/05/08_00:00,diaryofagameaddict.com,208.76.80.16,ossus.tchmachines.com.,directs to exploits,-,25767,0,US
-2009/05/08_00:00,espdesign.com.au,212.29.241.223,-,directs to exploits,-,10532,0,US
 2009/05/08_00:00,iamagameaddict.com,208.76.80.16,ossus.tchmachines.com.,directs to exploits,-,25767,0,US
 2009/05/08_00:00,kalantzis.net,208.83.210.33,box7.vistapages.com.,directs to exploits,-,13826,0,CA
 2009/05/08_00:00,slightlyoffcenter.net,208.76.80.19,yavin.tchmachines.com.,directs to exploits,-,25767,0,US
@@ -12,11 +11,11 @@
 2009/05/17_00:00,ipl.hk,77.232.66.18,77-232-66-18.static.servage.net.,redirects to exploits,-,29671,0,DE
 2009/05/18_00:00,-,85.13.236.154/v50/?v=66&s=I&uid=1824245000&p=13310&q=,85.13.236.154.reverse.coreix.net,Malware calls home,-,31708,0,GB
 2009/05/18_00:00,crackspider.us/toolbar/install.php?pack=exe,85.159.233.47,-,Adware.Cracksearch.A,-,43350,0,NL
-2009/05/20_00:00,pos-kupang.com/,202.146.4.119,-,redirects to exploits,-,18365,0,ID
-2009/05/20_00:00,rupor.info,62.149.12.191,rupor.info.,redirects to exploits,-,15497,0,UA
+2009/05/20_00:00,pos-kupang.com/,137.74.0.152,-,redirects to exploits,-,18365,0,ID
+2009/05/20_00:00,rupor.info,212.29.241.223,rupor.info.,redirects to exploits,-,15497,0,UA
 2009/05/20_00:00,svision-online.de/mgfi/administrator/components/com_babackup/classes/fx29id1.txt,78.31.65.216,-,RFI,-,24961,0,DE
 2009/05/22_00:00,officeon.ch.ma/office.js?google_ad_format=728x90_as,88.191.20.248,ns2.venez.net.,directs to Exploits,-,12322,0,FR
-2009/05/22_00:00,sn-gzzx.com,222.76.215.12,-,Exploits,-,4134,0,CN
+2009/05/22_00:00,sn-gzzx.com,137.74.0.152,-,Exploits,-,4134,0,CN
 2009/05/22_00:00,sunlux.net/company/about.html,211.234.100.137,-,directs to Exploits,-,3786,0,KR
 2009/05/23_00:00,-,219.148.34.9/dmdown/sss.exe,-,Trojan,-,17672,0,CN
 2009/05/23_00:00,outporn.com,63.217.31.51,web-r1-h51.globecorp.net.,directs to sites with exploits,-,3491,0,US
@@ -25,7 +24,7 @@
 2009/05/24_00:00,freeserials.spb.ru/key/68703.htm,91.195.110.99,91-195-110-99.hmrtelecom.ru.,TDSS,-,43671,0,RU
 2009/05/26_00:00,deletespyware-adware.com,174.120.200.218,da.c8.78ae.static.theplanet.com.,Fake Antivirus,-,21844,0,US
 2009/05/26_00:00,orbowlada.strefa.pl/text396.htm,217.74.66.183,www.strefa.pl.,Directs to rogue,-,16138,0,PL
-2009/05/28_00:00,ruiyangcn.com,61.139.126.15,-,directs to exploits,-,4134,0,CN
+2009/05/28_00:00,ruiyangcn.com,212.29.241.223,-,directs to exploits,-,4134,0,CN
 2009/05/28_00:00,zkic.com,174.37.172.162,www.se.parahost.com.,directs to exploits,-,36351,0,US
 2009/05/31_00:00,adserving.favorit-network.com/eas?camp=19320;cre=mu&grpid=1738&tag_id=618&nums=FGApbjFAAA,91.209.163.184,vemw04.c76.fvtn.net.,-,-,48445,0,EU
 2009/05/31_00:00,cracks.vg/d1.php,111.92.237.115,server111092237115.i-services.com.hk.,Directs to rogue,-,45816,0,HK
