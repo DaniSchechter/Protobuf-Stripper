@@ -23,7 +23,7 @@ public:
   
   enum class SOCKET_ERROR_SOURCE
   {
-    CLIENT_READ_ERROR, CLIENT_WRITE_ERROR, SERVER_READ_ERROR, SERVER_WRITE_ERROR, SERVER_CONNECT_ERROR, BRIDGE_UPGRADED
+    CLIENT_READ_ERROR, CLIENT_WRITE_ERROR, SERVER_READ_ERROR, SERVER_WRITE_ERROR, SERVER_CONNECT_ERROR, BRIDGE_UPGRADED, FORBIDDEN_REQUEST
   };
 
   enum { max_data_length = 32768 }; //8KB
@@ -94,7 +94,8 @@ protected:
   std::shared_ptr<SocketType> client_socket_;
 
   // Strand to ensure the connection's handlers are not called concurrently.
-  boost::asio::io_context::strand strand_;
+  boost::asio::io_context::strand strand_; // TODO check if needed and if not remove
+
 
   // Map saving all server sockets for open server connections
   // Maps server's domain (<Host>:<Port>) to it's socket
@@ -120,6 +121,7 @@ private:
                           const std::string& server_host,
                           const boost::system::error_code& error);
 
+  bool is_confidential(std::shared_ptr<SocketType> server_socket, const std::string& server_host, const boost::system::error_code& error);
 };
 
 #endif //BRIDGE_HPP_

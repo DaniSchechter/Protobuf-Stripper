@@ -1,9 +1,10 @@
 #include "server.hpp"
 #include "config.hpp"
 #include "logger.hpp"
-
+#include "IsEncryptedRawData.hpp"
 #include <string>
 #include <boost/bind.hpp>
+#include "PortsTest.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -15,7 +16,6 @@ int main(int argc, char* argv[])
 
   try
   { 
-    std::vector <std::string> compilation_flags;
     if(argc > 1)
     {
       config = std::make_unique<Config>(Config::get_config(argv[1]));
@@ -36,4 +36,5 @@ int main(int argc, char* argv[])
     Logger::log(e.what(), Logger::LOG_LEVEL::FATAL);
   }
   return 0;
+    
 }
