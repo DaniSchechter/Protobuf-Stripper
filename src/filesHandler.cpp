@@ -33,15 +33,14 @@ int isStrExistsInFile(const std::string& fileName, const std::string& word)
 	{
 		try
 		{
-			std::regex r(FileImportSet::instance()->get_block_words());
-
 			if (fileName == test_config("BLOCK_WORDS_FILE"))
 			{
-				
+				std::regex r(FileImportSet::instance()->get_block_words());
 				if (!regex_search(word, r))
 					return 0;
 				return BLOCK_WORD;
 			}
+			std::regex r(word);
 
 			if (!regex_search(FileImportSet::instance()->get_malicious_ip(),r))
 				return 0;
