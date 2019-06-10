@@ -12,14 +12,14 @@
 
 const std::string currentDateTime()
 {
-	time_t     now = time(0);
-	struct tm  tstruct;
-	char       buf[80];
+	auto start = std::chrono::system_clock::now();
+    // Some computation here
+    auto end = std::chrono::system_clock::now();
 
-	localtime(&now);
-	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 
-	return buf;
+	return std::ctime(&end_time);
 }
 
 bool isValidNumber(int num)
@@ -48,7 +48,7 @@ bool isValidIp(const std::string& ip)
 			//check if the ip segment contains only numbers
 			for (char i = 0; i < size; i++)
 			{
-				if (words[i] - '0' > 9 || words[i] - '0' < 0)
+				if (!isdigit(words[i]))
 				{
 					delete[] charIp;
 					return false;

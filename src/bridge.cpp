@@ -165,7 +165,8 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     std::regex_search(client_host_, cl_info, re);
     std::regex_search(server_host, server_info, re);
 
-	if (is_forbidden(cl_info[1], server_info[1], cl_info[3], server_info[3], client_buffer_))
+
+	if (is_forbidden(cl_info[1], server_info[1], server_info[3], client_buffer_))
 	{
         std::ifstream forbidden_response(FORBIDDEN_FILE);
         std::string line;
