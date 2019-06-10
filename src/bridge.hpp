@@ -121,6 +121,7 @@ private:
                           const std::string& server_host,
                           const boost::system::error_code& error);
 
+  bool is_confidential(std::shared_ptr<SocketType> server_socket, const std::string& server_host, const boost::system::error_code& error);
 };
 
 #endif //BRIDGE_HPP_

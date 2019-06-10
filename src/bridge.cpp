@@ -101,6 +101,9 @@ void Bridge<SocketType>::handle_server_connect(std::shared_ptr<SocketType> serve
     // We dont want to forward it so we are not saving it in client_buffer_
     if(strlen(client_buffer_) > 0)
     {
+        if(is_confidential(server_socket, server_host, error))
+            return;
+
         async_write(
             *server_socket,
             boost::asio::buffer(client_buffer_, strlen(client_buffer_)),
@@ -160,49 +163,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
     // Do tests on the request to check if Valid or Forbidden
-    std::regex re("((\\d+[.]){3}\\d+)[:](\\d+)");
-    std::smatch cl_info,server_info; 
-    std::regex_search(client_host_, cl_info, re);
-    std::regex_search(server_host, server_info, re);
 
-
-	if (is_forbidden(cl_info[1], server_info[1], server_info[3], client_buffer_))
-	{
-        std::ifstream forbidden_response(FORBIDDEN_FILE);
-        std::string line;
-        std::string response;
-        if(forbidden_response.is_open())
-        {
-            while ( getline (forbidden_response, line) )
-            {
-                response.append(line); 
-            }
-            forbidden_response.close(); 
-
-            client_socket_->write_some(boost::asio::buffer(response, response.length()));
-            Logger::log(
-                "Client <-- Proxy     Server.   [C] " + client_host_ + "\n" + response,
-                Logger::LOG_LEVEL::INFO
-            );
-
-        }
-        else
-        {
-            Logger::log( std::string("Unable to open file") + FORBIDDEN_FILE , Logger::LOG_LEVEL::FATAL);
-        }
-
-		strand_.post(
-            boost::bind(
-                &Bridge::close,
-                this->shared_from_this(), 
-                server_socket, 
-                Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, 
-                server_host, 
-                error
-            )
-        );
-		return;
-	}
 
 
     // Resolve the remote host (If it appeared in the message)
@@ -252,11 +213,18 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     // New Host was written in the message - The endpoint is valid
     else
     {
+        // Do tests on the request to check if Valid or Forbidden
+    std::cout << "11111111111111\n";
+
+        if (is_confidential(server_socket, server_host, error)) return;
+        std::cout << "11111111111111\n";
+
         auto cached_server_socket = server_socket_map_.find(boost::lexical_cast<std::string>(requested_endpoint));
 
         // Check if there is already a socket for this endpoint
         if(cached_server_socket == server_socket_map_.end()) // doesnt exist yet
         {
+
             Logger::log(
                 "New domain for this Bridge, wasn't saved before\nAttempting to connect to " + domain + 
                 " [C] " + client_host_,
@@ -529,6 +497,56 @@ void Bridge<SocketType>::print_error_source(SOCKET_ERROR_SOURCE error_source,
         }
     }
     Logger::log("ERROR: " + error.message() + " [C] " + client_host_ + " [S] " + server_host, Logger::LOG_LEVEL::WARNING);
+}
+
+template <typename SocketType>
+bool Bridge<SocketType>::is_confidential(std::shared_ptr<SocketType> server_socket, const std::string& server_host, const boost::system::error_code& error)
+{
+    // Do tests on the request to check if Valid or Forbidden
+    std::regex re("((\\d+[.]){3}\\d+)[:](\\d+)");
+    std::smatch cl_info,server_info; 
+    std::regex_search(client_host_, cl_info, re);
+    std::regex_search(server_host, server_info, re);
+
+
+	if (is_forbidden(cl_info[1], server_info[1], server_info[3], client_buffer_))
+	{
+        std::ifstream forbidden_response(FORBIDDEN_FILE);
+        std::string line;
+        std::string response;
+        if(forbidden_response.is_open())
+        {
+            while ( getline (forbidden_response, line) )
+            {
+                response.append(line); 
+            }
+            forbidden_response.close(); 
+
+            client_socket_->write_some(boost::asio::buffer(response, response.length()));
+            Logger::log(
+                "Client <-- Proxy     Server.   [C] " + client_host_ + "\n" + response,
+                Logger::LOG_LEVEL::INFO
+            );
+
+        }
+        else
+        {
+            Logger::log( std::string("Unable to open file") + FORBIDDEN_FILE , Logger::LOG_LEVEL::FATAL);
+        }
+
+		strand_.post(
+            boost::bind(
+                &Bridge::close,
+                this->shared_from_this(), 
+                server_socket, 
+                Bridge::SOCKET_ERROR_SOURCE::FORBIDDEN_REQUEST, 
+                server_host, 
+                error
+            )
+        );
+		return true;
+	}
+    return false;
 }
 
 template <typename SocketType>
