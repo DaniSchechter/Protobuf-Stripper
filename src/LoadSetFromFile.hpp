@@ -13,6 +13,7 @@ class FileImportSet
 	std::string block_words;
 	std::string malicious_ip;
 	std::string black_list_ip;
+	std::string known_ports;
 	static FileImportSet *s_instance;
 public:
 	FileImportSet()
@@ -46,7 +47,8 @@ public:
 		while (!file.eof())
 		{
 			getline(file, line);
-			port.insert(line);
+			known_ports+=line;
+			known_ports+="@";
 			
 		}
 		file.close();
@@ -94,10 +96,9 @@ public:
 	{
 		return black_list_ip;
 	}
-	std::set<std::string>* get_value(const std::string& name)
+	std::string get_known_ports()
 	{
-		if (name == "port") return &port;
-		return NULL;
+		return known_ports;
 	}
 	static FileImportSet* instance()
 	{

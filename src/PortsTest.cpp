@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <string>
 #include <set>
+#include <regex>
 #include"LoadSetFromFile.hpp"
 
 
@@ -17,7 +18,8 @@ bool port_density(const std::string& srcIP,const std::string& dstPort)
 	}
 	if (port_map[dstPort].size() >= (long unsigned int)std::stoi(test_config("PORTS_MIN_COUNT")))
 	{
-		return FileImportSet::instance()->get_value("port")->find(dstPort)== FileImportSet::instance()->get_value("IP")->end(); //Check if known port or Unknown port, High Usage 
+		std::regex r(dstPort);
+		return !regex_search(FileImportSet::instance()->get_known_ports(),r); //Check if known port or Unknown port, High Usage 
 	}
 	return false; 
 }
