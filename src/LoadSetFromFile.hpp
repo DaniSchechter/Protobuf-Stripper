@@ -80,7 +80,6 @@ public:
 		{
 			getline(file, line);
 			block_words+=line;
-			block_words+="\n";
 		}
 		file.close();
 	}

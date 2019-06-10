@@ -17,14 +17,16 @@ bool is_forbidden(const std::string& src_ip, const std::string& dst_ip, const st
 
 	bool tokens = findTokens(data);
 
+	std::cout << request_dens;
+	std::cout << is_interval;
+	std::cout << if_data_confidential;
+	std::cout << mal_data;
+	std::cout << bport_density;
+	std::cout << tokens;
+
 	if (is_interval || if_data_confidential || mal_data || request_dens  || bport_density ) 
 	{
-		std::cout << request_dens;
-		std::cout << is_interval;
-		std::cout << if_data_confidential;
-		std::cout << mal_data;
-		std::cout << bport_density;
-		std::cout << tokens;
+		
 		
 		// TO BLOCK MESSAGE
 		writeRequestToFile(src_ip, dst_ip, data);
@@ -41,7 +43,7 @@ bool is_forbidden(const std::string& src_ip, const std::string& dst_ip, const st
 	}
 	if(tokens)
 	{
-		//writeRequestToFile(src_ip, dst_ip, data);
+		writeRequestToFile(src_ip, dst_ip, data);
 	}
 	return false;
 }

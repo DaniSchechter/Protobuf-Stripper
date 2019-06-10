@@ -14,33 +14,31 @@ BadWordsMap *BadWordsMap::s_instance = 0;
 
 //To open the files before the functions and to pass the text in a string variable.
 //To call data from disk as little as possible.(efficiency)
-
 int isStrExistsInFile(const std::string& fileName, const std::string& word)
 {
-	
-	if (word.empty() || word=="/r/n" || word!="/n" )
+	if (word.empty() || word=="\r\n" || word=="\n")
 		return 0;
 
 	if (fileName == test_config("MALICIOUS_WORDS_FILE"))
 	{
-		//std::unordered_map<std::string, int> map;
-		//map.insert(BadWordsMap::instance()->get_value().begin(), BadWordsMap::instance()->get_value().end());
-		if (BadWordsMap::instance()->get_value()->find(word) == BadWordsMap::instance()->get_value()->end())
-			return 0;
-		return (*BadWordsMap::instance()->get_value())[word];
-
+		for (auto couple: *(BadWordsMap::instance()->get_value()))
+		{
+			std::regex re(couple.first);
+			if (regex_search(word, re))
+				return couple.second;
+		}
+		return 0;
 	}
 	else
 	{
 		try
 		{
-			std::regex r(word);
+			std::regex r(FileImportSet::instance()->get_block_words());
 
-			/*FileImportSet* set = new FileImportSet(fileName);*/
 			if (fileName == test_config("BLOCK_WORDS_FILE"))
 			{
 				
-				if (!regex_search(FileImportSet::instance()->get_block_words(),r))
+				if (!regex_search(word, r))
 					return 0;
 				return BLOCK_WORD;
 			}
