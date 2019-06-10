@@ -30,15 +30,15 @@ public:
 
 	Regex()
 	{
-    google_api_key=std::regex("AIza[0-9A-Za-z-_]{35}");
+    google_api_key=std::regex("AIza[0-9A-Za-z-_\\[\\]]{35}");
     twitter_access_token=std::regex("[1-9][0-9]+-[0-9a-zA-Z]{40}");
     facebook_access_token=std::regex("EAACEdEose0cBA[0-9A-Za-z]+");
     google_auth_id = std::regex("[0-9]+-[0-9A-Za-z_]1321[.]apps[.]googleusercontent[.]com");
     picatic_api_key=std::regex("sk_live_[0-9a-z]{32}");
     stripe_standard_api_key=std::regex("sk_live_[0-9a-zA-Z]{24}");
     stripe_restricted_api_key=std::regex("rk_live_[0-9a-zA-Z]{24}");
-    square_access_token=std::regex("sqOatp-[0-9A-Za-z-_]{22}"); 
-    square_auth_secret=std::regex("sq0csp-[0-9A-Za-z-_]{43}");
+    square_access_token=std::regex("sqOatp-[0-9A-Z\\[a-z\\]-_]{22}"); 
+    square_auth_secret=std::regex("sq0csp-[0-9A-Z\\]a-z\\[-_]{43}");
     paypal_braintree_access_token=std::regex("access_token[$]production[$][0-9a-z]{16}[$][0-9a-f]{32}"); 
     amazon_mws_auth_token=std::regex("amzn[.]mws[.][0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
     twilio_api_key=std::regex("SK[0-9a-fA-F]{32}");

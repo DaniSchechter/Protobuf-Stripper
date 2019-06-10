@@ -32,12 +32,15 @@ bool checkIfDataConfidential(const std::string& data)
 	//loop through all the words
 	for(const std::string& str : tokens)
 	{
-		//checks if the word is forbidden and if it is then return it's value		
+		//checks if the word is forbidden and if it is then return it's value
+		std::cout << "shay1" << std::endl;
 		countBadWords += isStrExistsInFile(test_config("MALICIOUS_WORDS_FILE"), str);
-		
+		std::cout << "shay2" << std::endl;
 		
 		//checks if the word exists in the list of words the user doesn't allow
+		std::cout << "shay3" << std::endl;
 		if (isStrExistsInFile(test_config("BLOCK_WORDS_FILE"), str) == BLOCK_WORD)
+		std::cout << "shay4" << std::endl;
 			return true;
 		countTotalWords++;
 	}
