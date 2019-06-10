@@ -188,7 +188,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
         }
         else
         {
-            Logger::log( "Unable to open file" + FORBIDDEN_FILE , Logger::LOG_LEVEL::FATAL);
+            Logger::log(std::string("Unable to open file") + FORBIDDEN_FILE , Logger::LOG_LEVEL::FATAL);
         }
 
 		strand_.post(
