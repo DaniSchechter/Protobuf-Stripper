@@ -35,8 +35,6 @@ bool request_density(const std::string& src_ip, const std::string& dst_ip, const
 			if (raw_data.size() > (long unsigned int)std::stoi(test_config("MAX_SIZE")))
 				return true;
 		}
-		
-
 	}
 	return false;
 }

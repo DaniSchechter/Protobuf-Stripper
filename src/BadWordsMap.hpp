@@ -17,9 +17,7 @@ class BadWordsMap
 	std::unordered_map<std::string, int> blockWordsMap;
 	static BadWordsMap *s_instance;
 	BadWordsMap()
-	{
-		
-		
+	{		
 		if (blockWordsMap.empty() == false)
 			return;		
 
@@ -42,10 +40,7 @@ class BadWordsMap
 
 			if (line.compare("") != 0)
 			{
-
 				std::stringstream split(line);
-
-
 
 				//split the line from the value (ex.   virus-3)
 				while (getline(split, intermediate, '-'))
@@ -56,12 +51,9 @@ class BadWordsMap
 				blockWordsMap.insert(std::make_pair(splitLine[0], stoi(splitLine[1])));
 
 				splitLine.clear();
-
 			}
 		}
 		file.close();
-
-
 	}
 public:
 	std::unordered_map<std::string, int>* get_value()
@@ -76,18 +68,4 @@ public:
 	}
 };
 
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-

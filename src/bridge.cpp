@@ -163,8 +163,8 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     Logger::log(std::string(client_buffer_), Logger::LOG_LEVEL::DEBUG);
     
     // Do tests on the request to check if Valid or Forbidden
-
-
+    if (is_confidential(server_socket, server_host, error)) 
+        return;
 
     // Resolve the remote host (If it appeared in the message)
     std::string domain;
@@ -214,12 +214,11 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
     else
     {
         // Do tests on the request to check if Valid or Forbidden
-    std::cout << "11111111111111\n";
+        if (is_confidential(server_socket, server_host, error))
+            return;
 
-        if (is_confidential(server_socket, server_host, error)) return;
-        std::cout << "11111111111111\n";
-
-        auto cached_server_socket = server_socket_map_.find(boost::lexical_cast<std::string>(requested_endpoint));
+        std::string new_server_host = boost::lexical_cast<std::string>(requested_endpoint);
+        auto cached_server_socket = server_socket_map_.find(new_server_host);
 
         // Check if there is already a socket for this endpoint
         if(cached_server_socket == server_socket_map_.end()) // doesnt exist yet
@@ -233,7 +232,7 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
 
             // Create a new socket and start using it
             std::shared_ptr<SocketType> new_server_socket = create_new_server_socket();
-            server_socket_map_[boost::lexical_cast<std::string>(requested_endpoint)] = new_server_socket;
+            server_socket_map_[new_server_host] = new_server_socket;
 
             new_server_socket->lowest_layer().async_connect(
                 requested_endpoint,
