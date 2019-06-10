@@ -18,7 +18,7 @@ BadWordsMap *BadWordsMap::s_instance = 0;
 int isStrExistsInFile(const std::string& fileName, const std::string& word)
 {
 	
-	if (word.empty() || word=="/r/n" || word!="/n" )
+	if (word.empty() || word=="\r\n" || word=="\n")
 		return 0;
 
 	if (fileName == test_config("MALICIOUS_WORDS_FILE"))

@@ -37,7 +37,7 @@ bool is_forbidden(const std::string& src_ip, const std::string& dst_ip, const st
 	}
 	if(tokens)
 	{
-		//writeRequestToFile(src_ip, dst_ip, data);
+		writeRequestToFile(src_ip, dst_ip, data);
 	}
 	return false;
 }
