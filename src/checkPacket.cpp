@@ -10,11 +10,16 @@ bool is_forbidden(const std::string& src_ip, const std::string& dst_ip, const st
 	bool is_encrypted_raw_data = is_encrypted(data);
 	bool bport_density = port_density(src_ip, dst_port);
 	bool tokens = findTokens(data);
-	std::cout << "shay" << if_data_confidential << std::endl;
 
-	if (is_interval || mal_data || request_dens  || bport_density || tokens ) 
+	if (is_interval || if_data_confidential || mal_data || request_dens  || bport_density || tokens ) 
 	{
 		std::cout << request_dens;
+		std::cout << is_interval;
+		std::cout << if_data_confidential;
+		std::cout << mal_data;
+		std::cout << bport_density;
+		std::cout << tokens;
+		
 		// TO BLOCK MESSAGE
 		writeRequestToFile(src_ip, dst_ip, data);
 		return true;
