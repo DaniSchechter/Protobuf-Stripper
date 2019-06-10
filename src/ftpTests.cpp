@@ -3,9 +3,9 @@
 #include <set>
 #include "TestsConfig.hpp"
 #include "ftpTests.hpp"
-bool ftp_tests(const char data[])
-{
-// if pdf
+// bool ftp_tests(const char data[])
+// {
+// // if pdf
 
-}
+// }
 
