@@ -71,7 +71,7 @@ public:
 	static BadWordsMap *instance()
 	{
 		if (!s_instance)
-			s_instance = new BadWordsMap;
+			s_instance = new BadWordsMap();
 		return s_instance;
 	}
 };

@@ -1,6 +1,6 @@
 ---------------------------------
 
-127.0.0.1, 212.29.241.223
+192.168.43.106, 212.29.241.223
 GET http://www.sport5.co.il/images/bg-page.jpg HTTP/1.1
 Host: www.sport5.co.il
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
@@ -9,142 +9,69 @@ Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
 Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
 Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=2; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D
-If-Modified-Since: Wed, 22 Feb 2017 09:43:46 GMT
-If-None-Match: "48b7d629f08cd21:0"
-Cache-Control: max-age=0
+Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=1; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560188117.1560202252.7; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
 
 
-Mon Jun 10 20:35:14 2019
+Tue Jun 11 00:32:48 2019
 
 
----------------------------------
+000010---------------------------------
 
-127.0.0.1, 212.29.241.223
-GET http://www.sport5.co.il/images/sprite.png HTTP/1.1
-Host: www.sport5.co.il
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: image/webp,*/*
+192.168.43.199, 212.29.241.223
+GET http://tags.bluekai.com/site/58141?ret=html&phint=worldId%3D0&phint=leagueId%3D0&phint=articleId%3D0&phint=Url%3D&phint=__bk_t%3D%D7%90%D7%AA%D7%A8%20%D7%A2%D7%A8%D7%95%D7%A5%20%D7%94%D7%A1%D7%A4%D7%95%D7%A8%D7%98%20-%20%D7%97%D7%93%D7%A9%D7%95%D7%AA%20%D7%94%D7%A1%D7%A4%D7%95%D7%A8%D7%98%2C%20%D7%AA%D7%95%D7%A6%D7%90%D7%95%D7%AA%2C%20%D7%AA%D7%A7%D7%A6%D7%99%D7%A8%D7%99%D7%9D%20%D7%95%D7%A9%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D%20-%20Sport5.co.il&phint=__bk_k%3D%D7%97%D7%93%D7%A9%D7%95%D7%AA%20%D7%94%D7%A1%D7%A4%D7%95%D7%A8%D7%98%2C%20%D7%AA%D7%95%D7%A6%D7%90%D7%95%D7%AA%2C%20%D7%AA%D7%A7%D7%A6%D7%99%D7%A8%D7%99%D7%9D%20%D7%95%D7%A9%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D&phint=__bk_l%3Dhttp%3A%2F%2Fwww.sport5.co.il%2F&limit=4&r=11451624 HTTP/1.1
+Host: tags.bluekai.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
+Prefer: safe
+Referer: http://www.sport5.co.il/
 Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Wed, 22 Feb 2017 09:43:54 GMT
-If-None-Match: "f144402ef08cd21:0"
-Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
 
 
-Mon Jun 10 20:35:17 2019
+Tue Jun 11 00:32:49 2019
 
 
----------------------------------
+000010---------------------------------
 
-127.0.0.1, 212.29.241.223
-GET http://www.sport5.co.il/images/VideoMain.png HTTP/1.1
+192.168.43.106, 212.29.241.223
+GET http://www.sport5.co.il/fonts/south-regular-webfont.woff HTTP/1.1
 Host: www.sport5.co.il
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: image/webp,*/*
+Accept: application/font-woff2;q=1.0,application/font-woff;q=0.9,*/*;q=0.8
 Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
+Accept-Encoding: identity
 Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
 Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Thu, 09 Feb 2017 07:35:47 GMT
-If-None-Match: "45f2521a782d21:0"
-Cache-Control: max-age=0
+Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=2; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560188117.1560202252.7; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
 
 
-Mon Jun 10 20:35:17 2019
+Tue Jun 11 00:32:49 2019
 
 
----------------------------------
+000010---------------------------------
 
-127.0.0.1, 212.29.241.223
-GET http://www.sport5.co.il/images/videosmallitem.png HTTP/1.1
-Host: www.sport5.co.il
+192.168.43.106, 212.29.241.223
+GET http://d29k50lkkhkjby.cloudfront.net/19760733-9451/4/widget-c.js HTTP/1.1
+Host: d29k50lkkhkjby.cloudfront.net
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: image/webp,*/*
+Accept: */*
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
+Referer: http://www.sport5.co.il/
 Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Tue, 20 Nov 2018 07:55:05 GMT
-If-None-Match: "30e24259a680d41:0"
-Cache-Control: max-age=0
 
-        top: 20%;                z-index: 3;                box-shadow: 0px 60px 0 0px;                }                h1 span:before {                left: 37%;                transform: rotate(22deg);                top: -44%;                }                h1 span:after {                right: 34%;                transform: rotate(22deg);                top: 3%;                }        </style>    </head>    <body>            <h1 class="text"><span>Forbidden connection</span></h1>    </body></html>
-Mon Jun 10 20:35:17 2019
+p-alive
+Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=2; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560188117.1560202252.7; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
 
 
----------------------------------
-
-127.0.0.1, 212.29.241.223
-GET http://www.sport5.co.il/images/arrow_games_R.png HTTP/1.1
-Host: www.sport5.co.il
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: image/webp,*/*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
-Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Mon, 27 Mar 2017 09:03:08 GMT
-If-None-Match: "368faf4d8a6d21:0"
-Cache-Control: max-age=0
+Tue Jun 11 00:32:49 2019
 
 
+000010---------------------------------
 
-Mon Jun 10 20:35:17 2019
-
-
----------------------------------
-
-127.0.0.1, 212.29.241.223
-GET http://www.sport5.co.il/images/categoryheaderarrow.png HTTP/1.1
-Host: www.sport5.co.il
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: image/webp,*/*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
-Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Thu, 09 Feb 2017 07:01:44 GMT
-If-None-Match: "1b51575fa282d21:0"
-Cache-Control: max-age=0
-
-
-Mon Jun 10 20:35:17 2019
-
-
----------------------------------
-
-127.0.0.1, 212.29.241.223
-GET http://www.sport5.co.il/images/video-arrow-right.png HTTP/1.1
-Host: www.sport5.co.il
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: image/webp,*/*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
-Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Wed, 22 Feb 2017 09:43:54 GMT
-If-None-Match: "7b127e2ef08cd21:0"
-Cache-Control: max-age=0
-
-: "c2191b29f08cd21:0"
-Cache-Control: max-age=0
-
- {                left: 37%;                transform: rotate(22deg);                top: -44%;                }                h1 span:after {                right: 34%;                transform: rotate(22deg);                top: 3%;                }        </style>    </head>    <body>            <h1 class="text"><span>Forbidden connection</span></h1>    </body></html>
-Mon Jun 10 20:35:17 2019
-
-
----------------------------------
-
-127.0.0.1, 212.29.241.223
+192.168.43.106, 212.29.241.223
 GET http://www.sport5.co.il/images/bg-footer.gif HTTP/1.1
 Host: www.sport5.co.il
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
@@ -153,53 +80,18 @@ Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
 Referer: http://www.sport5.co.il/GlobalHomeCss?v=-2470294989704390235
 Connection: keep-alive
-Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=3; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560102119.1560116586.5; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; TS01f99e04=012c015f0ebc52f904671e60512e3f6ca87d15e69a2ca8a7794508e970c8be74faa3be5687bb49151ee6f4430567915ca26f3f3df821e2fb73c39b557670c9f16893087a44; nlb=4261456064.1.820212656.1080827904; logglytrackingsession=1373f25f-d267-4111-8069-c0663eed20c5; __utmc=213585750; __za_19760733=%7B%22sId%22%3A357272499%2C%22dbwId%22%3A%221%22%2C%22sCode%22%3A%225abf2bf69eeb9e3e8ea06dac846ff77a%22%2C%22sInt%22%3A5000%2C%22aLim%22%3A1000%2C%22asLim%22%3A1000%2C%22na%22%3A0%2C%22td%22%3A1%2C%22ca%22%3A%221%22%7D; __za_cds_19760733=%7B%22data_for_campaign%22%3A%7B%22country%22%3A%22IL%22%2C%22language%22%3A%22UNSET%22%2C%22ip%22%3A%2246.19.86.72%22%2C%22start_time%22%3A1560108101000%7D%7D; minSession={"minSID":"c0244a3505-76404f9427-b1535a2b4a-ccaca0c772-791d70d8a3","minSessionSent":true}; minDaily={"testMode":false,"dailyUser":true}
-If-Modified-Since: Wed, 22 Feb 2017 09:43:46 GMT
-If-None-Match: "df407429f08cd21:0"
-Cache-Control: max-age=0
+Cookie: minVersion={"experiment":-2026854866,"minFlavor":"watchfullmi-1.11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=2; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560188117.1560202252.7; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
 
-e=0
+1
 
 
-Mon Jun 10 20:35:17 2019
+Tue Jun 11 00:32:49 2019
 
 
----------------------------------
+000010---------------------------------
 
-127.0.0.1, 151.80.198.112
-GET http://www.googletagservices.com/activeview/js/current/osd.js?cb=%2Fr20100101 HTTP/1.1
-Host: www.googletagservices.com
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/
-Connection: keep-alive
-If-None-Match: "1559906128209004"
-Cache-Control: max-age=0
-
-
-Connection: keep-alive
-Cookie: Gdyn=KlxbDMMGQMQGrhOEMComx88WssGMs1haLvnxGsRPtP7iGKGGqj1eLGlsleX2sbfPgKVaHRSG
-
-
-Mon Jun 10 20:35:22 2019
-
-
----------------------------------
-
-127.0.0.1, 137.74.0.154
-GET http://cdn.taboola.com/libtrc/impl.361-34-RELEASE.js HTTP/1.1
-Host: cdn.taboola.com
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.sport5.co.il/
-Connection: keep-alive
-Cookie: t_gid=e7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; taboola_usg=GiQQnMdBELWLRRCZzkAQy_lFEIaQPxD0qUEQmdtGEK61QxCax0E
-
-A9%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D%20-%20Sport%7Cauthor%3D HTTP/1.1
+192.168.43.106, 212.29.241.223
+GET http://pro.hit.gemius.pl/_15602023696230/redot.gif?l=4&w=hview&id=bVbgjQOT.zZCLW7W6RqDp8R7TBQK92wDkPxyzpr4M1j.q7&arg=0&fr=1&href=http%3A%2F%2Fwww.sport5.co.il%2F&ref=&extra=title%3D%D7%90%D7%AA%D7%A8%20%D7%A2%D7%A8%D7%95%D7%A5%20%D7%94%D7%A1%D7%A4%D7%95%D7%A8%D7%98%20-%20%D7%97%D7%93%D7%A9%D7%95%D7%AA%20%D7%94%D7%A1%D7%A4%D7%95%D7%A8%D7%98%2C%20%D7%AA%D7%95%D7%A6%D7%90%D7%95%D7%AA%2C%20%D7%AA%D7%A7%D7%A6%D7%99%D7%A8%D7%99%D7%9D%20%D7%95%D7%A9%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D%20-%20Sport%7Cauthor%3D HTTP/1.1
 Host: pro.hit.gemius.pl
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
 Accept: image/webp,*/*
@@ -209,15 +101,13 @@ Referer: http://www.sport5.co.il/
 Connection: keep-alive
 Cookie: Gdyn=KlxbDMMGQMQGrhOEMComx88WssGMs1haLvnxGsRPtP7iGKGGqj1eLGlsleX2sbfPgKVaHRSG
 
+3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
 
-Mon Jun 10 20:35:23 2019
+¼---------------------------------
 
-
----------------------------------
-
-127.0.0.1, 104.79.232.39
-GET http://pro.hit.gemius.pl/_15601881259990/redot.gif?l=3&w=hsc&id=bVbgjQOT.zZCLW7W6RqDp8R7TBQK92wDkPxyzpr4M1j.q7&arg=0&sarg=0%3A942%3A8215&href=http%3A%2F%2Fwww.sport5.co.il%2F HTTP/1.1
-Host: pro.hit.gemius.pl
+192.168.43.106, 212.29.241.223
+GET http://gail.hit.gemius.pl/_1560202369619/rexdot.gif?l=30&id=&fr=1&tz=-180&fv=-&href=http%3A%2F%2Fwww.sport5.co.il%2F&ref=&screen=1920x1080&col=24&window=1853x942 HTTP/1.1
+Host: gail.hit.gemius.pl
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
 Accept: image/webp,*/*
 Accept-Language: en-US,en;q=0.5
@@ -226,18 +116,169 @@ Referer: http://www.sport5.co.il/
 Connection: keep-alive
 Cookie: Gdyn=KlxbDMMGQMQGrhOEMComx88WssGMs1haLvnxGsRPtP7iGKGGqj1eLGlsleX2sbfPgKVaHRSG
 
-%20%D7%AA%D7%95%D7%A6%D7%90%D7%95%D7%AA%2C%20%D7%AA%D7%A7%D7%A6%D7%99%D7%A8%D7%99%D7%9D%20%D7%95%D7%A9%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D&phint=__bk_l%3Dhttp%3A%2F%2Fwww.sport5.co.il%2F&limit=4&r=64674697 HTTP/1.1
-Host: tags.bluekai.com
+fer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=2; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560188117.1560202252.7; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
+
+B5¼
+Tue Jun 11 00:32:49 2019
+
+
+000010
+Tue Jun 11 00:32:49 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 212.29.241.223
+GET http://apv-static.minute.ly/videos/v-f8c8f1e3-85d3-40c0-594052-b4aa-0626c60dd946-s65.0-71.3m.mp4 HTTP/1.1
+Host: apv-static.minute.ly
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept: video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5
 Accept-Language: en-US,en;q=0.5
+Referer: http://www.sport5.co.il/
+Range: bytes=0-
+Connection: keep-alive
+Cookie: __cfduid=d76fa6005ddc0b3d825683df3fb8293af1560094438
+
+11.2.13.js100"}; minUniq={"minUID":"160d1432db-7c14d72697-848be56663-91ce7ffddc-5e86c30691"}; minBuffer={"minAnalytics":"{\"clicks\":[]}","_minEE0":"[]","_minEE1":"[]"}; tmc_RGE=2; __gads=ID=10f6a6aa5cbaa708:T=1559162166:S=ALNI_MbI9hkdBhoaz2RD0l7x1lLbkw48lw; __utma=213585750.981156736.1559162165.1560188117.1560202252.7; __utmz=213585750.1559162168.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __za_cd_19760733=%7B%22visits%22%3A%22%5B1560108148%2C1560107639%2C1560098227%2C1560094358%2C1559162168%5D%22%7D; trc_cookie_storage=taboola%2520global%253Auser-id%3De7a1e97f-9f2a-4940-9cf2-547990dff490-tuct318f926; zdSessionId_13859059=1ac52aa6-9443-4d20-a824-142d43367ead; minDaily={"testMode":false,"dailyUser":true}; ASPSESSIONIDSSTBATCC=KPAAGIADPOHDLGDKDCKJBPJN; nlb=4261456064.1.820214856.1094969344; TS01f99e04=012c015f0e84ddfc2cecebefb438005144abfc16bde0f5a08b367f0cf4949668d5b374a904032ad88c76e698be1ad7eebf09cbf220ae56b22870b4cdc4ab171fe31231b001e33ae809b57c0c75b099261c38ebd51e; minSession={"minSID":"7140ac80c8-d491e33bdd-fc3596a0d9-98ed58ae8b-dd3b19dde3","minSessionSent":true}; __utmb=213585750.1.10.1560202254; __utmc=213585750; __utmt=1
+
+7 20px);                box-shadow: 0px 0px 10px #181617;                }                h1 span:before, h1 span:after {                content: "";                width: 8px;                height: 8px;                background: #757575;                color: #757575;                border-radius: 50%;                position: absolute;                bottom: 0;                margin: auto;                top: 20%;                z-index: 3;                box-shadow: 0px 60px 0 0px;                }                h1 span:before {                left: 37%;                transform: rotate(22deg);                top: -44%;                }                h1 span:after {                right: 34%;                transform: rotate(22deg);                top: 3%;                }        </style>    </head>    <body>            <h1 class="text"><span>Forbidden connection</span></h1>    </body></html>
+Tue Jun 11 00:32:50 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 167.114.170.15
+GET http://www.cplusplus.com/v321/main.css HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+
+e-Insecure-Requests: 1
+
+US,en;q=0.5
 Accept-Encoding: gzip, deflate
 Referer: http://www.sport5.co.il/
 Connection: keep-alive
-Cookie: bkdc=phx; bku=ROW99m8NcNylFoWL
-Upgrade-Insecure-Requests: 1
+Cookie: Gdyn=KlxbDMMGQMQGrhOEMComx88WssGMs1haLvnxGsRPtP7iGKGGqj1eLGlsleX2sbfPgKVaHRSG
 
 
-Mon Jun 10 20:35:26 2019
+Tue Jun 11 00:34:45 2019
 
 
+000010---------------------------------
+
+192.168.43.106, 167.114.170.15
+GET http://www.cplusplus.com/img/welcometo.gif HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+
+onnection: keep-alive
+
+
+
+
+Tue Jun 11 00:34:46 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 216.58.211.162
+GET http://www.cplusplus.com/img/bg_info.gif HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+
+
+If-None-Match: "78 / 998 of 1000 / last-modified: 1549658909"
+
+
+Tue Jun 11 00:34:46 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 167.114.170.15
+GET http://www.cplusplus.com/img/bg_ref.gif HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+
+alive
+
+
+Tue Jun 11 00:34:46 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 167.114.170.15
+GET http://www.cplusplus.com/img/bg_art.gif HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+
+
+
+
+Tue Jun 11 00:34:46 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 167.114.170.15
+GET http://www.cplusplus.com/img/bg_src.gif HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+
+p-alive
+
+
+Tue Jun 11 00:34:46 2019
+
+
+000010---------------------------------
+
+192.168.43.106, 167.114.170.15
+GET http://www.cplusplus.com/v321/main.css HTTP/1.1
+Host: www.cplusplus.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.cplusplus.com/
+Connection: keep-alive
+Cookie: __utma=62705790.2021705784.1560202487.1560202487.1560202487.1; __utmb=62705790.2.10.1560202487; __utmc=62705790; __utmz=62705790.1560202487.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmt=1; consent=cookie
+
+e-Insecure-Requests: 1
+
+
+Tue Jun 11 00:40:11 2019
+
+
+000010

@@ -1,6 +1,6 @@
 MAX_SIZE=100000000
 CHECK_SIZE=5
-PORTS_MIN_COUNT=3
+PORTS_MIN_COUNT=2
 PORTS_FILE=include/known_ports.txt
 MALICIOUS_IP_FILE=include/maliciousIps.csv
 BLOCK_WORDS_FILE=include/blockWordsFile.csv

@@ -10,7 +10,11 @@ bool is_forbidden(const std::string& src_ip, const std::string& dst_ip, const st
 	bool mal_data = checkIfMaliciousIp(dst_ip);
 	bool request_dens = request_density(src_ip, dst_ip, data);
 	bool is_encrypted_raw_data = is_encrypted(data);
-	bool bport_density = port_density(src_ip, dst_port);
+	bool bport_density = port_density(src_ip, dst_ip, dst_port);
+	std::cout<<"src_ip: "<< src_ip <<"\n";
+	std::cout<<"dst_ip: "<< dst_ip <<"\n";
+	std::cout<<"dst_port: "<< dst_port <<"\n";
+
 	bool tokens = findTokens(data);
 
 	if (is_interval || if_data_confidential || mal_data || request_dens  || bport_density ) 
