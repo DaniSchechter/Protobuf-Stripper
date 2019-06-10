@@ -42,7 +42,7 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 		{
 			//requestInterval interval(duration, duration - map[std::make_pair(srcIP, dstIP)].getRecieveTime());
 			//calculate the new interval and save in in the map
-			if ((duration - map[std::make_pair(srcIP, dstIP)].first)>3000)
+			if ((duration - map[std::make_pair(srcIP, dstIP)].first)>180000)
 			{
    				map[std::make_pair(srcIP, dstIP)] = std::pair <std::time_t, std::time_t>(duration, duration - map[std::make_pair(srcIP, dstIP)].first);;
    				return false;
@@ -50,7 +50,7 @@ bool isInterval(const std::string& srcIP, const std::string& dstIP)
 		}
 		else
 		{
-   			if ((duration - map[std::make_pair(srcIP, dstIP)].first)>3000)
+   			if ((duration - map[std::make_pair(srcIP, dstIP)].first)>180000)
    			{
 				// checks if the message is sent with the same frequanty
    				if (map[std::make_pair(srcIP, dstIP)].second - (duration - map[std::make_pair(srcIP, dstIP)].first) < INTERVAL_ERROR && (duration - map[std::make_pair(srcIP, dstIP)].first) - map[std::make_pair(srcIP, dstIP)].second < INTERVAL_ERROR)

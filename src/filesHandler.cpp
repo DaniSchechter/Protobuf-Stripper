@@ -18,12 +18,13 @@ BadWordsMap *BadWordsMap::s_instance = 0;
 int isStrExistsInFile(const std::string& fileName, const std::string& word)
 {
 	
+	if (word.empty() || word=="/r/n" || word!="/n" )
+		return 0;
 
 	if (fileName == test_config("MALICIOUS_WORDS_FILE"))
 	{
 		//std::unordered_map<std::string, int> map;
 		//map.insert(BadWordsMap::instance()->get_value().begin(), BadWordsMap::instance()->get_value().end());
-		
 		if (BadWordsMap::instance()->get_value()->find(word) == BadWordsMap::instance()->get_value()->end())
 			return 0;
 		return (*BadWordsMap::instance()->get_value())[word];
@@ -52,12 +53,9 @@ int isStrExistsInFile(const std::string& fileName, const std::string& word)
 		}
 		catch(std::regex_error& e)
 		{
+			return 0;
 		}
-		
-
 	}
-	
-
 }
 
 
