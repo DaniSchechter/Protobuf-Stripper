@@ -6,6 +6,10 @@
 #include <boost/asio/write.hpp>
 #include "checkPacket.hpp"
 #include <regex>
+#include <fstream>
+
+#define FORBIDDEN_FILE  "include/forbidden_page_error.html"
+
 template <typename SocketType>
 Bridge<SocketType>::Bridge(std::shared_ptr<boost::asio::io_context> io_context)
   : io_context_(io_context),
@@ -164,6 +168,29 @@ void Bridge<SocketType>::handle_client_read(std::shared_ptr<SocketType> server_s
 
 	if (is_forbidden(cl_info[1], server_info[1], server_info[3], client_buffer_))
 	{
+        std::ifstream forbidden_response(FORBIDDEN_FILE);
+        std::string line;
+        std::string response;
+        if(forbidden_response.is_open())
+        {
+            while ( getline (forbidden_response, line) )
+            {
+                response.append(line); 
+            }
+            forbidden_response.close(); 
+
+            client_socket_->write_some(boost::asio::buffer(response, response.length()));
+            Logger::log(
+                "Client <-- Proxy     Server.   [C] " + client_host_ + "\n" + response,
+                Logger::LOG_LEVEL::INFO
+            );
+
+        }
+        else
+        {
+            Logger::log( "Unable to open file" + FORBIDDEN_FILE , Logger::LOG_LEVEL::FATAL);
+        }
+
 		strand_.post(
             boost::bind(
                 &Bridge::close,

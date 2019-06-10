@@ -21,9 +21,7 @@ class BadWordsMap
 		
 		
 		if (blockWordsMap.empty() == false)
-			return;
-		std::cout << "not empty\n";
-		
+			return;		
 
 		std::fstream file;
 
