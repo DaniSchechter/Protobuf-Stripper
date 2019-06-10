@@ -54,6 +54,8 @@ bin/*
 
 # Configuratio files
 *config.json
+.messages/*
+!messages/.gitkeep 
 
 # SSL Keys
 .sslkeys/*
