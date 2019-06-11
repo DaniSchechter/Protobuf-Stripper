@@ -17,7 +17,7 @@ bool is_forbidden(const std::string& src_ip, const std::string& dst_ip, const st
 		writeRequestToFile(src_ip, dst_ip, data);
 		return true;
 	}
-	if(tokens)
+	if(tokens || is_encrypted_raw_data)
 	{
 		writeRequestToFile(src_ip, dst_ip, data);
 	}
